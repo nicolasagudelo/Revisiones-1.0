@@ -32,6 +32,110 @@ Public Class Form1
 
         ComboBox1.SelectedItem = "Analistas"
 
+        conteo_muestras()
+    End Sub
+
+    Private Sub conteo_muestras()
+        Dim numero_de_pruebas As Integer
+
+        Try
+            conn.Open()
+            Dim cmd As New MySqlCommand(String.Format("Select count(PrueNo) FROM pruebas;;"), conn)
+            numero_de_pruebas = Convert.ToString(cmd.ExecuteScalar())
+            conn.Close()
+        Catch ex As Exception
+            MsgBox(ex.Message, False, "Error")
+            conn.Close()
+            Exit Sub
+        End Try
+
+        TabPage4.Controls.Clear()
+
+        Dim X1, Y1 As Integer
+        Dim r As Integer = 15
+        Dim m As Integer = 0
+        Dim cantidad_pendiente, cantidad_pendiente_bandejas As Integer
+        Dim LabelArray(numero_de_pruebas) As Label
+        Dim TextBoxArray(numero_de_pruebas) As TextBox
+        Dim j As Integer = 0
+        Dim j1 As Integer = j
+        Dim nombre_prueba As String
+        For i = 1 To numero_de_pruebas
+            r = r + 10
+            X1 = 30 + m
+            Y1 = (20 + (j1 - 1) * 30) + r
+            LabelArray(i) = New Label
+            LabelArray(i).Location = New Point(X1, Y1)
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("select Nombre from pruebas where prueno =" & i & ";"), conn)
+                nombre_prueba = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+            conn.Close()
+            LabelArray(i).Text = nombre_prueba
+            LabelArray(i).Width = 60
+            LabelArray(i).Height = 15
+            LabelArray(i).ForeColor = Color.Black
+            LabelArray(i).Visible = True
+            LabelArray(i).Parent = Me.TabPage4
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("Select Cuenta_Pruebas.c
+                                                        FROM(
+                                                        select pruebas.Nombre, pruebas.PrueNo, count(*) as c FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                                                        WHERE pruebas.PrueNo = " & i & " and Estado in ('Pendiente','Revisado')
+                                                        )Cuenta_Pruebas;"), conn)
+                cantidad_pendiente = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+            conn.Close()
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("Select Cuenta_Pruebas.c
+                                                        FROM(
+                                                        select pruebas.Nombre, pruebas.PrueNo, count(*)*40 as c FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                                                        WHERE pruebas.PrueNo = " & i & " and Estado in ('Pendiente','Revisado')
+                                                        )Cuenta_Pruebas;"), conn)
+                cantidad_pendiente_bandejas = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+            conn.Close()
+            cantidad_pendiente = cantidad_pendiente + cantidad_pendiente_bandejas
+            r = r + 20
+            X1 = 30 + m
+            Y1 = (20 + (j1 - 1) * 30) + r
+            TextBoxArray(i) = New TextBox
+            TextBoxArray(i).Location = New Point(X1, Y1)
+            TextBoxArray(i).Width = 110
+            TextBoxArray(i).Height = 15
+            TextBoxArray(i).Name = "Textboxs" & i
+            TextBoxArray(i).Text = ""
+            TextBoxArray(i).Text = cantidad_pendiente.ToString
+            TextBoxArray(i).Visible = True
+            TextBoxArray(i).ReadOnly = True
+            TextBoxArray(i).Parent = Me.TabPage4
+
+            j = j + 1
+            j1 = j1 + 1
+            If i Mod 7 = 0 Then
+                m = m + 170
+                r = 15
+                j1 = 0
+            End If
+        Next
 
     End Sub
 
@@ -43,7 +147,24 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         connect()
+        cargar_analistas()
 
+    End Sub
+
+    Private Sub cargar_analistas()
+        ComboBox6.Items.Clear()
+        ComboBox6.Enabled = True
+        Dim query As String = " Select AnalistNo, Nombre from analistas
+                                where AnalistNo <> 1;"
+        Dim cmd As New MySqlCommand(query, conn)
+        Dim sqlAdap As New MySqlDataAdapter(cmd)
+        Dim dtRecord As New DataTable
+        sqlAdap.Fill(dtRecord)
+        ComboBox6.DataSource = dtRecord
+        ComboBox6.DisplayMember = "Nombre"
+        ComboBox6.ValueMember = "AnalistNo"
+        ComboBox6.Text = ""
+        ComboBox6.SelectedValue = 0
     End Sub
 
     Public Sub cargar()
@@ -140,7 +261,9 @@ Public Class Form1
             Button2.Enabled = True
             Button3.Enabled = True
             Button4.Enabled = True
-
+            Button2.Visible = True
+            Button3.Visible = True
+            Button4.Visible = True
 
 
         ElseIf Nombre_Tabla = "Relacion Analistas Pruebas" Then
@@ -149,6 +272,9 @@ Public Class Form1
             Button2.Enabled = True
             Button3.Enabled = True
             Button4.Enabled = True
+            Button2.Visible = True
+            Button3.Visible = True
+            Button4.Visible = True
             LlenarComboBox2()
             LlenarComboBox3()
 
@@ -158,7 +284,13 @@ Public Class Form1
 
         ElseIf Nombre_Tabla = "Muestras no Asignadas" Then
 
-
+            GroupBox2.Visible = True
+            Button2.Visible = True
+            Button3.Visible = False
+            Button4.Visible = False
+            Button2.Enabled = True
+            Button3.Enabled = False
+            Button4.Enabled = False
 
         ElseIf Nombre_Tabla = "Bandejas Asignadas" Then
 
@@ -230,6 +362,7 @@ Public Class Form1
             ComboBox8.Visible = False
             ComboBox9.Visible = False
             Button8.Visible = False
+            Button5.Text = "Agregar"
             Button5.Visible = True
         ElseIf Label22.Text = "Pruebas" Then
             Label1.Text = "Nombre de la Prueba"
@@ -238,6 +371,7 @@ Public Class Form1
             TextBox1.Text = ""
             TextBox2.Text = ""
             GroupBox1.Visible = True
+            Panel1.Visible = False
             TextBox3.Visible = False
             TextBox6.Visible = False
             TextBox1.Visible = True
@@ -247,6 +381,7 @@ Public Class Form1
             ComboBox8.Visible = False
             ComboBox9.Visible = False
             Button8.Visible = False
+            Button5.Text = "Agregar"
             Button5.Visible = True
         ElseIf Label22.Text = "Relacion Analistas Pruebas" Then
             Label1.Text = "Nombre del Analista"
@@ -260,11 +395,38 @@ Public Class Form1
             ComboBox2.Visible = False
             ComboBox8.Visible = True
             Button8.Visible = False
+            Button5.Text = "Agregar"
             Button5.Visible = True
             LlenarComboBox8()
             ComboBox3.Visible = False
             ComboBox9.Visible = True
             LlenarComboBox9()
+        ElseIf Label22.Text = "Muestras no Asignadas" Then
+            Label1.Text = "Numero de Muestra"
+            Label2.Text = "Valor Ingresado"
+            TextBox2.PasswordChar = ""
+            TextBox1.Text = ""
+            TextBox2.Text = ""
+            Button5.Text = "Crear Muestra"
+            GroupBox1.Visible = True
+            Button8.Visible = False
+            Button5.Visible = True
+            TextBox3.Visible = False
+            TextBox6.Visible = False
+            TextBox1.Visible = True
+            TextBox2.Visible = True
+            ComboBox2.Visible = False
+            ComboBox3.Visible = False
+            ComboBox8.Visible = False
+            ComboBox9.Visible = False
+            LlenarComboBox4()
+            ComboBox4.Visible = True
+            Panel1.Visible = True
+            Label6.Visible = False
+            ComboBox5.Visible = False
+            Label3.Text = "Prueba"
+            Label3.Visible = True
+
         End If
     End Sub
 
@@ -478,6 +640,35 @@ Public Class Form1
                 conn.Close()
             End Try
 
+        ElseIf Tabla_Actual = "Muestras no Asignadas" Then
+            Dim llave As String
+            Dim Muestra_No As String = TextBox1.Text.ToString
+            Dim Valor_In As String = TextBox2.Text.ToString
+            Dim prueba As Integer = ComboBox4.SelectedValue
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT MAX(Muestra_ID)+1 FROM rev_muestras;"), conn)
+                llave = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+
+            Dim t_creacion As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("INSERT INTO rev_muestras (`Muestra_ID`, `Muestra_No`, `PrueNo`, `Valor_In`, `Tiempo_C`, `Estado`) VALUES ('" & llave & "', '" & Muestra_No & "', '" & prueba & "', '" & Valor_In & "', '" & t_creacion & "', 'Pendiente');"), conn)
+                cmd.ExecuteNonQuery()
+                MsgBox("Muestra Creada Satisfactoriamente", False, "Muestra Creada")
+            Catch ex As MySqlException
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+            End Try
+
         End If
         conn.Close()
         cargar()
@@ -629,5 +820,8 @@ Public Class Form1
         End Try
     End Sub
 
-
+    Private Sub Button15_Click(sender As Object, e As EventArgs) Handles Button15.Click
+        Dim usuario As Integer = ComboBox6.SelectedValue
+        Dim pswrd As String = InputBox("Digite su contraseña", "Validacion")
+    End Sub
 End Class
