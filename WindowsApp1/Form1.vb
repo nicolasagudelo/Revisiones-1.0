@@ -40,7 +40,7 @@ Public Class Form1
 
         Try
             conn.Open()
-            Dim cmd As New MySqlCommand(String.Format("Select count(PrueNo) FROM pruebas;;"), conn)
+            Dim cmd As New MySqlCommand(String.Format("Select count(PrueNo) FROM pruebas;"), conn)
             numero_de_pruebas = Convert.ToString(cmd.ExecuteScalar())
             conn.Close()
         Catch ex As Exception
@@ -148,6 +148,7 @@ Public Class Form1
 
         connect()
         cargar_analistas()
+        TabControl1.TabPages.Remove(TabPage1)
 
     End Sub
 
@@ -189,37 +190,37 @@ Public Class Form1
 
         ElseIf Nombre_Tabla = "Muestras Asignadas" Then
 
-            query = "SELECT rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa'
+            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa'
                     FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Revisado','Pendiente'); "
 
         ElseIf Nombre_Tabla = "Muestras no Asignadas" Then
 
-            query = "SELECT rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa
+            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa
                     FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Revisado','Pendiente') and rev_muestras.AnalistNo is NULL; "
 
         ElseIf Nombre_Tabla = "Bandejas Asignadas" Then
 
-            query = "SELECT rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa'
+            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa'
                     FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Revisado','Pendiente');"
 
         ElseIf Nombre_Tabla = "Bandejas no Asignadas" Then
 
-            query = "SELECT rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa
+            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa
                     FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Revisado','Pendiente') and rev_bandejas.AnalistNo is null;"
 
         ElseIf Nombre_Tabla = "Historial de Muestras" Then
 
-            query = "SELECT rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa'
+            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa'
                     FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Finalizado');"
 
         ElseIf Nombre_Tabla = "Historial de Bandejas" Then
 
-            query = "SELECT rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa'
+            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa'
                     FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Finalizado');"
 
@@ -280,33 +281,59 @@ Public Class Form1
 
         ElseIf Nombre_Tabla = "Muestras Asignadas" Then
 
-
+            DataGridView1.Columns(0).Visible = False
+            GroupBox1.Visible = True
+            TextBox1.Visible = False
+            TextBox2.Visible = False
+            ComboBox8.Visible = False
+            ComboBox9.Visible = False
+            Label1.Visible = False
+            Label2.Visible = False
+            Button8.Visible = False
+            ComboBox2.Visible = False
+            ComboBox3.Visible = False
+            TextBox3.Visible = False
+            TextBox6.Visible = False
+            Panel1.Visible = True
+            Label3.Visible = False
+            ComboBox4.Visible = False
+            GroupBox2.Visible = False
+            Button5.Text = "Aceptar"
+            Button5.Visible = True
+            Label6.Text = "Pasa"
+            Label6.Visible = True
+            ComboBox5.DataSource = Nothing
+            ComboBox5.Items.Clear()
+            ComboBox5.Items.Add("Si")
+            ComboBox5.Items.Add("No")
+            ComboBox5.Visible = True
 
         ElseIf Nombre_Tabla = "Muestras no Asignadas" Then
 
-            GroupBox2.Visible = True
-            Button2.Visible = True
-            Button3.Visible = False
-            Button4.Visible = False
-            Button2.Enabled = True
-            Button3.Enabled = False
-            Button4.Enabled = False
+                DataGridView1.Columns(0).Visible = False
+                GroupBox2.Visible = True
+                Button2.Visible = True
+                Button3.Visible = False
+                Button4.Visible = False
+                Button2.Enabled = True
+                Button3.Enabled = False
+                Button4.Enabled = False
 
-        ElseIf Nombre_Tabla = "Bandejas Asignadas" Then
-
-
-
-        ElseIf Nombre_Tabla = "Bandejas no Asignadas" Then
+            ElseIf Nombre_Tabla = "Bandejas Asignadas" Then
 
 
 
-        ElseIf Nombre_Tabla = "Historial de Muestras" Then
+            ElseIf Nombre_Tabla = "Bandejas no Asignadas" Then
 
 
 
-        ElseIf Nombre_Tabla = "Historial de Bandejas" Then
+            ElseIf Nombre_Tabla = "Historial de Muestras" Then
 
-        End If
+
+
+            ElseIf Nombre_Tabla = "Historial de Bandejas" Then
+
+            End If
     End Sub
 
 
@@ -348,6 +375,8 @@ Public Class Form1
         If Label22.Text = "Analistas" Then
             Label1.Text = "Nombre del analista"
             Label2.Text = "Contraseña del analista"
+            Label1.Visible = True
+            Label2.Visible = True
             TextBox2.PasswordChar = "*"
             TextBox1.Text = ""
             TextBox2.Text = ""
@@ -367,6 +396,8 @@ Public Class Form1
         ElseIf Label22.Text = "Pruebas" Then
             Label1.Text = "Nombre de la Prueba"
             Label2.Text = "Descripción de la Prueba"
+            Label1.Visible = True
+            Label2.Visible = True
             TextBox2.PasswordChar = ""
             TextBox1.Text = ""
             TextBox2.Text = ""
@@ -386,6 +417,8 @@ Public Class Form1
         ElseIf Label22.Text = "Relacion Analistas Pruebas" Then
             Label1.Text = "Nombre del Analista"
             Label2.Text = "Nombre de la Prueba"
+            Label1.Visible = True
+            Label2.Visible = True
             GroupBox1.Visible = True
             Panel1.Visible = False
             TextBox3.Visible = False
@@ -404,6 +437,8 @@ Public Class Form1
         ElseIf Label22.Text = "Muestras no Asignadas" Then
             Label1.Text = "Numero de Muestra"
             Label2.Text = "Valor Ingresado"
+            Label1.Visible = True
+            Label2.Visible = True
             TextBox2.PasswordChar = ""
             TextBox1.Text = ""
             TextBox2.Text = ""
@@ -435,6 +470,8 @@ Public Class Form1
         If Label22.Text = "Analistas" Then
             Label1.Text = "Nombre del analista"
             Label2.Text = "Contraseña del analista"
+            Label1.Visible = True
+            Label2.Visible = True
             TextBox2.PasswordChar = "*"
             TextBox1.Text = ""
             TextBox2.Text = ""
@@ -455,6 +492,8 @@ Public Class Form1
         ElseIf Label22.Text = "Pruebas" Then
             Label1.Text = "Nombre de la Prueba"
             Label2.Text = "Descripción de la Prueba"
+            Label1.Visible = True
+            Label2.Visible = True
             TextBox2.PasswordChar = ""
             TextBox1.Text = ""
             TextBox2.Text = ""
@@ -479,6 +518,8 @@ Public Class Form1
             Label6.Text = "Nuevo Valor del analista"
             Label2.Text = "Valor Actual de la Prueba"
             Label3.Text = "Nuevo Valor de la Prueba"
+            Label1.Visible = True
+            Label2.Visible = True
             GroupBox1.Visible = True
             TextBox3.Visible = False
             TextBox6.Visible = False
@@ -639,6 +680,58 @@ Public Class Form1
                 MsgBox(ex.Message, False, "Error")
                 conn.Close()
             End Try
+
+        ElseIf Tabla_Actual = "Muestras Asignadas" Then
+            Dim t_terminado As String
+            Dim t_asignacion_2 As String
+            Dim pasa As String = ComboBox5.Text
+            Dim valor_c2_existe As Boolean
+            If TextBox3.Text = Nothing Then
+                valor_c2_existe = False
+            Else
+                valor_c2_existe = True
+            End If
+            Dim muestra_id As String = TextBox6.Text
+            If pasa = Nothing Then
+                MsgBox("No ha seleccionado ningun valor en el campo 'Pasa'", False, "Error")
+            ElseIf pasa = "Si" Then
+                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_T ='" & t_terminado & "', Estado ='Finalizado', Pasa ='Si' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+            ElseIf pasa = "No" And Not (valor_c2_existe) Then
+                t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_A2 ='" & t_asignacion_2 & "', Estado = 'Pendiente', Pasa ='No' WHERE `Muestra_ID`='" & muestra_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+            ElseIf pasa = "No" And valor_c2_existe Then
+                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET `Tiempo_T`='" & t_terminado & "', Estado= 'Finalizado' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+            End If
+            cargar()
 
         ElseIf Tabla_Actual = "Muestras no Asignadas" Then
             Dim llave As String
@@ -815,13 +908,422 @@ Public Class Form1
                 ComboBox3.Text = DataGridView1(1, (fila_actual)).Value
                 ComboBox5.Text = ComboBox2.Text
                 ComboBox4.Text = ComboBox3.Text
+            ElseIf nom_tabla = "Muestras Asignadas" Then
+                If DataGridView1(5, Fila_actual).Value.ToString() = "Revisado" Then
+                    ComboBox5.Enabled = True
+                    Button5.Enabled = True
+                    TextBox3.Text = DataGridView1(6, fila_actual).Value.ToString()
+                    TextBox6.Text = DataGridView1(0, fila_actual).Value.ToString()
+                    TextBox3.Visible = False
+                    TextBox6.Visible = False
+                Else
+                    ComboBox5.Enabled = False
+                    Button5.Enabled = False
+                    TextBox6.Text = DataGridView1(0, fila_actual).Value.ToString()
+                    TextBox6.Visible = False
+                End If
             End If
         Catch ex As Exception
         End Try
     End Sub
 
+    Dim password As String
+
     Private Sub Button15_Click(sender As Object, e As EventArgs) Handles Button15.Click
+        DataGridView2.Visible = True
+        DataGridView3.Visible = True
         Dim usuario As Integer = ComboBox6.SelectedValue
-        Dim pswrd As String = InputBox("Digite su contraseña", "Validacion")
+        Dim usuario_string As String = ComboBox6.Text
+        TextBoxContraseña.Text = ""
+        TextBoxRespuestaForm2.Text = ""
+        If usuario = 0 Then
+            MsgBox("Seleccione un analista", False, "Error")
+            Exit Sub
+        End If
+        Form2.ShowDialog()
+        Dim respuestaform2 As String = TextBoxRespuestaForm2.Text
+        If respuestaform2 = "1" Then
+            Dim password As String = TextBoxContraseña.Text
+            Dim bd_password As String
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("Select contraseña FROM analistas
+                                                       Where AnalistNo = " & usuario & ";"), conn)
+                bd_password = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+
+            If password = bd_password Then
+                MsgBox("Bienvenido " & usuario_string & "", False, "Log-In")
+                cargar_muestras(usuario)
+                cargar_bandejas(usuario)
+                ComboBox6.Enabled = False
+                Button15.Enabled = False
+                Button11.Enabled = False
+            Else
+                MsgBox("Constraseña Incorrecta")
+                Exit Sub
+            End If
+        Else
+            Exit Sub
+        End If
+
+    End Sub
+
+    Private Sub cargar_muestras(usuario)
+
+        GroupBox4.Visible = True
+        Button7.Enabled = True
+        Button7.Visible = True
+
+
+        Dim reader As MySqlDataReader
+
+        Try
+            conn.Open()
+            Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa
+                                    from(
+                                    Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa 
+                                    from(
+                                    SELECT Muestra_ID, Muestra_No, pruebas.PrueNo as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.AnalistNo as Revisa
+                                    FROM pruebas inner join rev_muestras on pruebas.PrueNo = rev_muestras.PrueNo left join analistas on rev_muestras.AnalistNo = analistas.AnalistNo
+                                    where (rev_muestras.AnalistNo = " & usuario & " or rev_muestras.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa;"
+            Dim cmd As New MySqlCommand(query, conn)
+            Console.WriteLine("Cargando Muestras del analista")
+
+            reader = cmd.ExecuteReader()
+
+            Dim table As New DataTable
+            table.Load(reader)
+            DataGridView2.DataSource = table
+            DataGridView2.ReadOnly = True
+            DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            DataGridView2.Columns(0).Visible = False
+
+            reader.Close()
+            conn.Close()
+        Catch ex As MySqlException
+            MsgBox(ex.Message)
+            conn.Close()
+        End Try
+        If DataGridView2(0, 0).Value Is Nothing Then
+            MsgBox("Usted no cuenta con revisiones de muestras pendientes o posibles", False, "Info. Muestras")
+        End If
+    End Sub
+
+    Private Sub cargar_bandejas(usuario)
+        Dim reader As MySqlDataReader
+
+        Try
+            conn.Open()
+            Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa
+                                    from(
+                                    Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa 
+                                    from(
+                                    SELECT Bandeja_ID, Bandeja_No, pruebas.PrueNo as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa
+                                    FROM pruebas inner join rev_bandejas on pruebas.PrueNo = rev_bandejas.PrueNo left join analistas on rev_bandejas.AnalistNo = analistas.AnalistNo
+                                    where (rev_bandejas.AnalistNo = " & usuario & " or rev_bandejas.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa;"
+            Dim cmd As New MySqlCommand(query, conn)
+            Console.WriteLine("Cargando Bandejas del analista")
+
+            reader = cmd.ExecuteReader()
+
+            Dim table As New DataTable
+            table.Load(reader)
+            DataGridView3.DataSource = table
+            DataGridView3.ReadOnly = True
+            DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            DataGridView3.Columns(0).Visible = False
+
+            reader.Close()
+            conn.Close()
+        Catch ex As MySqlException
+            MsgBox(ex.Message)
+            conn.Close()
+        End Try
+        If DataGridView3(0, 0).Value Is Nothing Then
+            MsgBox("Usted no cuenta con revisiones de bandejas pendientes o posibles", False, "Info. Bandejas")
+        End If
+    End Sub
+
+    Dim flag As Byte
+
+    Private Sub DataGridView2_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DataGridView2.SelectionChanged
+        Label17.Text = ""
+        Label18.Text = ""
+        Label19.Text = ""
+        Try
+            Dim fila_actual As Integer = (DataGridView2.CurrentRow.Index)
+            If IsDBNull(DataGridView2(0, fila_actual).Value) Then
+                Button7.Enabled = False
+                ComboBox6.Text = ""
+                Exit Sub
+            End If
+            If fila_actual = (DataGridView2.RowCount - 1) Then
+                flag = 0
+                Label17.Visible = False
+                Label18.Visible = False
+                Label19.Visible = False
+                Button7.Visible = False
+            Else
+                flag = 1
+                Label17.Visible = True
+                Label18.Visible = True
+                Label19.Visible = True
+                Button7.Visible = True
+            End If
+            If IsDBNull(DataGridView2(8, fila_actual).Value) Then
+                TextBox5.Visible = False
+                TextBox9.Visible = False
+                Label12.Visible = False
+                Label13.Visible = False
+                Button7.Visible = True
+                Button7.Enabled = True
+            Else
+                Label12.Visible = True
+                TextBox5.Visible = True
+                TextBox5.Text = ""
+                'Label13.Visible = True
+                'TextBox9.Visible = True
+                TextBox9.Text = ""
+                Button7.Enabled = False
+                If DataGridView2(5, fila_actual).Value = "Finalizado" Then
+                    TextBox5.Text = DataGridView2(4, fila_actual).Value
+                    TextBox5.Visible = True
+                    TextBox5.Enabled = False
+                    If IsDBNull(DataGridView2(6, fila_actual).Value) Then
+                        TextBox9.Text = ""
+                    Else
+                        TextBox9.Text = DataGridView2(6, fila_actual).Value
+                    End If
+                    TextBox9.Visible = True
+                    TextBox9.Enabled = False
+                    Label12.Visible = True
+                    Label13.Visible = True
+                ElseIf DataGridView2(5, fila_actual).Value = "Revisado" Or DataGridView2(5, fila_actual).Value = "Pendiente" Then
+                    If IsDBNull(DataGridView2(4, fila_actual).Value) Then
+                        Button7.Visible = True
+                        Button7.Enabled = True
+                    Else
+                        TextBox5.Text = DataGridView2(4, fila_actual).Value
+                        TextBox5.Visible = True
+                        TextBox5.Enabled = False
+                        'TextBox9.Visible = True
+                        Label12.Visible = True
+                    End If
+                    If IsDBNull(DataGridView2(6, fila_actual).Value) Then
+                        If TextBox5.Text <> "" Then
+                            TextBox5.Text = DataGridView2(4, fila_actual).Value
+                            TextBox5.Visible = True
+                        End If
+                    Else
+                        TextBox9.Text = DataGridView2(6, fila_actual).Value
+                        TextBox9.Visible = True
+                        TextBox9.Enabled = False
+                        'TextBox9.Visible = True
+                        Label13.Visible = True
+                    End If
+                    If IsDBNull(DataGridView2(4, fila_actual).Value) And DataGridView2(8, fila_actual).Value <> "" Then
+                        TextBox5.Enabled = True
+                        TextBox5.Visible = True
+                        Label12.Visible = True
+                        Button7.Visible = True
+                        Button7.Enabled = True
+                    End If
+                    If IsDBNull(DataGridView2(7, fila_actual).Value) Then
+
+                    ElseIf IsDBNull(DataGridView2(6, fila_actual).Value) And DataGridView2(7, fila_actual).Value = "No" Then
+                        TextBox5.Visible = True
+                        'TextBox9.Visible = True
+                        Label12.Visible = True
+                        TextBox9.Visible = True
+                        TextBox9.Enabled = True
+                        'Label12.Visible = True
+                        Label13.Visible = True
+                        Button7.Enabled = True
+                        Button7.Visible = True
+                    End If
+
+                End If
+
+            End If
+        Catch ex As Exception
+        End Try
+
+    End Sub
+
+    Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
+        Dim t_asignacion As String
+        Dim t_revision As String
+        If IsDBNull(DataGridView2(0, 0).Value) Then
+            MsgBox("No existen Muestras para revisar actualmente")
+            Exit Sub
+        End If
+        Dim fila_actual As Integer = (DataGridView2.CurrentRow.Index)
+        Dim analista As Integer = ComboBox6.SelectedValue
+        If IsDBNull(DataGridView2(8, fila_actual).Value) Then
+            t_asignacion = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim reader As MySqlDataReader
+            Try
+                conn.Open()
+                Dim query As String = "UPDATE rev_muestras SET Tiempo_A = '" & t_asignacion & "', AnalistNo= '" & analista & "' WHERE Muestra_ID='" & DataGridView2(0, fila_actual).Value.ToString() & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                reader = cmd.ExecuteReader
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+            cargar_muestras(analista)
+        ElseIf IsDBNull(DataGridView2(4, fila_actual).Value) And TextBox5.Text <> "" Then
+            t_revision = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim reader As MySqlDataReader
+            Try
+                conn.Open()
+                Dim query = "UPDATE rev_muestras SET Valor_C1='" & TextBox5.Text & "', `Tiempo_V`='" & t_revision & "', Estado='Revisado' WHERE Muestra_ID='" & DataGridView2(0, fila_actual).Value.ToString() & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                reader = cmd.ExecuteReader
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+            cargar_muestras(analista)
+        ElseIf Not (IsDBNull(DataGridView2(4, fila_actual).Value) And TextBox9.Text <> "") Then
+            Dim t_revision_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim reader As MySqlDataReader
+            Try
+                conn.Open()
+                Dim query = "UPDATE rev_muestras SET Tiempo_V2 = '" & t_revision_2 & "', Estado ='Revisado', Valor_C2 ='" & TextBox9.Text & "' WHERE `Muestra_ID`='" & DataGridView2(0, fila_actual).Value.ToString() & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                reader = cmd.ExecuteReader
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+            cargar_muestras(analista)
+        End If
+
+
+    End Sub
+
+    Private Sub Button12_Click(sender As Object, e As EventArgs) Handles Button12.Click
+        ComboBox6.Enabled = True
+        Button15.Enabled = True
+        Button11.Enabled = True
+        TabControl1.TabPages.Remove(TabPage1)
+        ComboBox6.Text = ""
+        MsgBox("Desconectado", False, "Log-Out")
+        DataGridView2.Visible = False
+        DataGridView3.Visible = False
+        DataGridView2.DataSource = Nothing
+        DataGridView2.Rows.Clear()
+        DataGridView3.DataSource = Nothing
+        DataGridView3.Rows.Clear()
+        GroupBox4.Visible = False
+        GroupBox5.Visible = False
+    End Sub
+
+    Private Sub Button11_Click(sender As Object, e As EventArgs) Handles Button11.Click
+        DataGridView2.Visible = True
+        DataGridView3.Visible = True
+        Dim usuario As Integer = 1
+        TextBoxContraseña.Text = ""
+        TextBoxRespuestaForm2.Text = ""
+        If usuario = 0 Then
+            MsgBox("Seleccione un analista", False, "Error")
+            Exit Sub
+        End If
+        Form2.ShowDialog()
+        Dim respuestaform2 As String = TextBoxRespuestaForm2.Text
+        If respuestaform2 = "1" Then
+            Dim password As String = TextBoxContraseña.Text
+            Dim bd_password As String
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("Select contraseña FROM analistas
+                                                       Where AnalistNo = " & usuario & ";"), conn)
+                bd_password = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+
+            If password = bd_password Then
+                MsgBox("Conectado, ahora cuenta con permisos de administrador", False, "Log-In")
+                TabControl1.TabPages.Insert(3, TabPage1)
+                Dim reader As MySqlDataReader
+                Dim query As String
+                Try
+                    conn.Open()
+                    query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa'
+                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo;"
+                    Dim cmd As New MySqlCommand(query, conn)
+
+                    reader = cmd.ExecuteReader()
+
+                    Dim table As New DataTable
+                    table.Load(reader)
+                    DataGridView2.DataSource = table
+                    DataGridView2.ReadOnly = True
+                    DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                    reader.Close()
+                    conn.Close()
+                Catch ex As MySqlException
+                    MsgBox(ex.Message)
+                    conn.Close()
+                End Try
+
+                Try
+                    conn.Open()
+                    query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa'
+                    FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo;"
+                    Dim cmd As New MySqlCommand(query, conn)
+
+                    reader = cmd.ExecuteReader()
+
+                    Dim table As New DataTable
+                    table.Load(reader)
+                    DataGridView3.DataSource = table
+                    DataGridView3.ReadOnly = True
+                    DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                    reader.Close()
+                    conn.Close()
+                Catch ex As MySqlException
+                    MsgBox(ex.Message)
+                    conn.Close()
+                End Try
+
+                ComboBox6.Enabled = False
+                Button15.Enabled = False
+                Button11.Enabled = False
+            Else
+                MsgBox("Constraseña Incorrecta", False, "Error")
+                Exit Sub
+            End If
+        Else
+            Exit Sub
+        End If
     End Sub
 End Class

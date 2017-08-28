@@ -12,3 +12,4 @@ c:\users\ideteco\source\repos\WindowsApp1\WindowsApp1\obj\Debug\DB_Revision.vbpr
 c:\users\ideteco\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.exe
 c:\users\ideteco\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.xml
 c:\users\ideteco\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.pdb
+C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.Form2.resources
