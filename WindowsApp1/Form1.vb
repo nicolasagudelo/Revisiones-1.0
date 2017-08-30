@@ -1,7 +1,870 @@
 ﻿Imports MySql.Data.MySqlClient
 Public Class Form1
+    Implements IMessageFilter
     Dim conn As New MySqlConnection
-    Public Sub connect()
+
+    Public Sub New()
+        InitializeComponent()
+        Application.AddMessageFilter(Me)
+        Timer1.Enabled = True
+    End Sub
+
+    Public Function PreFilterMessage(ByRef m As Message) As Boolean Implements IMessageFilter.PreFilterMessage
+        '' Retrigger timer on keyboard and mouse messages
+        If (m.Msg >= &H100 And m.Msg <= &H109) Or (m.Msg >= &H200 And m.Msg <= &H20E) Then
+            Timer1.Stop()
+            Timer1.Start()
+        End If
+    End Function
+
+    Private Sub Timer1_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer1.Tick
+        Timer1.Stop()
+        MsgBox("5 minutos de inactividad cerrando sesion activa", False, "Alerta por inactividad")
+        flag = 0
+        flag1 = 0
+        Button12.PerformClick()
+        Conteo_muestras()
+    End Sub
+
+    Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
+        Dim fecha_actual As String = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+        Dim fecha_actual_datetime As DateTime = DateTime.ParseExact(fecha_actual, "yyyy-MM-dd HH:mm:ss", Nothing)
+        Select Case Pest_actual
+            Case 0
+                Label17.Visible = False
+                Label18.Visible = False
+                Label19.Visible = False
+                Label4.Visible = False
+                TextBox4.Visible = False
+                Exit Sub
+            Case 1 'Pestaña Administrador
+                Dim tabla_actual = Label22.Text
+                Select Case tabla_actual
+                    Case "Muestras Asignadas"
+                        Label4.Text = "Buscar No de Muestra"
+                        Label4.Visible = True
+                        TextBox4.Visible = True
+                        Try
+
+                            Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
+
+                            Dim at As Integer = DataGridView1.RowCount
+                            If fila_actual = at Then
+                                Exit Sub
+                            End If
+                            If IsDBNull(DataGridView1(14, fila_actual).Value) Then
+                                Dim t_total As String
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                t_total = (fecha_actual_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Red
+                                Label19.Visible = True
+                                Label19.Text = "Tiempo Total: " & t_total
+                            Else
+                                Dim t_total As String
+                                Dim fecha_terminado As String
+                                Dim fecha_terminado_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                fecha_terminado = DataGridView1(14, fila_actual).Value.ToString
+                                fecha_terminado_datetime = Convert.ToDateTime(fecha_terminado)
+                                t_total = (fecha_terminado_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Green
+                                Label19.Text = "Tiempo Total: " & t_total
+                                Label19.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView1(10, fila_actual).Value) Then
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Red
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            Else
+                                Dim fecha_asignacion As String
+                                Dim fecha_asignacion_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_asignacion = DataGridView1(10, fila_actual).Value.ToString()
+                                fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Green
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView1(11, fila_actual).Value) Then
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Dim t_verificacion As String = (fecha_actual_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & t_verificacion
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And IsDBNull(DataGridView1(12, fila_actual).Value) And IsDBNull(DataGridView1(13, fila_actual).Value) And IsDBNull(DataGridView1(7, fila_actual).Value) Then
+                                Dim fecha_verificacion_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And IsDBNull(DataGridView1(12, fila_actual).Value) And IsDBNull(DataGridView1(13, fila_actual).Value) And (DataGridView1(7, fila_actual).Value.ToString() = "Si") Then
+                                Dim fecha_verificacion_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And IsDBNull(DataGridView1(13, fila_actual).Value) And (DataGridView1(7, fila_actual).Value.ToString() = "No") Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_actual_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And (Not IsDBNull(DataGridView1(13, fila_actual).Value)) And IsDBNull(DataGridView1(7, fila_actual).Value) Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView1(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And (Not IsDBNull(DataGridView1(13, fila_actual).Value)) And (Not IsDBNull(DataGridView1(7, fila_actual).Value)) Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView1(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            End If
+                        Catch ex As Exception
+                        End Try
+                        Exit Sub
+                    Case "Muestras no Asignadas"
+                        Label4.Text = "Buscar No de Muestra"
+                        Label4.Visible = True
+                        TextBox4.Visible = True
+                        Try
+
+                            Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
+
+                            Dim at As Integer = DataGridView1.RowCount
+                            If fila_actual = at Then
+                                Exit Sub
+                            End If
+                            If IsDBNull(DataGridView1(9, fila_actual).Value) Then
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(8, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Red
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            Else
+                                Dim fecha_asignacion As String
+                                Dim fecha_asignacion_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_asignacion = DataGridView1(9, fila_actual).Value.ToString()
+                                fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                                fecha_creacion = DataGridView1(8, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Green
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            End If
+                        Catch ex As Exception
+                        End Try
+                        Exit Sub
+                    Case "Bandejas Asignadas"
+                        Label4.Text = "Buscar No de Bandeja"
+                        Label4.Visible = True
+                        TextBox4.Visible = True
+                        Try
+
+                            Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
+
+                            Dim at As Integer = DataGridView1.RowCount
+                            If fila_actual = at Then
+                                Exit Sub
+                            End If
+                            If IsDBNull(DataGridView1(14, fila_actual).Value) Then
+                                Dim t_total As String
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                t_total = (fecha_actual_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Red
+                                Label19.Visible = True
+                                Label19.Text = "Tiempo Total: " & t_total
+                            Else
+                                Dim t_total As String
+                                Dim fecha_terminado As String
+                                Dim fecha_terminado_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                fecha_terminado = DataGridView1(14, fila_actual).Value.ToString
+                                fecha_terminado_datetime = Convert.ToDateTime(fecha_terminado)
+                                t_total = (fecha_terminado_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Green
+                                Label19.Text = "Tiempo Total: " & t_total
+                                Label19.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView1(10, fila_actual).Value) Then
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Red
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            Else
+                                Dim fecha_asignacion As String
+                                Dim fecha_asignacion_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_asignacion = DataGridView1(10, fila_actual).Value.ToString()
+                                fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Green
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView1(11, fila_actual).Value) Then
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Dim t_verificacion As String = (fecha_actual_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & t_verificacion
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And IsDBNull(DataGridView1(12, fila_actual).Value) And IsDBNull(DataGridView1(13, fila_actual).Value) And IsDBNull(DataGridView1(7, fila_actual).Value) Then
+                                Dim fecha_verificacion_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And IsDBNull(DataGridView1(12, fila_actual).Value) And IsDBNull(DataGridView1(13, fila_actual).Value) And (DataGridView1(7, fila_actual).Value.ToString() = "Si") Then
+                                Dim fecha_verificacion_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And IsDBNull(DataGridView1(13, fila_actual).Value) And (DataGridView1(7, fila_actual).Value.ToString() = "No") Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_actual_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And (Not IsDBNull(DataGridView1(13, fila_actual).Value)) And IsDBNull(DataGridView1(7, fila_actual).Value) Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView1(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And (Not IsDBNull(DataGridView1(13, fila_actual).Value)) And (Not IsDBNull(DataGridView1(7, fila_actual).Value)) Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView1(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            End If
+                        Catch ex As Exception
+                        End Try
+                        Exit Sub
+                    Case "Bandejas no Asignadas"
+                        Label4.Text = "Buscar No de Bandeja"
+                        Label4.Visible = True
+                        TextBox4.Visible = True
+                        Try
+
+                            Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
+
+                            Dim at As Integer = DataGridView1.RowCount
+                            If fila_actual = at Then
+                                Exit Sub
+                            End If
+                            If IsDBNull(DataGridView1(9, fila_actual).Value) Then
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(8, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Red
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            Else
+                                Dim fecha_asignacion As String
+                                Dim fecha_asignacion_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_asignacion = DataGridView1(9, fila_actual).Value.ToString()
+                                fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                                fecha_creacion = DataGridView1(8, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Green
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            End If
+                        Catch ex As Exception
+                        End Try
+                        Exit Sub
+                    Case "Historial de Muestras"
+                        Label4.Text = "Buscar No de Muestra"
+                        Label4.Visible = True
+                        TextBox4.Visible = True
+                        Try
+                            Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
+
+                            Dim at As Integer = DataGridView1.RowCount
+                            If fila_actual = at Then
+                                Exit Sub
+                            End If
+                            If IsDBNull(DataGridView1(14, fila_actual).Value) Then
+                                Dim t_total As String
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                t_total = (fecha_actual_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Red
+                                Label19.Visible = True
+                                Label19.Text = "Tiempo Total: " & t_total
+                            Else
+                                Dim t_total As String
+                                Dim fecha_terminado As String
+                                Dim fecha_terminado_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                fecha_terminado = DataGridView1(14, fila_actual).Value.ToString
+                                fecha_terminado_datetime = Convert.ToDateTime(fecha_terminado)
+                                t_total = (fecha_terminado_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Green
+                                Label19.Text = "Tiempo Total: " & t_total
+                                Label19.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView1(10, fila_actual).Value) Then
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Red
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            Else
+                                Dim fecha_asignacion As String
+                                Dim fecha_asignacion_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_asignacion = DataGridView1(10, fila_actual).Value.ToString()
+                                fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Green
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView1(11, fila_actual).Value) Then
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Dim t_verificacion As String = (fecha_actual_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & t_verificacion
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And IsDBNull(DataGridView1(12, fila_actual).Value) And IsDBNull(DataGridView1(13, fila_actual).Value) And IsDBNull(DataGridView1(7, fila_actual).Value) Then
+                                Dim fecha_verificacion_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And IsDBNull(DataGridView1(12, fila_actual).Value) And IsDBNull(DataGridView1(13, fila_actual).Value) And (DataGridView1(7, fila_actual).Value.ToString() = "Si") Then
+                                Dim fecha_verificacion_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And IsDBNull(DataGridView1(13, fila_actual).Value) And (DataGridView1(7, fila_actual).Value.ToString() = "No") Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_actual_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And (Not IsDBNull(DataGridView1(13, fila_actual).Value)) And IsDBNull(DataGridView1(7, fila_actual).Value) Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView1(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And (Not IsDBNull(DataGridView1(13, fila_actual).Value)) And (Not IsDBNull(DataGridView1(7, fila_actual).Value)) Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView1(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            End If
+                        Catch ex As Exception
+                        End Try
+                        Exit Sub
+                    Case "Historial de Bandejas"
+                        Label4.Text = "Buscar No de Bandeja"
+                        Label4.Visible = True
+                        TextBox4.Visible = True
+                        Try
+                            Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
+
+                            Dim at As Integer = DataGridView1.RowCount
+                            If fila_actual = at Then
+                                Exit Sub
+                            End If
+                            If IsDBNull(DataGridView1(14, fila_actual).Value) Then
+                                Dim t_total As String
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                t_total = (fecha_actual_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Red
+                                Label19.Visible = True
+                                Label19.Text = "Tiempo Total: " & t_total
+                            Else
+                                Dim t_total As String
+                                Dim fecha_terminado As String
+                                Dim fecha_terminado_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                fecha_terminado = DataGridView1(14, fila_actual).Value.ToString
+                                fecha_terminado_datetime = Convert.ToDateTime(fecha_terminado)
+                                t_total = (fecha_terminado_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Green
+                                Label19.Text = "Tiempo Total: " & t_total
+                                Label19.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView1(10, fila_actual).Value) Then
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Red
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            Else
+                                Dim fecha_asignacion As String
+                                Dim fecha_asignacion_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_asignacion = DataGridView1(10, fila_actual).Value.ToString()
+                                fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                                fecha_creacion = DataGridView1(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Green
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                                Label17.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView1(11, fila_actual).Value) Then
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Dim t_verificacion As String = (fecha_actual_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & t_verificacion
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And IsDBNull(DataGridView1(12, fila_actual).Value) And IsDBNull(DataGridView1(13, fila_actual).Value) And IsDBNull(DataGridView1(7, fila_actual).Value) Then
+                                Dim fecha_verificacion_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And IsDBNull(DataGridView1(12, fila_actual).Value) And IsDBNull(DataGridView1(13, fila_actual).Value) And (DataGridView1(7, fila_actual).Value.ToString() = "Si") Then
+                                Dim fecha_verificacion_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And IsDBNull(DataGridView1(13, fila_actual).Value) And (DataGridView1(7, fila_actual).Value.ToString() = "No") Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_actual_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And (Not IsDBNull(DataGridView1(13, fila_actual).Value)) And IsDBNull(DataGridView1(7, fila_actual).Value) Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView1(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView1(11, fila_actual).Value)) And (Not IsDBNull(DataGridView1(12, fila_actual).Value)) And (Not IsDBNull(DataGridView1(13, fila_actual).Value)) And (Not IsDBNull(DataGridView1(7, fila_actual).Value)) Then
+                                Dim fecha_verificacion1_string As String = DataGridView1(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView1(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView1(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView1(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            End If
+                        Catch ex As Exception
+                        End Try
+                        Exit Sub
+                    Case Else
+                        Label17.Visible = False
+                        Label18.Visible = False
+                        Label19.Visible = False
+                        TextBox4.Visible = False
+                        Label4.Visible = False
+                        Exit Sub
+                End Select
+                Exit Sub
+            Case 2 'pestaña muestras
+                Try
+                    If flag = 1 Then
+                        Label17.Visible = True
+                        Label18.Visible = True
+                        Label19.Visible = True
+                        If conectado = 1 Then
+                            Label4.Text = "Buscar No de Muestra"
+                            Label4.Visible = True
+                            TextBox4.Visible = True
+                        Else
+                            Label4.Visible = False
+                            TextBox4.Visible = False
+                        End If
+
+                        Dim fila_actual As Integer = (DataGridView2.CurrentRow.Index)
+
+                            Dim at As Integer = DataGridView2.RowCount
+                            If fila_actual = at Then
+                                Exit Sub
+                            End If
+                            If IsDBNull(DataGridView2(14, fila_actual).Value) Then
+                                Dim t_total As String
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                t_total = (fecha_actual_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Red
+                                Label19.Visible = True
+                                Label19.Text = "Tiempo Total: " & t_total
+                            Else
+                                Dim t_total As String
+                                Dim fecha_terminado As String
+                                Dim fecha_terminado_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                fecha_terminado = DataGridView2(14, fila_actual).Value.ToString
+                                fecha_terminado_datetime = Convert.ToDateTime(fecha_terminado)
+                                t_total = (fecha_terminado_datetime - fecha_creacion_datetime).ToString
+                                Label19.ForeColor = Color.Green
+                                Label19.Text = "Tiempo Total: " & t_total
+                                Label19.Visible = True
+                            End If
+
+                            If IsDBNull(DataGridView2(10, fila_actual).Value) Then
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Red
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                            Else
+                                Dim fecha_asignacion As String
+                                Dim fecha_asignacion_datetime As DateTime
+                                Dim fecha_creacion As String
+                                Dim fecha_creacion_datetime As DateTime
+                                fecha_asignacion = DataGridView2(10, fila_actual).Value.ToString()
+                                fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                                fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
+                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                                Label17.ForeColor = Color.Green
+                                Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                            End If
+
+                            If IsDBNull(DataGridView2(11, fila_actual).Value) Then
+                                Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Dim t_verificacion As String = (fecha_actual_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & t_verificacion
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And IsDBNull(DataGridView2(12, fila_actual).Value) And IsDBNull(DataGridView2(13, fila_actual).Value) And IsDBNull(DataGridView2(7, fila_actual).Value) Then
+                                Dim fecha_verificacion_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And IsDBNull(DataGridView2(12, fila_actual).Value) And IsDBNull(DataGridView2(13, fila_actual).Value) And (DataGridView2(7, fila_actual).Value.ToString() = "Si") Then
+                                Dim fecha_verificacion_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                                Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And IsDBNull(DataGridView2(13, fila_actual).Value) And (DataGridView2(7, fila_actual).Value.ToString() = "No") Then
+                                Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Red
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_actual_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And (Not IsDBNull(DataGridView2(13, fila_actual).Value)) And IsDBNull(DataGridView2(7, fila_actual).Value) Then
+                                Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView2(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.DarkGoldenrod
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And (Not IsDBNull(DataGridView2(13, fila_actual).Value)) And (Not IsDBNull(DataGridView2(7, fila_actual).Value)) Then
+                                Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                                Dim fecha_verificacion2 As String = DataGridView2(13, fila_actual).Value.ToString()
+                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                                Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
+                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                                Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
+                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                                Label18.ForeColor = Color.Green
+                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                                Label18.Visible = True
+                            End If
+                        End If
+                Catch ex As Exception
+                End Try
+            Case 3 'Pestaña Bandejas
+                Try
+                    If flag1 = 1 Then
+                        Label17.Visible = True
+                        Label18.Visible = True
+                        Label19.Visible = True
+                        If conectado = 1 Then
+                            Label4.Text = "Buscar No de Bandeja"
+                            Label4.Visible = True
+                            TextBox4.Visible = True
+                        Else
+                            Label4.Visible = False
+                            TextBox4.Visible = False
+                        End If
+
+                        Dim fila_actual As Integer = (DataGridView3.CurrentRow.Index)
+
+                        Dim at As Integer = DataGridView3.RowCount
+                        If fila_actual = at Then
+                            Exit Sub
+                        End If
+                        If IsDBNull(DataGridView3(14, fila_actual).Value) Then
+                            Dim t_total As String
+                            Dim fecha_creacion As String
+                            Dim fecha_creacion_datetime As DateTime
+                            fecha_creacion = DataGridView3(9, fila_actual).Value.ToString
+                            fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                            t_total = (fecha_actual_datetime - fecha_creacion_datetime).ToString
+                            Label19.ForeColor = Color.Red
+                            Label19.Visible = True
+                            Label19.Text = "Tiempo Total: " & t_total
+                        Else
+                            Dim t_total As String
+                            Dim fecha_terminado As String
+                            Dim fecha_terminado_datetime As DateTime
+                            Dim fecha_creacion As String
+                            Dim fecha_creacion_datetime As DateTime
+                            fecha_creacion = DataGridView3(9, fila_actual).Value.ToString
+                            fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                            fecha_terminado = DataGridView3(14, fila_actual).Value.ToString
+                            fecha_terminado_datetime = Convert.ToDateTime(fecha_terminado)
+                            t_total = (fecha_terminado_datetime - fecha_creacion_datetime).ToString
+                            Label19.ForeColor = Color.Green
+                            Label19.Text = "Tiempo Total: " & t_total
+                            Label19.Visible = True
+                        End If
+
+                        If IsDBNull(DataGridView3(10, fila_actual).Value) Then
+                            Dim fecha_creacion As String
+                            Dim fecha_creacion_datetime As DateTime
+                            fecha_creacion = DataGridView3(9, fila_actual).Value.ToString
+                            fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                            Label17.ForeColor = Color.Red
+                            Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                        Else
+                            Dim fecha_asignacion As String
+                            Dim fecha_asignacion_datetime As DateTime
+                            Dim fecha_creacion As String
+                            Dim fecha_creacion_datetime As DateTime
+                            fecha_asignacion = DataGridView3(10, fila_actual).Value.ToString()
+                            fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                            fecha_creacion = DataGridView3(9, fila_actual).Value.ToString
+                            fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                            Label17.ForeColor = Color.Green
+                            Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                        End If
+
+                        If IsDBNull(DataGridView3(11, fila_actual).Value) Then
+                            Dim fecha_asignacion As String = DataGridView3(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                            Dim t_verificacion As String = (fecha_actual_datetime - fecha_asignacion_datetime).ToString()
+                            Label18.ForeColor = Color.Red
+                            Label18.Text = "Tiempo Verificacion: " & t_verificacion
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView3(11, fila_actual).Value)) And IsDBNull(DataGridView3(12, fila_actual).Value) And IsDBNull(DataGridView3(13, fila_actual).Value) And IsDBNull(DataGridView3(7, fila_actual).Value) Then
+                            Dim fecha_verificacion_string As String = DataGridView3(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                            Dim fecha_asignacion As String = DataGridView3(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                            Label18.ForeColor = Color.DarkGoldenrod
+                            Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView3(11, fila_actual).Value)) And IsDBNull(DataGridView3(12, fila_actual).Value) And IsDBNull(DataGridView3(13, fila_actual).Value) And (DataGridView3(7, fila_actual).Value.ToString() = "Si") Then
+                            Dim fecha_verificacion_string As String = DataGridView3(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                            Dim fecha_asignacion As String = DataGridView3(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                            Label18.ForeColor = Color.Green
+                            Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView3(11, fila_actual).Value)) And (Not IsDBNull(DataGridView3(12, fila_actual).Value)) And IsDBNull(DataGridView3(13, fila_actual).Value) And (DataGridView3(7, fila_actual).Value.ToString() = "No") Then
+                            Dim fecha_verificacion1_string As String = DataGridView3(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                            Dim fecha_asignacion1 As String = DataGridView3(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                            Dim fecha_asignacion2 As String = DataGridView3(12, fila_actual).Value.ToString()
+                            Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                            Label18.ForeColor = Color.Red
+                            Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_actual_datetime - fecha_asignacion2_datetime)).ToString()
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView3(11, fila_actual).Value)) And (Not IsDBNull(DataGridView3(12, fila_actual).Value)) And (Not IsDBNull(DataGridView3(13, fila_actual).Value)) And IsDBNull(DataGridView3(7, fila_actual).Value) Then
+                            Dim fecha_verificacion1_string As String = DataGridView3(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                            Dim fecha_verificacion2 As String = DataGridView3(13, fila_actual).Value.ToString()
+                            Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                            Dim fecha_asignacion1 As String = DataGridView3(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                            Dim fecha_asignacion2 As String = DataGridView3(12, fila_actual).Value.ToString()
+                            Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                            Label18.ForeColor = Color.DarkGoldenrod
+                            Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView3(11, fila_actual).Value)) And (Not IsDBNull(DataGridView3(12, fila_actual).Value)) And (Not IsDBNull(DataGridView3(13, fila_actual).Value)) And (Not IsDBNull(DataGridView3(7, fila_actual).Value)) Then
+                            Dim fecha_verificacion1_string As String = DataGridView3(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                            Dim fecha_verificacion2 As String = DataGridView3(13, fila_actual).Value.ToString()
+                            Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                            Dim fecha_asignacion1 As String = DataGridView3(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                            Dim fecha_asignacion2 As String = DataGridView3(12, fila_actual).Value.ToString()
+                            Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                            Label18.ForeColor = Color.Green
+                            Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                            Label18.Visible = True
+                        End If
+                    End If
+                Catch ex As Exception
+                End Try
+        End Select
+
+
+    End Sub
+
+    Public Sub Connect()
         Dim DatabaseName As String = "bd_revision"
         Dim server As String = "localhost"
         Dim userName As String = "root"
@@ -32,10 +895,10 @@ Public Class Form1
 
         ComboBox1.SelectedItem = "Analistas"
 
-        conteo_muestras()
+        Conteo_muestras()
     End Sub
 
-    Private Sub conteo_muestras()
+    Private Sub Conteo_muestras()
         Dim numero_de_pruebas As Integer
 
         Try
@@ -64,8 +927,9 @@ Public Class Form1
             r = r + 10
             X1 = 30 + m
             Y1 = (20 + (j1 - 1) * 30) + r
-            LabelArray(i) = New Label
-            LabelArray(i).Location = New Point(X1, Y1)
+            LabelArray(i) = New Label With {
+                .Location = New Point(X1, Y1)
+            }
             Try
                 conn.Open()
                 Dim cmd As New MySqlCommand(String.Format("select Nombre from pruebas where prueno =" & i & ";"), conn)
@@ -117,12 +981,13 @@ Public Class Form1
             r = r + 20
             X1 = 30 + m
             Y1 = (20 + (j1 - 1) * 30) + r
-            TextBoxArray(i) = New TextBox
-            TextBoxArray(i).Location = New Point(X1, Y1)
-            TextBoxArray(i).Width = 110
-            TextBoxArray(i).Height = 15
-            TextBoxArray(i).Name = "Textboxs" & i
-            TextBoxArray(i).Text = ""
+            TextBoxArray(i) = New TextBox With {
+                .Location = New Point(X1, Y1),
+                .Width = 110,
+                .Height = 15,
+                .Name = "Textboxs" & i,
+                .Text = ""
+            }
             TextBoxArray(i).Text = cantidad_pendiente.ToString
             TextBoxArray(i).Visible = True
             TextBoxArray(i).ReadOnly = True
@@ -141,18 +1006,18 @@ Public Class Form1
 
     Private Sub ComboBox1_SelectedValueChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedValueChanged
         GroupBox1.Visible = False
-        cargar()
+        Cargar()
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
-        connect()
-        cargar_analistas()
+        Timer2.Start()
+        Connect()
+        Cargar_analistas()
         TabControl1.TabPages.Remove(TabPage1)
 
     End Sub
 
-    Private Sub cargar_analistas()
+    Private Sub Cargar_analistas()
         ComboBox6.Items.Clear()
         ComboBox6.Enabled = True
         Dim query As String = " Select AnalistNo, Nombre from analistas
@@ -168,7 +1033,7 @@ Public Class Form1
         ComboBox6.SelectedValue = 0
     End Sub
 
-    Public Sub cargar()
+    Public Sub Cargar()
         Dim Nombre_Tabla As String = ComboBox1.Text.ToString()
         Dim query As String
 
@@ -190,37 +1055,37 @@ Public Class Form1
 
         ElseIf Nombre_Tabla = "Muestras Asignadas" Then
 
-            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa'
+            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Revisado','Pendiente'); "
 
         ElseIf Nombre_Tabla = "Muestras no Asignadas" Then
 
-            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa
+            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Revisado','Pendiente') and rev_muestras.AnalistNo is NULL; "
 
         ElseIf Nombre_Tabla = "Bandejas Asignadas" Then
 
-            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa'
+            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Revisado','Pendiente');"
 
         ElseIf Nombre_Tabla = "Bandejas no Asignadas" Then
 
-            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa
+            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Revisado','Pendiente') and rev_bandejas.AnalistNo is null;"
 
         ElseIf Nombre_Tabla = "Historial de Muestras" Then
 
-            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa'
+            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Finalizado');"
 
         ElseIf Nombre_Tabla = "Historial de Bandejas" Then
 
-            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa'
+            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Finalizado');"
 
@@ -279,9 +1144,18 @@ Public Class Form1
             LlenarComboBox2()
             LlenarComboBox3()
 
-        ElseIf Nombre_Tabla = "Muestras Asignadas" Then
+        ElseIf Nombre_Tabla = "Muestras Asignadas" Or Nombre_Tabla = "Bandejas Asignadas" Then
 
             DataGridView1.Columns(0).Visible = False
+            DataGridView1.Columns(9).Visible = False
+            DataGridView1.Columns(10).Visible = False
+            DataGridView1.Columns(11).Visible = False
+            DataGridView1.Columns(12).Visible = False
+            DataGridView1.Columns(13).Visible = False
+            DataGridView1.Columns(14).Visible = False
+            Label17.Visible = False
+            Label18.Visible = False
+            Label19.Visible = False
             GroupBox1.Visible = True
             TextBox1.Visible = False
             TextBox2.Visible = False
@@ -308,32 +1182,39 @@ Public Class Form1
             ComboBox5.Items.Add("No")
             ComboBox5.Visible = True
 
-        ElseIf Nombre_Tabla = "Muestras no Asignadas" Then
+        ElseIf Nombre_Tabla = "Muestras no Asignadas" Or Nombre_Tabla = "Bandejas no Asignadas" Then
 
-                DataGridView1.Columns(0).Visible = False
-                GroupBox2.Visible = True
-                Button2.Visible = True
-                Button3.Visible = False
-                Button4.Visible = False
-                Button2.Enabled = True
-                Button3.Enabled = False
-                Button4.Enabled = False
+            DataGridView1.Columns(0).Visible = False
+            DataGridView1.Columns(8).Visible = False
+            DataGridView1.Columns(9).Visible = False
+            DataGridView1.Columns(10).Visible = False
+            DataGridView1.Columns(11).Visible = False
+            DataGridView1.Columns(12).Visible = False
+            DataGridView1.Columns(13).Visible = False
+            GroupBox2.Visible = True
+            Button2.Visible = True
+            Button3.Visible = False
+            Button4.Visible = False
+            Button2.Enabled = True
+            Button3.Enabled = False
+            Button4.Enabled = False
+            Label17.Visible = False
+            Label18.Visible = False
+            Label19.Visible = False
 
-            ElseIf Nombre_Tabla = "Bandejas Asignadas" Then
+        ElseIf Nombre_Tabla = "Historial de Muestras" Or Nombre_Tabla = "Historial de Bandejas" Then
 
 
+            GroupBox2.Visible = False
+            DataGridView1.Columns(0).Visible = False
+            DataGridView1.Columns(9).Visible = False
+            DataGridView1.Columns(10).Visible = False
+            DataGridView1.Columns(11).Visible = False
+            DataGridView1.Columns(12).Visible = False
+            DataGridView1.Columns(13).Visible = False
+            DataGridView1.Columns(14).Visible = False
 
-            ElseIf Nombre_Tabla = "Bandejas no Asignadas" Then
-
-
-
-            ElseIf Nombre_Tabla = "Historial de Muestras" Then
-
-
-
-            ElseIf Nombre_Tabla = "Historial de Bandejas" Then
-
-            End If
+        End If
     End Sub
 
 
@@ -366,6 +1247,7 @@ Public Class Form1
             Label18.Visible = False
             Label19.Visible = False
         ElseIf TabControl1.SelectedTab Is TabPage4 Then
+            Pest_actual = 0
             Label24.Visible = True
         End If
     End Sub
@@ -393,6 +1275,7 @@ Public Class Form1
             Button8.Visible = False
             Button5.Text = "Agregar"
             Button5.Visible = True
+            Button5.Enabled = True
         ElseIf Label22.Text = "Pruebas" Then
             Label1.Text = "Nombre de la Prueba"
             Label2.Text = "Descripción de la Prueba"
@@ -414,6 +1297,7 @@ Public Class Form1
             Button8.Visible = False
             Button5.Text = "Agregar"
             Button5.Visible = True
+            Button5.Enabled = True
         ElseIf Label22.Text = "Relacion Analistas Pruebas" Then
             Label1.Text = "Nombre del Analista"
             Label2.Text = "Nombre de la Prueba"
@@ -430,6 +1314,7 @@ Public Class Form1
             Button8.Visible = False
             Button5.Text = "Agregar"
             Button5.Visible = True
+            Button5.Enabled = True
             LlenarComboBox8()
             ComboBox3.Visible = False
             ComboBox9.Visible = True
@@ -446,6 +1331,37 @@ Public Class Form1
             GroupBox1.Visible = True
             Button8.Visible = False
             Button5.Visible = True
+            Button5.Enabled = True
+            TextBox3.Visible = False
+            TextBox6.Visible = False
+            TextBox1.Visible = True
+            TextBox2.Visible = True
+            ComboBox2.Visible = False
+            ComboBox3.Visible = False
+            ComboBox8.Visible = False
+            ComboBox9.Visible = False
+            LlenarComboBox4()
+            ComboBox4.Visible = True
+            Panel1.Visible = True
+            Label6.Visible = False
+            ComboBox5.Visible = False
+            Label3.Text = "Prueba"
+            Label3.Visible = True
+
+        ElseIf Label22.Text = "Bandejas no Asignadas" Then
+
+            Label1.Text = "Numero de Bandeja"
+            Label2.Text = "Comentario del Admin"
+            Label1.Visible = True
+            Label2.Visible = True
+            TextBox2.PasswordChar = ""
+            TextBox1.Text = ""
+            TextBox2.Text = ""
+            Button5.Text = "Crear Bandeja"
+            GroupBox1.Visible = True
+            Button8.Visible = False
+            Button5.Visible = True
+            Button5.Enabled = True
             TextBox3.Visible = False
             TextBox6.Visible = False
             TextBox1.Visible = True
@@ -528,6 +1444,7 @@ Public Class Form1
             ComboBox8.Visible = False
             ComboBox9.Visible = False
             ComboBox5.Visible = True
+            ComboBox5.Enabled = True
             LlenarComboBox5()
             ComboBox4.Visible = True
             LlenarComboBox4()
@@ -706,6 +1623,7 @@ Public Class Form1
                     conn.Close()
                 End Try
                 conn.Close()
+                Cargar_MuestrasBandejas_Admin()
             ElseIf pasa = "No" And Not (valor_c2_existe) Then
                 t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                 Try
@@ -718,11 +1636,12 @@ Public Class Form1
                     conn.Close()
                 End Try
                 conn.Close()
+                Cargar_MuestrasBandejas_Admin()
             ElseIf pasa = "No" And valor_c2_existe Then
                 t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                 Try
                     conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET `Tiempo_T`='" & t_terminado & "', Estado= 'Finalizado' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET `Tiempo_T`='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
                     cmd.ExecuteNonQuery()
                     MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
                 Catch ex As MySqlException
@@ -730,8 +1649,65 @@ Public Class Form1
                     conn.Close()
                 End Try
                 conn.Close()
+                Cargar_MuestrasBandejas_Admin()
             End If
-            cargar()
+            Cargar()
+
+        ElseIf Tabla_Actual = "Bandejas Asignadas" Then
+            Dim t_terminado As String
+            Dim t_asignacion_2 As String
+            Dim pasa As String = ComboBox5.Text
+            Dim valor_c2_existe As Boolean
+            If TextBox3.Text = Nothing Then
+                valor_c2_existe = False
+            Else
+                valor_c2_existe = True
+            End If
+            Dim bandeja_id As String = TextBox6.Text
+            If pasa = Nothing Then
+                MsgBox("No ha seleccionado ningun valor en el campo 'Pasa'", False, "Error")
+            ElseIf pasa = "Si" Then
+                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T = '" & t_terminado & "', Estado = 'Finalizado', Pasa = 'Si' WHERE Bandeja_ID='" & bandeja_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+                Cargar_MuestrasBandejas_Admin()
+            ElseIf pasa = "No" And Not (valor_c2_existe) Then
+                t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    'UPDATE rev_muestras SET Tiempo_A2 ='" & t_asignacion_2 & "', Estado = 'Pendiente', Pasa ='No' WHERE `Muestra_ID`='" & muestra_id & "';
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_A2='" & t_asignacion_2 & "', Estado ='Pendiente', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+                Cargar_MuestrasBandejas_Admin()
+            ElseIf pasa = "No" And valor_c2_existe Then
+                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T ='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+                Cargar_MuestrasBandejas_Admin()
+            End If
+            Cargar()
 
         ElseIf Tabla_Actual = "Muestras no Asignadas" Then
             Dim llave As String
@@ -760,11 +1736,46 @@ Public Class Form1
             Catch ex As MySqlException
                 MsgBox(ex.Message, False, "Error")
                 conn.Close()
+                Exit Sub
+            End Try
+            conn.Close()
+            Cargar_MuestrasBandejas_Admin()
+
+        ElseIf Tabla_Actual = "Bandejas no Asignadas" Then
+
+            Dim llave As String
+            Dim Bandeja_No As String = TextBox1.Text.ToString
+            Dim Comentario_admin As String = TextBox2.Text.ToString
+            Dim prueba As Integer = ComboBox4.SelectedValue
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT MAX(Bandeja_ID)+1 FROM rev_bandejas;"), conn)
+                llave = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
             End Try
 
+            Dim t_creacion As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("INSERT INTO rev_bandejas (`Bandeja_ID`, `Bandeja_No`, `PrueNo`, `Comentario`, `Tiempo_C`, `Estado`) VALUES ('" & llave & "', '" & Bandeja_No & "', '" & prueba & "', '" & Comentario_admin & "', '" & t_creacion & "', 'Pendiente');"), conn)
+                cmd.ExecuteNonQuery()
+                MsgBox("Bandeja Creada Satisfactoriamente", False, "Bandeja Creada")
+            Catch ex As MySqlException
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+            conn.Close()
+            Cargar_MuestrasBandejas_Admin()
         End If
         conn.Close()
-        cargar()
+        Cargar()
     End Sub
 
     Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button8.Click
@@ -825,7 +1836,7 @@ Public Class Form1
                 conn.Close()
             End Try
         End If
-        cargar()
+        Cargar()
     End Sub
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
@@ -876,19 +1887,19 @@ Public Class Form1
                 Dim prueba As Integer = ComboBox3.SelectedValue
 
                 Try
-                        conn.Open()
-                        Dim query As String = "DELETE FROM rel_prue_analistas WHERE AnalistNo = '" & nombre & "' and PrueNo ='" & prueba & "';"
-                        Dim cmd As New MySqlCommand(query, conn)
-                        reader = cmd.ExecuteReader
-                        MsgBox("Registro eliminado satisfactoriamente", False, "Registro Eliminado")
-                        conn.Close()
-                    Catch ex As MySqlException
-                        MsgBox(ex.Message)
-                        conn.Close()
-                    End Try
+                    conn.Open()
+                    Dim query As String = "DELETE FROM rel_prue_analistas WHERE AnalistNo = '" & nombre & "' and PrueNo ='" & prueba & "';"
+                    Dim cmd As New MySqlCommand(query, conn)
+                    reader = cmd.ExecuteReader
+                    MsgBox("Registro eliminado satisfactoriamente", False, "Registro Eliminado")
+                    conn.Close()
+                Catch ex As MySqlException
+                    MsgBox(ex.Message)
+                    conn.Close()
+                End Try
 
             End If
-            cargar()
+            Cargar()
         End If
     End Sub
 
@@ -908,8 +1919,8 @@ Public Class Form1
                 ComboBox3.Text = DataGridView1(1, (fila_actual)).Value
                 ComboBox5.Text = ComboBox2.Text
                 ComboBox4.Text = ComboBox3.Text
-            ElseIf nom_tabla = "Muestras Asignadas" Then
-                If DataGridView1(5, Fila_actual).Value.ToString() = "Revisado" Then
+            ElseIf nom_tabla = "Muestras Asignadas" Or nom_tabla = "Bandejas Asignadas" Then
+                If DataGridView1(5, fila_actual).Value.ToString() = "Revisado" Then
                     ComboBox5.Enabled = True
                     Button5.Enabled = True
                     TextBox3.Text = DataGridView1(6, fila_actual).Value.ToString()
@@ -959,11 +1970,14 @@ Public Class Form1
 
             If password = bd_password Then
                 MsgBox("Bienvenido " & usuario_string & "", False, "Log-In")
-                cargar_muestras(usuario)
-                cargar_bandejas(usuario)
+                Cargar_muestras(usuario)
+                Cargar_bandejas(usuario)
+                conectado = 1
                 ComboBox6.Enabled = False
                 Button15.Enabled = False
                 Button11.Enabled = False
+                TextBox4.Visible = True
+                Label4.Visible = True
             Else
                 MsgBox("Constraseña Incorrecta")
                 Exit Sub
@@ -974,7 +1988,7 @@ Public Class Form1
 
     End Sub
 
-    Private Sub cargar_muestras(usuario)
+    Private Sub Cargar_muestras(usuario)
 
         GroupBox4.Visible = True
         Button7.Enabled = True
@@ -985,11 +1999,11 @@ Public Class Form1
 
         Try
             conn.Open()
-            Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa
+            Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     from(
-                                    Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa 
+                                    Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     from(
-                                    SELECT Muestra_ID, Muestra_No, pruebas.PrueNo as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.AnalistNo as Revisa
+                                    SELECT Muestra_ID, Muestra_No, pruebas.PrueNo as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.AnalistNo as Revisa, rev_muestras.Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     FROM pruebas inner join rev_muestras on pruebas.PrueNo = rev_muestras.PrueNo left join analistas on rev_muestras.AnalistNo = analistas.AnalistNo
                                     where (rev_muestras.AnalistNo = " & usuario & " or rev_muestras.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
                                     )a 
@@ -1009,6 +2023,12 @@ Public Class Form1
             DataGridView2.ReadOnly = True
             DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
             DataGridView2.Columns(0).Visible = False
+            DataGridView2.Columns(9).Visible = False
+            DataGridView2.Columns(10).Visible = False
+            DataGridView2.Columns(11).Visible = False
+            DataGridView2.Columns(12).Visible = False
+            DataGridView2.Columns(13).Visible = False
+            DataGridView2.Columns(14).Visible = False
 
             reader.Close()
             conn.Close()
@@ -1021,16 +2041,21 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub cargar_bandejas(usuario)
+    Private Sub Cargar_bandejas(usuario)
+
+        GroupBox5.Visible = True
+        Button13.Enabled = True
+        Button13.Visible = True
+
         Dim reader As MySqlDataReader
 
         Try
             conn.Open()
-            Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa
+            Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     from(
-                                    Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa 
+                                    Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     from(
-                                    SELECT Bandeja_ID, Bandeja_No, pruebas.PrueNo as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa
+                                    SELECT Bandeja_ID, Bandeja_No, pruebas.PrueNo as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     FROM pruebas inner join rev_bandejas on pruebas.PrueNo = rev_bandejas.PrueNo left join analistas on rev_bandejas.AnalistNo = analistas.AnalistNo
                                     where (rev_bandejas.AnalistNo = " & usuario & " or rev_bandejas.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
                                     )a 
@@ -1050,6 +2075,12 @@ Public Class Form1
             DataGridView3.ReadOnly = True
             DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
             DataGridView3.Columns(0).Visible = False
+            DataGridView3.Columns(9).Visible = False
+            DataGridView3.Columns(10).Visible = False
+            DataGridView3.Columns(11).Visible = False
+            DataGridView3.Columns(12).Visible = False
+            DataGridView3.Columns(13).Visible = False
+            DataGridView3.Columns(14).Visible = False
 
             reader.Close()
             conn.Close()
@@ -1190,7 +2221,7 @@ Public Class Form1
                 MsgBox(ex.Message)
                 conn.Close()
             End Try
-            cargar_muestras(analista)
+            Cargar_muestras(analista)
         ElseIf IsDBNull(DataGridView2(4, fila_actual).Value) And TextBox5.Text <> "" Then
             t_revision = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
             Dim reader As MySqlDataReader
@@ -1204,13 +2235,13 @@ Public Class Form1
                 MsgBox(ex.Message)
                 conn.Close()
             End Try
-            cargar_muestras(analista)
+            Cargar_muestras(analista)
         ElseIf Not (IsDBNull(DataGridView2(4, fila_actual).Value) And TextBox9.Text <> "") Then
             Dim t_revision_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
             Dim reader As MySqlDataReader
             Try
                 conn.Open()
-                Dim query = "UPDATE rev_muestras SET Tiempo_V2 = '" & t_revision_2 & "', Estado ='Revisado', Valor_C2 ='" & TextBox9.Text & "' WHERE `Muestra_ID`='" & DataGridView2(0, fila_actual).Value.ToString() & "';"
+                Dim query = "UPDATE rev_muestras SET Tiempo_V2 = '" & t_revision_2 & "', Estado ='Revisado', Valor_C2 ='" & TextBox9.Text & "', Pasa = NULL WHERE Muestra_ID='" & DataGridView2(0, fila_actual).Value.ToString() & "';"
                 Dim cmd As New MySqlCommand(query, conn)
                 reader = cmd.ExecuteReader
                 conn.Close()
@@ -1218,19 +2249,75 @@ Public Class Form1
                 MsgBox(ex.Message)
                 conn.Close()
             End Try
-            cargar_muestras(analista)
+            Cargar_muestras(analista)
         End If
+    End Sub
 
-
+    Private Sub Button13_Click(sender As Object, e As EventArgs) Handles Button13.Click
+        Dim t_asignacion As String
+        Dim t_revision As String
+        If IsDBNull(DataGridView3(0, 0).Value) Then
+            MsgBox("No existen Bandejas para revisar actualmente")
+            Exit Sub
+        End If
+        Dim fila_actual As Integer = (DataGridView3.CurrentRow.Index)
+        Dim analista As Integer = ComboBox6.SelectedValue
+        If IsDBNull(DataGridView3(8, fila_actual).Value) Then
+            t_asignacion = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim reader As MySqlDataReader
+            Try
+                conn.Open()
+                Dim query As String = "UPDATE rev_bandejas SET Tiempo_A='" & t_asignacion & "', AnalistNo ='" & analista & "' WHERE Bandeja_ID = '" & DataGridView3(0, fila_actual).Value.ToString() & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                reader = cmd.ExecuteReader
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+            Cargar_bandejas(analista)
+        ElseIf IsDBNull(DataGridView3(4, fila_actual).Value) And TextBox10.Text <> "" Then
+            t_revision = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim reader As MySqlDataReader
+            Try
+                conn.Open()
+                Dim query = "UPDATE rev_bandejas SET Comentario_Revision = '" & TextBox10.Text & "', Tiempo_V='" & t_revision & "', Estado ='Revisado' WHERE Bandeja_ID ='" & DataGridView3(0, fila_actual).Value.ToString() & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                reader = cmd.ExecuteReader
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+            Cargar_bandejas(analista)
+        ElseIf Not (IsDBNull(DataGridView2(4, fila_actual).Value) And TextBox11.Text <> "") Then
+            Dim t_revision_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim reader As MySqlDataReader
+            Try
+                conn.Open()
+                Dim query = "UPDATE rev_bandejas SET Tiempo_V2 = '" & t_revision_2 & "', Estado = 'Revisado', Comentario_Revision_2 = '" & TextBox11.Text & "', Pasa = NULL WHERE Bandeja_ID = '" & DataGridView3(0, fila_actual).Value.ToString() & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                reader = cmd.ExecuteReader
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+            Cargar_bandejas(analista)
+        End If
     End Sub
 
     Private Sub Button12_Click(sender As Object, e As EventArgs) Handles Button12.Click
         ComboBox6.Enabled = True
+        TextBox4.Text = Nothing
+        TextBox4.Visible = False
+        Label4.Visible = False
         Button15.Enabled = True
         Button11.Enabled = True
         TabControl1.TabPages.Remove(TabPage1)
-        ComboBox6.Text = ""
+        ComboBox6.Text = " "
         MsgBox("Desconectado", False, "Log-Out")
+        conectado = 0
         DataGridView2.Visible = False
         DataGridView3.Visible = False
         DataGridView2.DataSource = Nothing
@@ -1240,7 +2327,7 @@ Public Class Form1
         GroupBox4.Visible = False
         GroupBox5.Visible = False
     End Sub
-
+    Dim conectado As Integer = 0
     Private Sub Button11_Click(sender As Object, e As EventArgs) Handles Button11.Click
         DataGridView2.Visible = True
         DataGridView3.Visible = True
@@ -1270,54 +2357,15 @@ Public Class Form1
 
             If password = bd_password Then
                 MsgBox("Conectado, ahora cuenta con permisos de administrador", False, "Log-In")
+                conectado = 1
                 TabControl1.TabPages.Insert(3, TabPage1)
-                Dim reader As MySqlDataReader
-                Dim query As String
-                Try
-                    conn.Open()
-                    query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa'
-                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo;"
-                    Dim cmd As New MySqlCommand(query, conn)
-
-                    reader = cmd.ExecuteReader()
-
-                    Dim table As New DataTable
-                    table.Load(reader)
-                    DataGridView2.DataSource = table
-                    DataGridView2.ReadOnly = True
-                    DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-
-                    reader.Close()
-                    conn.Close()
-                Catch ex As MySqlException
-                    MsgBox(ex.Message)
-                    conn.Close()
-                End Try
-
-                Try
-                    conn.Open()
-                    query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa'
-                    FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo;"
-                    Dim cmd As New MySqlCommand(query, conn)
-
-                    reader = cmd.ExecuteReader()
-
-                    Dim table As New DataTable
-                    table.Load(reader)
-                    DataGridView3.DataSource = table
-                    DataGridView3.ReadOnly = True
-                    DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-
-                    reader.Close()
-                    conn.Close()
-                Catch ex As MySqlException
-                    MsgBox(ex.Message)
-                    conn.Close()
-                End Try
-
+                Cargar_MuestrasBandejas_Admin()
+                ComboBox6.Text = ""
                 ComboBox6.Enabled = False
                 Button15.Enabled = False
                 Button11.Enabled = False
+                Label4.Visible = True
+                TextBox4.Visible = True
             Else
                 MsgBox("Constraseña Incorrecta", False, "Error")
                 Exit Sub
@@ -1325,5 +2373,375 @@ Public Class Form1
         Else
             Exit Sub
         End If
+    End Sub
+
+    Private Sub Cargar_MuestrasBandejas_Admin()
+        Dim reader As MySqlDataReader
+        Dim query As String
+        Try
+            conn.Open()
+            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_muestras left join analistas on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo;"
+            'Where rev_muestras.Estado in ('Revisado','Pendiente');"
+            Dim cmd As New MySqlCommand(query, conn)
+
+            reader = cmd.ExecuteReader()
+
+            Dim table As New DataTable
+            table.Load(reader)
+            DataGridView2.DataSource = table
+            DataGridView2.ReadOnly = True
+            DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            DataGridView2.Columns(0).Visible = False
+            DataGridView2.Columns(9).Visible = False
+            DataGridView2.Columns(10).Visible = False
+            DataGridView2.Columns(11).Visible = False
+            DataGridView2.Columns(12).Visible = False
+            DataGridView2.Columns(13).Visible = False
+            DataGridView2.Columns(14).Visible = False
+
+            reader.Close()
+            conn.Close()
+        Catch ex As MySqlException
+            MsgBox(ex.Message)
+            conn.Close()
+        End Try
+
+        Try
+            conn.Open()
+            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa' , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_bandejas left join analistas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo;"
+            'Where rev_bandejas.Estado in ('Revisado','Pendiente');"
+            Dim cmd As New MySqlCommand(query, conn)
+
+            reader = cmd.ExecuteReader()
+
+            Dim table As New DataTable
+            table.Load(reader)
+            DataGridView3.DataSource = table
+            DataGridView3.ReadOnly = True
+            DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            DataGridView3.Columns(0).Visible = False
+            DataGridView3.Columns(9).Visible = False
+            DataGridView3.Columns(10).Visible = False
+            DataGridView3.Columns(11).Visible = False
+            DataGridView3.Columns(12).Visible = False
+            DataGridView3.Columns(13).Visible = False
+            DataGridView3.Columns(14).Visible = False
+
+            reader.Close()
+            conn.Close()
+        Catch ex As MySqlException
+            MsgBox(ex.Message)
+            conn.Close()
+        End Try
+    End Sub
+
+    Dim flag1 As Byte
+
+    Private Sub DataGridView3_SelectionChanged(sender As Object, e As EventArgs) Handles DataGridView3.SelectionChanged
+        TextBox10.Visible = False
+        TextBox11.Visible = False
+        Label14.Visible = False
+        Label15.Visible = False
+        Label17.Text = ""
+        Label18.Text = ""
+        Label19.Text = ""
+
+        Try
+            Dim fila_actual As Integer = (DataGridView3.CurrentRow.Index)
+            If IsDBNull(DataGridView3(0, fila_actual).Value) Then
+                Button13.Enabled = False
+                Exit Sub
+            End If
+            If fila_actual = (DataGridView3.RowCount - 1) Then
+                flag1 = 0
+                Button13.Visible = False
+                Label17.Visible = False
+                Label18.Visible = False
+                Label19.Visible = False
+            Else
+                flag1 = 1
+                Button13.Visible = True
+                Label17.Visible = True
+                Label18.Visible = True
+                Label19.Visible = True
+            End If
+            If IsDBNull(DataGridView3(8, fila_actual).Value) Then
+                TextBox10.Visible = False
+                TextBox11.Visible = False
+                Label14.Visible = False
+                Label15.Visible = False
+                Button13.Visible = True
+                Button13.Enabled = True
+            Else
+                Label14.Visible = True
+                TextBox10.Visible = True
+                TextBox10.Text = ""
+                'Label15.Visible = True
+                'TextBox11.Visible = True
+                TextBox11.Text = ""
+                Button13.Enabled = False
+                If DataGridView3(5, fila_actual).Value = "Finalizado" Then
+                    TextBox10.Text = DataGridView3(4, fila_actual).Value
+                    TextBox10.Visible = True
+                    TextBox10.Enabled = False
+                    If IsDBNull(DataGridView3(6, fila_actual).Value) Then
+                        TextBox11.Text = ""
+                    Else
+                        TextBox11.Text = DataGridView3(6, fila_actual).Value
+                    End If
+                    TextBox11.Visible = True
+                    TextBox11.Enabled = False
+                    'TextBox9.Visible = True
+                    Label14.Visible = True
+                    Label15.Visible = True
+                ElseIf DataGridView3(5, fila_actual).Value = "Revisado" Or DataGridView3(5, fila_actual).Value = "Pendiente" Then
+                    If IsDBNull(DataGridView3(4, fila_actual).Value) Then
+                        Button13.Visible = True
+                        Button13.Enabled = True
+                    Else
+                        TextBox10.Text = DataGridView3(4, fila_actual).Value
+                        TextBox10.Visible = True
+                        TextBox10.Enabled = False
+                        Label14.Visible = True
+                    End If
+                    If IsDBNull(DataGridView3(6, fila_actual).Value) Then
+                        If TextBox10.Text <> "" Then
+                            TextBox10.Text = DataGridView3(4, fila_actual).Value
+                            TextBox10.Visible = True
+                        End If
+                    Else
+                        TextBox11.Text = DataGridView3(6, fila_actual).Value
+                        TextBox11.Visible = True
+                        TextBox11.Enabled = False
+                        Label13.Visible = True
+                    End If
+                    If IsDBNull(DataGridView3(4, fila_actual).Value) And DataGridView3(8, fila_actual).Value <> "" Then
+                        TextBox10.Enabled = True
+                        TextBox10.Visible = True
+                        Label14.Visible = True
+                        Button13.Visible = True
+                        Button13.Enabled = True
+                    End If
+                    If IsDBNull(DataGridView3(7, fila_actual).Value) Then
+                        'Button13.Enabled = False
+                    ElseIf IsDBNull(DataGridView3(6, fila_actual).Value) And DataGridView3(7, fila_actual).Value = "No" Then
+                        TextBox10.Visible = True
+                        Label14.Visible = True
+                        TextBox11.Visible = True
+                        TextBox11.Enabled = True
+                        Label15.Visible = True
+                        Button13.Enabled = True
+                        Button13.Visible = True
+                    End If
+
+                End If
+
+            End If
+        Catch ex As Exception
+            'MessageBox.Show(ex.Message)
+        End Try
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs)
+
+
+    End Sub
+
+    Private Sub textbox4_TextChanged(sender As Object, e As EventArgs) Handles TextBox4.TextChanged
+
+        Dim reader As MySqlDataReader
+        Dim usuario As String
+
+        If ComboBox6.Text = "" Then
+            usuario = 1
+        Else
+            usuario = ComboBox6.SelectedValue
+        End If
+
+        Select Case Pest_actual
+            Case 1
+                Dim tabla_actual = Label22.Text
+                Select Case tabla_actual
+                    Case "Muestras Asignadas"
+
+                        Exit Sub
+                    Case "Muestras no Asignadas"
+
+                        Exit Sub
+                    Case "Bandejas Asignadas"
+
+                        Exit Sub
+                    Case "Bandejas no Asignadas"
+
+                        Exit Sub
+                    Case "Historial de Muestras"
+
+                        Exit Sub
+                    Case "Historial de Bandejas"
+
+                        Exit Sub
+                    Case Else
+                        Label17.Visible = False
+                        Label18.Visible = False
+                        Label19.Visible = False
+                        Exit Sub
+                End Select
+            Case 2
+                If usuario > 1 Then
+                    Try
+                        conn.Open()
+                        Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    SELECT Muestra_ID, Muestra_No, pruebas.PrueNo as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.AnalistNo as Revisa, rev_muestras.Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    FROM pruebas inner join rev_muestras on pruebas.PrueNo = rev_muestras.PrueNo left join analistas on rev_muestras.AnalistNo = analistas.AnalistNo
+                                    where (rev_muestras.AnalistNo = " & usuario & " or rev_muestras.AnalistNo is Null) and Estado in ('Revisado','Pendiente') and Muestra_No like '" & TextBox4.Text & "%'
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa;"
+                        Dim cmd As New MySqlCommand(query, conn)
+                        Console.WriteLine("Cargando Muestras del analista")
+
+                        reader = cmd.ExecuteReader()
+
+                        Dim table As New DataTable
+                        table.Load(reader)
+                        DataGridView2.DataSource = table
+                        DataGridView2.ReadOnly = True
+                        DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                        DataGridView2.Columns(0).Visible = False
+                        DataGridView2.Columns(9).Visible = False
+                        DataGridView2.Columns(10).Visible = False
+                        DataGridView2.Columns(11).Visible = False
+                        DataGridView2.Columns(12).Visible = False
+                        DataGridView2.Columns(13).Visible = False
+                        DataGridView2.Columns(14).Visible = False
+
+                        reader.Close()
+                        conn.Close()
+                    Catch ex As MySqlException
+                        MsgBox(ex.Message)
+                        conn.Close()
+                    End Try
+                Else
+                    Try
+                        conn.Open()
+                        Dim query As String
+                        query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_muestras left join analistas on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where muestra_No like ('" & TextBox4.Text & "%');"
+                        'Where rev_muestras.Estado in ('Revisado','Pendiente');"
+                        Dim cmd As New MySqlCommand(query, conn)
+
+                        reader = cmd.ExecuteReader()
+
+                        Dim table As New DataTable
+                        table.Load(reader)
+                        DataGridView2.DataSource = table
+                        DataGridView2.ReadOnly = True
+                        DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                        DataGridView2.Columns(0).Visible = False
+                        DataGridView2.Columns(9).Visible = False
+                        DataGridView2.Columns(10).Visible = False
+                        DataGridView2.Columns(11).Visible = False
+                        DataGridView2.Columns(12).Visible = False
+                        DataGridView2.Columns(13).Visible = False
+                        DataGridView2.Columns(14).Visible = False
+
+                        reader.Close()
+                        conn.Close()
+                    Catch ex As MySqlException
+                        MsgBox(ex.Message)
+                        conn.Close()
+                    End Try
+                End If
+                Exit Sub
+            Case 3
+                If usuario > 1 Then
+                    Try
+                        conn.Open()
+                        Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    SELECT Bandeja_ID, Bandeja_No, pruebas.PrueNo as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    FROM pruebas inner join rev_bandejas on pruebas.PrueNo = rev_bandejas.PrueNo left join analistas on rev_bandejas.AnalistNo = analistas.AnalistNo
+                                    where (rev_bandejas.AnalistNo = " & usuario & " or rev_bandejas.AnalistNo is Null) and Estado in ('Revisado','Pendiente')and Bandeja_No like '" & TextBox4.Text & "%'
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa;"
+                        Dim cmd As New MySqlCommand(query, conn)
+                        Console.WriteLine("Cargando bandejas del analista")
+
+                        reader = cmd.ExecuteReader()
+
+                        Dim table As New DataTable
+                        table.Load(reader)
+                        DataGridView3.DataSource = table
+                        DataGridView3.ReadOnly = True
+                        DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                        DataGridView3.Columns(0).Visible = False
+                        DataGridView3.Columns(9).Visible = False
+                        DataGridView3.Columns(10).Visible = False
+                        DataGridView3.Columns(11).Visible = False
+                        DataGridView3.Columns(12).Visible = False
+                        DataGridView3.Columns(13).Visible = False
+                        DataGridView3.Columns(14).Visible = False
+
+                        reader.Close()
+                        conn.Close()
+                    Catch ex As MySqlException
+                        MsgBox(ex.Message)
+                        conn.Close()
+                    End Try
+                Else
+                    Try
+                        conn.Open()
+                        Dim query As String
+                        query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa' , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                        FROM rev_bandejas left join analistas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                        where rev_bandejas.Bandeja_No like ('" & TextBox4.Text & "%');"
+                        'Where rev_muestras.Estado in ('Revisado','Pendiente');"
+                        Dim cmd As New MySqlCommand(query, conn)
+
+                        reader = cmd.ExecuteReader()
+
+                        Dim table As New DataTable
+                        table.Load(reader)
+                        DataGridView3.DataSource = table
+                        DataGridView3.ReadOnly = True
+                        DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                        DataGridView3.Columns(0).Visible = False
+                        DataGridView3.Columns(9).Visible = False
+                        DataGridView3.Columns(10).Visible = False
+                        DataGridView3.Columns(11).Visible = False
+                        DataGridView3.Columns(12).Visible = False
+                        DataGridView3.Columns(13).Visible = False
+                        DataGridView3.Columns(14).Visible = False
+
+                        reader.Close()
+                        conn.Close()
+                    Catch ex As MySqlException
+                        MsgBox(ex.Message)
+                        conn.Close()
+                    End Try
+                End If
+                Exit Sub
+        End Select
+
+
+
+
+
+
     End Sub
 End Class

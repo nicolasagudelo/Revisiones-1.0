@@ -37,7 +37,6 @@ Partial Class Form1
         Me.Button4 = New System.Windows.Forms.Button()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.Button6 = New System.Windows.Forms.Button()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
@@ -73,6 +72,7 @@ Partial Class Form1
         Me.ComboBox3 = New System.Windows.Forms.ComboBox()
         Me.ComboBox2 = New System.Windows.Forms.ComboBox()
         Me.TextBox6 = New System.Windows.Forms.TextBox()
+        Me.TextBox3 = New System.Windows.Forms.TextBox()
         Me.Button8 = New System.Windows.Forms.Button()
         Me.Button5 = New System.Windows.Forms.Button()
         Me.TextBox2 = New System.Windows.Forms.TextBox()
@@ -96,7 +96,7 @@ Partial Class Form1
         Me.Label24 = New System.Windows.Forms.Label()
         Me.TextBoxContraseña = New System.Windows.Forms.TextBox()
         Me.TextBoxRespuestaForm2 = New System.Windows.Forms.TextBox()
-        Me.TextBox3 = New System.Windows.Forms.TextBox()
+        Me.Timer2 = New System.Windows.Forms.Timer(Me.components)
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
         Me.TabControl1.SuspendLayout()
@@ -138,6 +138,7 @@ Partial Class Form1
         Me.DataGridView1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
+        Me.DataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
         Me.DataGridView1.BackgroundColor = System.Drawing.Color.Azure
         Me.DataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DataGridView1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
@@ -153,7 +154,7 @@ Partial Class Form1
         Me.DataGridView1.Cursor = System.Windows.Forms.Cursors.Hand
         Me.DataGridView1.GridColor = System.Drawing.Color.DarkRed
         Me.DataGridView1.ImeMode = System.Windows.Forms.ImeMode.[On]
-        Me.DataGridView1.Location = New System.Drawing.Point(6, 21)
+        Me.DataGridView1.Location = New System.Drawing.Point(16, 30)
         Me.DataGridView1.Name = "DataGridView1"
         Me.DataGridView1.Size = New System.Drawing.Size(1023, 299)
         Me.DataGridView1.TabIndex = 3
@@ -165,6 +166,7 @@ Partial Class Form1
         Me.TextBox4.Name = "TextBox4"
         Me.TextBox4.Size = New System.Drawing.Size(132, 20)
         Me.TextBox4.TabIndex = 25
+        Me.TextBox4.Visible = False
         '
         'Button4
         '
@@ -195,20 +197,9 @@ Partial Class Form1
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label4.Location = New System.Drawing.Point(1118, 454)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(96, 15)
+        Me.Label4.Size = New System.Drawing.Size(0, 15)
         Me.Label4.TabIndex = 13
-        Me.Label4.Text = "Dato a buscar"
-        '
-        'Button6
-        '
-        Me.Button6.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.Button6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Button6.Location = New System.Drawing.Point(1121, 504)
-        Me.Button6.Name = "Button6"
-        Me.Button6.Size = New System.Drawing.Size(132, 30)
-        Me.Button6.TabIndex = 26
-        Me.Button6.Text = "Buscar Registro"
-        Me.Button6.UseVisualStyleBackColor = True
+        Me.Label4.Visible = False
         '
         'Label11
         '
@@ -239,6 +230,7 @@ Partial Class Form1
         'Timer1
         '
         Me.Timer1.Enabled = True
+        Me.Timer1.Interval = 300000
         '
         'TabControl1
         '
@@ -251,7 +243,7 @@ Partial Class Form1
         Me.TabControl1.Controls.Add(Me.TabPage3)
         Me.TabControl1.Controls.Add(Me.TabPage1)
         Me.TabControl1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        Me.TabControl1.Location = New System.Drawing.Point(10, 24)
+        Me.TabControl1.Location = New System.Drawing.Point(16, 30)
         Me.TabControl1.Margin = New System.Windows.Forms.Padding(1)
         Me.TabControl1.Multiline = True
         Me.TabControl1.Name = "TabControl1"
@@ -367,6 +359,8 @@ Partial Class Form1
         Me.DataGridView2.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DataGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
+        Me.DataGridView2.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
         Me.DataGridView2.BackgroundColor = System.Drawing.Color.Azure
         Me.DataGridView2.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DataGridView2.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
@@ -384,7 +378,7 @@ Partial Class Form1
         Me.DataGridView2.ImeMode = System.Windows.Forms.ImeMode.[On]
         Me.DataGridView2.Location = New System.Drawing.Point(16, 30)
         Me.DataGridView2.Name = "DataGridView2"
-        Me.DataGridView2.Size = New System.Drawing.Size(1011, 309)
+        Me.DataGridView2.Size = New System.Drawing.Size(1011, 278)
         Me.DataGridView2.TabIndex = 4
         '
         'TabPage3
@@ -407,9 +401,9 @@ Partial Class Form1
         Me.GroupBox5.Controls.Add(Me.TextBox10)
         Me.GroupBox5.Controls.Add(Me.Button13)
         Me.GroupBox5.Controls.Add(Me.TextBox11)
-        Me.GroupBox5.Location = New System.Drawing.Point(440, 351)
+        Me.GroupBox5.Location = New System.Drawing.Point(383, 345)
         Me.GroupBox5.Name = "GroupBox5"
-        Me.GroupBox5.Size = New System.Drawing.Size(422, 86)
+        Me.GroupBox5.Size = New System.Drawing.Size(461, 96)
         Me.GroupBox5.TabIndex = 36
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Visible = False
@@ -418,7 +412,7 @@ Partial Class Form1
         '
         Me.Label14.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(4, 18)
+        Me.Label14.Location = New System.Drawing.Point(17, 27)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(107, 13)
         Me.Label14.TabIndex = 34
@@ -429,7 +423,7 @@ Partial Class Form1
         '
         Me.Label15.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(155, 18)
+        Me.Label15.Location = New System.Drawing.Point(162, 27)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(72, 13)
         Me.Label15.TabIndex = 33
@@ -439,7 +433,7 @@ Partial Class Form1
         'TextBox10
         '
         Me.TextBox10.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.TextBox10.Location = New System.Drawing.Point(7, 43)
+        Me.TextBox10.Location = New System.Drawing.Point(20, 52)
         Me.TextBox10.Name = "TextBox10"
         Me.TextBox10.Size = New System.Drawing.Size(110, 20)
         Me.TextBox10.TabIndex = 19
@@ -448,7 +442,7 @@ Partial Class Form1
         '
         Me.Button13.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.Button13.Enabled = False
-        Me.Button13.Location = New System.Drawing.Point(303, 18)
+        Me.Button13.Location = New System.Drawing.Point(323, 27)
         Me.Button13.Name = "Button13"
         Me.Button13.Size = New System.Drawing.Size(110, 45)
         Me.Button13.TabIndex = 21
@@ -458,7 +452,7 @@ Partial Class Form1
         'TextBox11
         '
         Me.TextBox11.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.TextBox11.Location = New System.Drawing.Point(148, 43)
+        Me.TextBox11.Location = New System.Drawing.Point(165, 52)
         Me.TextBox11.Name = "TextBox11"
         Me.TextBox11.Size = New System.Drawing.Size(110, 20)
         Me.TextBox11.TabIndex = 20
@@ -481,6 +475,8 @@ Partial Class Form1
         Me.DataGridView3.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DataGridView3.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
+        Me.DataGridView3.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
         Me.DataGridView3.BackgroundColor = System.Drawing.Color.Azure
         Me.DataGridView3.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DataGridView3.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
@@ -629,6 +625,13 @@ Partial Class Form1
         Me.TextBox6.Name = "TextBox6"
         Me.TextBox6.Size = New System.Drawing.Size(100, 20)
         Me.TextBox6.TabIndex = 7
+        '
+        'TextBox3
+        '
+        Me.TextBox3.Location = New System.Drawing.Point(9, 37)
+        Me.TextBox3.Name = "TextBox3"
+        Me.TextBox3.Size = New System.Drawing.Size(100, 20)
+        Me.TextBox3.TabIndex = 6
         '
         'Button8
         '
@@ -781,7 +784,7 @@ Partial Class Form1
         Me.Label19.AutoSize = True
         Me.Label19.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label19.ForeColor = System.Drawing.Color.Blue
-        Me.Label19.Location = New System.Drawing.Point(680, 520)
+        Me.Label19.Location = New System.Drawing.Point(731, 520)
         Me.Label19.Name = "Label19"
         Me.Label19.Size = New System.Drawing.Size(17, 18)
         Me.Label19.TabIndex = 22
@@ -860,12 +863,8 @@ Partial Class Form1
         Me.TextBoxRespuestaForm2.TabIndex = 41
         Me.TextBoxRespuestaForm2.Visible = False
         '
-        'TextBox3
+        'Timer2
         '
-        Me.TextBox3.Location = New System.Drawing.Point(9, 37)
-        Me.TextBox3.Name = "TextBox3"
-        Me.TextBox3.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox3.TabIndex = 6
         '
         'Form1
         '
@@ -888,7 +887,6 @@ Partial Class Form1
         Me.Controls.Add(Me.Button12)
         Me.Controls.Add(Me.Button11)
         Me.Controls.Add(Me.TabControl1)
-        Me.Controls.Add(Me.Button6)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.TextBox4)
         Me.Controls.Add(Me.Label4)
@@ -927,7 +925,6 @@ Partial Class Form1
     Friend WithEvents Button4 As System.Windows.Forms.Button
     Friend WithEvents ComboBox1 As System.Windows.Forms.ComboBox
     Friend WithEvents Label4 As System.Windows.Forms.Label
-    Friend WithEvents Button6 As System.Windows.Forms.Button
     Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox
     Friend WithEvents Timer1 As System.Windows.Forms.Timer
     Friend WithEvents Label11 As System.Windows.Forms.Label
@@ -987,4 +984,5 @@ Partial Class Form1
     Friend WithEvents TextBoxContraseña As TextBox
     Friend WithEvents TextBoxRespuestaForm2 As TextBox
     Friend WithEvents TextBox3 As TextBox
+    Friend WithEvents Timer2 As Timer
 End Class
