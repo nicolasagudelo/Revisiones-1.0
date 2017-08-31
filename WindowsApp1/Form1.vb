@@ -18,12 +18,15 @@ Public Class Form1
     End Function
 
     Private Sub Timer1_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer1.Tick
-        Timer1.Stop()
-        MsgBox("5 minutos de inactividad cerrando sesion activa", False, "Alerta por inactividad")
-        flag = 0
-        flag1 = 0
-        Button12.PerformClick()
-        Conteo_muestras()
+        If conectado = 1 Then
+            Timer1.Stop()
+            MsgBox("5 minutos de inactividad cerrando sesion activa", False, "Alerta por inactividad")
+            flag = 0
+            flag1 = 0
+            conectado = 0
+            Button12.PerformClick()
+            Conteo_muestras()
+        End If
     End Sub
 
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
@@ -36,6 +39,8 @@ Public Class Form1
                 Label19.Visible = False
                 Label4.Visible = False
                 TextBox4.Visible = False
+                ComboBox7.Visible = False
+                Button16.Visible = False
                 Exit Sub
             Case 1 'Pestaña Administrador
                 Dim tabla_actual = Label22.Text
@@ -44,6 +49,8 @@ Public Class Form1
                         Label4.Text = "Buscar No de Muestra"
                         Label4.Visible = True
                         TextBox4.Visible = True
+                        ComboBox7.Visible = True
+                        Button16.Visible = True
                         Try
 
                             Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
@@ -165,6 +172,8 @@ Public Class Form1
                         Label4.Text = "Buscar No de Muestra"
                         Label4.Visible = True
                         TextBox4.Visible = True
+                        ComboBox7.Visible = True
+                        Button16.Visible = True
                         Try
 
                             Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
@@ -201,6 +210,8 @@ Public Class Form1
                         Label4.Text = "Buscar No de Bandeja"
                         Label4.Visible = True
                         TextBox4.Visible = True
+                        ComboBox7.Visible = True
+                        Button16.Visible = True
                         Try
 
                             Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
@@ -322,6 +333,8 @@ Public Class Form1
                         Label4.Text = "Buscar No de Bandeja"
                         Label4.Visible = True
                         TextBox4.Visible = True
+                        ComboBox7.Visible = True
+                        Button16.Visible = True
                         Try
 
                             Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
@@ -358,6 +371,8 @@ Public Class Form1
                         Label4.Text = "Buscar No de Muestra"
                         Label4.Visible = True
                         TextBox4.Visible = True
+                        ComboBox7.Visible = True
+                        Button16.Visible = True
                         Try
                             Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
 
@@ -478,6 +493,8 @@ Public Class Form1
                         Label4.Text = "Buscar No de Bandeja"
                         Label4.Visible = True
                         TextBox4.Visible = True
+                        ComboBox7.Visible = True
+                        Button16.Visible = True
                         Try
                             Dim fila_actual As Integer = (DataGridView1.CurrentRow.Index)
 
@@ -600,6 +617,8 @@ Public Class Form1
                         Label19.Visible = False
                         TextBox4.Visible = False
                         Label4.Visible = False
+                        ComboBox7.Visible = False
+                        Button16.Visible = False
                         Exit Sub
                 End Select
                 Exit Sub
@@ -613,9 +632,13 @@ Public Class Form1
                             Label4.Text = "Buscar No de Muestra"
                             Label4.Visible = True
                             TextBox4.Visible = True
+                            ComboBox7.Visible = True
+                            Button16.Visible = True
                         Else
                             Label4.Visible = False
                             TextBox4.Visible = False
+                            ComboBox7.Visible = False
+                            Button16.Visible = False
                         End If
 
                         Dim fila_actual As Integer = (DataGridView2.CurrentRow.Index)
@@ -741,9 +764,13 @@ Public Class Form1
                             Label4.Text = "Buscar No de Bandeja"
                             Label4.Visible = True
                             TextBox4.Visible = True
+                            ComboBox7.Visible = True
+                            Button16.Visible = True
                         Else
                             Label4.Visible = False
                             TextBox4.Visible = False
+                            ComboBox7.Visible = False
+                            Button16.Visible = False
                         End If
 
                         Dim fila_actual As Integer = (DataGridView3.CurrentRow.Index)
@@ -1013,6 +1040,8 @@ Public Class Form1
         Timer2.Start()
         Connect()
         Cargar_analistas()
+        LlenarComboBox7()
+        ComboBox7.Text = Nothing
         TabControl1.TabPages.Remove(TabPage1)
 
     End Sub
@@ -1036,6 +1065,8 @@ Public Class Form1
     Public Sub Cargar()
         Dim Nombre_Tabla As String = ComboBox1.Text.ToString()
         Dim query As String
+        Dim filtro As String = TextBox4.Text
+        Dim filtro2 As String = ComboBox7.Text
 
         If Nombre_Tabla = "Analistas" Then
 
@@ -1055,39 +1086,159 @@ Public Class Form1
 
         ElseIf Nombre_Tabla = "Muestras Asignadas" Then
 
-            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+            If filtro = "" And filtro2 = "" Then
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Revisado','Pendiente'); "
+            ElseIf (Not filtro = "") And filtro2 = "" Then
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where Muestra_No like '" & filtro & "%' and rev_muestras.Estado in ('Revisado','Pendiente'); "
+            ElseIf filtro = "" And (Not filtro2 = "") Then
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and rev_muestras.Estado in ('Revisado','Pendiente'); "
+            ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and Muestra_No like '" & filtro & "%' and rev_muestras.Estado in ('Revisado','Pendiente'); "
+            End If
 
         ElseIf Nombre_Tabla = "Muestras no Asignadas" Then
 
-            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+            If filtro = "" And filtro2 = "" Then
+
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Revisado','Pendiente') and rev_muestras.AnalistNo is NULL; "
 
+            ElseIf (Not filtro = "") And filtro2 = "" Then
+
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where Muestra_No like '" & filtro & "%' and rev_muestras.Estado in ('Revisado','Pendiente') and rev_muestras.AnalistNo is NULL; "
+
+            ElseIf filtro = "" And (Not filtro2 = "") Then
+
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and rev_muestras.Estado in ('Revisado','Pendiente') and rev_muestras.AnalistNo is NULL; "
+
+            ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and Muestra_No like '" & filtro & "%' and rev_muestras.Estado in ('Revisado','Pendiente') and rev_muestras.AnalistNo is NULL; "
+
+            End If
+
         ElseIf Nombre_Tabla = "Bandejas Asignadas" Then
 
-            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+            If filtro = "" And filtro2 = "" Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Revisado','Pendiente');"
 
+            ElseIf (Not filtro = "") And filtro2 = "" Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where Bandeja_No like '" & filtro & "%' and rev_bandejas.Estado in ('Revisado','Pendiente');"
+
+            ElseIf filtro = "" And (Not filtro2 = "") Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and rev_bandejas.Estado in ('Revisado','Pendiente');"
+
+            ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and Bandeja_No like '" & filtro & "%' and rev_bandejas.Estado in ('Revisado','Pendiente');"
+
+            End If
+
         ElseIf Nombre_Tabla = "Bandejas no Asignadas" Then
 
-            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+            If filtro = "" And filtro2 = "" Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Revisado','Pendiente') and rev_bandejas.AnalistNo is null;"
 
+            ElseIf (Not filtro = "") And filtro2 = "" Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where Bandeja_No like '" & filtro & "%' and rev_bandejas.Estado in ('Revisado','Pendiente') and rev_bandejas.AnalistNo is null;"
+
+            ElseIf filtro = "" And (Not filtro2 = "") Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and rev_bandejas.Estado in ('Revisado','Pendiente')and rev_bandejas.AnalistNo is null;"
+
+            ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and Bandeja_No like '" & filtro & "%' and rev_bandejas.Estado in ('Revisado','Pendiente') and rev_bandejas.AnalistNo is null;"
+
+            End If
+
         ElseIf Nombre_Tabla = "Historial de Muestras" Then
 
-            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+            If filtro = "" And filtro2 = "" Then
+
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
                     where rev_muestras.Estado in ('Finalizado');"
 
+            ElseIf (Not filtro = "") And filtro2 = "" Then
+
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where Muestra_No like '" & filtro & "%' and rev_muestras.Estado in ('Finalizado'); "
+
+            ElseIf filtro = "" And (Not filtro2 = "") Then
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and rev_muestras.Estado in ('Finalizado'); "
+            ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and Muestra_No like '" & filtro & "%' and rev_muestras.Estado in ('Finalizado'); "
+            End If
+
         ElseIf Nombre_Tabla = "Historial de Bandejas" Then
 
-            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+            If filtro = "" And filtro2 = "" Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
                     where rev_bandejas.Estado in ('Finalizado');"
+
+            ElseIf (Not filtro = "") And filtro2 = "" Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where Bandeja_No like '" & filtro & "%' and rev_bandejas.Estado in ('Finalizado');"
+
+            ElseIf filtro = "" And (Not filtro2 = "") Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and rev_bandejas.Estado in ('Finalizado');"
+
+            ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "' and Bandeja_No like '" & filtro & "%' and rev_bandejas.Estado in ('Finalizado');"
+
+            End If
 
             'Descomentar esto si se altera la linea de codigo donde ComboBox1.SelectedItem = "Analistas" o si se cambia el estilo del combobox1
             'Else
@@ -1535,6 +1686,18 @@ Public Class Form1
         ComboBox9.DataSource = dtRecord
         ComboBox9.DisplayMember = "Nombre"
         ComboBox9.ValueMember = "PrueNo"
+    End Sub
+
+    Public Sub LlenarComboBox7()
+        Dim query As String = " Select PrueNo, Nombre from Pruebas
+                                Order by Nombre"
+        Dim cmd As New MySqlCommand(query, conn)
+        Dim sqlAdap As New MySqlDataAdapter(cmd)
+        Dim dtRecord As New DataTable
+        sqlAdap.Fill(dtRecord)
+        ComboBox7.DataSource = dtRecord
+        ComboBox7.DisplayMember = "Nombre"
+        ComboBox7.ValueMember = "PrueNo"
     End Sub
 
     Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
@@ -1989,17 +2152,20 @@ Public Class Form1
     End Sub
 
     Private Sub Cargar_muestras(usuario)
-
+        ComboBox7.Visible = True
+        Button16.Visible = True
         GroupBox4.Visible = True
         Button7.Enabled = True
         Button7.Visible = True
+        Dim filtro As String = TextBox4.Text 'filtro numero de registro
+        Dim filtro2 As String = ComboBox7.Text 'filtro prueba
 
 
         Dim reader As MySqlDataReader
-
-        Try
-            conn.Open()
-            Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+        If filtro = "" And filtro2 = "" Then
+            Try
+                conn.Open()
+                Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     from(
                                     Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     from(
@@ -2012,46 +2178,173 @@ Public Class Form1
                                     where AnalistNo = " & usuario & ")b
                                     on a.Prueba = b.PrueNo)c
                                     inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa;"
-            Dim cmd As New MySqlCommand(query, conn)
-            Console.WriteLine("Cargando Muestras del analista")
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Muestras del analista")
 
-            reader = cmd.ExecuteReader()
+                reader = cmd.ExecuteReader()
 
-            Dim table As New DataTable
-            table.Load(reader)
-            DataGridView2.DataSource = table
-            DataGridView2.ReadOnly = True
-            DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            DataGridView2.Columns(0).Visible = False
-            DataGridView2.Columns(9).Visible = False
-            DataGridView2.Columns(10).Visible = False
-            DataGridView2.Columns(11).Visible = False
-            DataGridView2.Columns(12).Visible = False
-            DataGridView2.Columns(13).Visible = False
-            DataGridView2.Columns(14).Visible = False
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView2.DataSource = table
+                DataGridView2.ReadOnly = True
+                DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView2.Columns(0).Visible = False
+                DataGridView2.Columns(9).Visible = False
+                DataGridView2.Columns(10).Visible = False
+                DataGridView2.Columns(11).Visible = False
+                DataGridView2.Columns(12).Visible = False
+                DataGridView2.Columns(13).Visible = False
+                DataGridView2.Columns(14).Visible = False
 
-            reader.Close()
-            conn.Close()
-        Catch ex As MySqlException
-            MsgBox(ex.Message)
-            conn.Close()
-        End Try
-        If DataGridView2(0, 0).Value Is Nothing Then
-            MsgBox("Usted no cuenta con revisiones de muestras pendientes o posibles", False, "Info. Muestras")
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+            If DataGridView2(0, 0).Value Is Nothing Then
+                MsgBox("Usted no cuenta con revisiones de muestras pendientes o posibles", False, "Info. Muestras")
+            End If
+        ElseIf filtro2 = "" And Not (filtro = "") Then
+            Try
+                conn.Open()
+                Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    SELECT Muestra_ID, Muestra_No, pruebas.PrueNo as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.AnalistNo as Revisa, rev_muestras.Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    FROM pruebas inner join rev_muestras on pruebas.PrueNo = rev_muestras.PrueNo left join analistas on rev_muestras.AnalistNo = analistas.AnalistNo
+                                    where (rev_muestras.AnalistNo = " & usuario & " or rev_muestras.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa
+                                    where Muestra_No like '" & filtro & "%';"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Muestras del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView2.DataSource = table
+                DataGridView2.ReadOnly = True
+                DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView2.Columns(0).Visible = False
+                DataGridView2.Columns(9).Visible = False
+                DataGridView2.Columns(10).Visible = False
+                DataGridView2.Columns(11).Visible = False
+                DataGridView2.Columns(12).Visible = False
+                DataGridView2.Columns(13).Visible = False
+                DataGridView2.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+        ElseIf filtro = "" And Not (filtro2 = "") Then
+            Try
+                conn.Open()
+                Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    SELECT Muestra_ID, Muestra_No, pruebas.PrueNo as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.AnalistNo as Revisa, rev_muestras.Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    FROM pruebas inner join rev_muestras on pruebas.PrueNo = rev_muestras.PrueNo left join analistas on rev_muestras.AnalistNo = analistas.AnalistNo
+                                    where (rev_muestras.AnalistNo = " & usuario & " or rev_muestras.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa
+                                    where pruebas.Nombre = '" & filtro2 & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Muestras del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView2.DataSource = table
+                DataGridView2.ReadOnly = True
+                DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView2.Columns(0).Visible = False
+                DataGridView2.Columns(9).Visible = False
+                DataGridView2.Columns(10).Visible = False
+                DataGridView2.Columns(11).Visible = False
+                DataGridView2.Columns(12).Visible = False
+                DataGridView2.Columns(13).Visible = False
+                DataGridView2.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+        ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+            Try
+                conn.Open()
+                Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    SELECT Muestra_ID, Muestra_No, pruebas.PrueNo as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.AnalistNo as Revisa, rev_muestras.Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    FROM pruebas inner join rev_muestras on pruebas.PrueNo = rev_muestras.PrueNo left join analistas on rev_muestras.AnalistNo = analistas.AnalistNo
+                                    where (rev_muestras.AnalistNo = " & usuario & " or rev_muestras.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa
+                                    where Muestra_no like '" & filtro & "%' and pruebas.Nombre = '" & filtro2 & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Muestras del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView2.DataSource = table
+                DataGridView2.ReadOnly = True
+                DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView2.Columns(0).Visible = False
+                DataGridView2.Columns(9).Visible = False
+                DataGridView2.Columns(10).Visible = False
+                DataGridView2.Columns(11).Visible = False
+                DataGridView2.Columns(12).Visible = False
+                DataGridView2.Columns(13).Visible = False
+                DataGridView2.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
         End If
     End Sub
 
     Private Sub Cargar_bandejas(usuario)
-
+        ComboBox7.Visible = True
+        Button16.Visible = True
         GroupBox5.Visible = True
         Button13.Enabled = True
         Button13.Visible = True
+        Dim filtro As String = TextBox4.Text
+        Dim filtro2 As String = ComboBox7.Text
 
         Dim reader As MySqlDataReader
-
-        Try
-            conn.Open()
-            Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+        If filtro = "" And filtro2 = "" Then
+            Try
+                conn.Open()
+                Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     from(
                                     Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                                     from(
@@ -2064,33 +2357,158 @@ Public Class Form1
                                     where AnalistNo = " & usuario & ")b
                                     on a.Prueba = b.PrueNo)c
                                     inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa;"
-            Dim cmd As New MySqlCommand(query, conn)
-            Console.WriteLine("Cargando Bandejas del analista")
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Bandejas del analista")
 
-            reader = cmd.ExecuteReader()
+                reader = cmd.ExecuteReader()
 
-            Dim table As New DataTable
-            table.Load(reader)
-            DataGridView3.DataSource = table
-            DataGridView3.ReadOnly = True
-            DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            DataGridView3.Columns(0).Visible = False
-            DataGridView3.Columns(9).Visible = False
-            DataGridView3.Columns(10).Visible = False
-            DataGridView3.Columns(11).Visible = False
-            DataGridView3.Columns(12).Visible = False
-            DataGridView3.Columns(13).Visible = False
-            DataGridView3.Columns(14).Visible = False
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView3.DataSource = table
+                DataGridView3.ReadOnly = True
+                DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView3.Columns(0).Visible = False
+                DataGridView3.Columns(9).Visible = False
+                DataGridView3.Columns(10).Visible = False
+                DataGridView3.Columns(11).Visible = False
+                DataGridView3.Columns(12).Visible = False
+                DataGridView3.Columns(13).Visible = False
+                DataGridView3.Columns(14).Visible = False
 
-            reader.Close()
-            conn.Close()
-        Catch ex As MySqlException
-            MsgBox(ex.Message)
-            conn.Close()
-        End Try
-        If DataGridView3(0, 0).Value Is Nothing Then
-            MsgBox("Usted no cuenta con revisiones de bandejas pendientes o posibles", False, "Info. Bandejas")
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+            If DataGridView3(0, 0).Value Is Nothing Then
+                MsgBox("Usted no cuenta con revisiones de bandejas pendientes o posibles", False, "Info. Bandejas")
+            End If
+        ElseIf filtro2 = "" And Not (filtro = "") Then
+            Try
+                conn.Open()
+                Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    SELECT Bandeja_ID, Bandeja_No, pruebas.PrueNo as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    FROM pruebas inner join rev_bandejas on pruebas.PrueNo = rev_bandejas.PrueNo left join analistas on rev_bandejas.AnalistNo = analistas.AnalistNo
+                                    where (rev_bandejas.AnalistNo = " & usuario & " or rev_bandejas.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa
+                                    where Bandeja_No like '" & filtro & "%';;"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Bandejas del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView3.DataSource = table
+                DataGridView3.ReadOnly = True
+                DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView3.Columns(0).Visible = False
+                DataGridView3.Columns(9).Visible = False
+                DataGridView3.Columns(10).Visible = False
+                DataGridView3.Columns(11).Visible = False
+                DataGridView3.Columns(12).Visible = False
+                DataGridView3.Columns(13).Visible = False
+                DataGridView3.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+        ElseIf filtro = "" And Not (filtro2 = "") Then
+            Try
+                conn.Open()
+                Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    SELECT Bandeja_ID, Bandeja_No, pruebas.PrueNo as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    FROM pruebas inner join rev_bandejas on pruebas.PrueNo = rev_bandejas.PrueNo left join analistas on rev_bandejas.AnalistNo = analistas.AnalistNo
+                                    where (rev_bandejas.AnalistNo = " & usuario & " or rev_bandejas.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa
+                                    where pruebas.Nombre = '" & filtro2 & "';;"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Bandejas del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView3.DataSource = table
+                DataGridView3.ReadOnly = True
+                DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView3.Columns(0).Visible = False
+                DataGridView3.Columns(9).Visible = False
+                DataGridView3.Columns(10).Visible = False
+                DataGridView3.Columns(11).Visible = False
+                DataGridView3.Columns(12).Visible = False
+                DataGridView3.Columns(13).Visible = False
+                DataGridView3.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+        ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+            Try
+                conn.Open()
+                Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    from(
+                                    SELECT Bandeja_ID, Bandeja_No, pruebas.PrueNo as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                                    FROM pruebas inner join rev_bandejas on pruebas.PrueNo = rev_bandejas.PrueNo left join analistas on rev_bandejas.AnalistNo = analistas.AnalistNo
+                                    where (rev_bandejas.AnalistNo = " & usuario & " or rev_bandejas.AnalistNo is Null) and Estado in ('Revisado','Pendiente')
+                                    )a 
+                                    inner join 
+                                    (Select * from rel_prue_analistas
+                                    where AnalistNo = " & usuario & ")b
+                                    on a.Prueba = b.PrueNo)c
+                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa
+                                    where Bandeja_No like '" & filtro & "%' and pruebas.Nombre = '" & filtro2 & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Bandejas del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView3.DataSource = table
+                DataGridView3.ReadOnly = True
+                DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView3.Columns(0).Visible = False
+                DataGridView3.Columns(9).Visible = False
+                DataGridView3.Columns(10).Visible = False
+                DataGridView3.Columns(11).Visible = False
+                DataGridView3.Columns(12).Visible = False
+                DataGridView3.Columns(13).Visible = False
+                DataGridView3.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
         End If
+
     End Sub
 
     Dim flag As Byte
@@ -2311,6 +2729,9 @@ Public Class Form1
         ComboBox6.Enabled = True
         TextBox4.Text = Nothing
         TextBox4.Visible = False
+        ComboBox7.Text = Nothing
+        ComboBox7.Visible = False
+        Button16.Visible = False
         Label4.Visible = False
         Button15.Enabled = True
         Button11.Enabled = True
@@ -2360,12 +2781,14 @@ Public Class Form1
                 conectado = 1
                 TabControl1.TabPages.Insert(3, TabPage1)
                 Cargar_MuestrasBandejas_Admin()
-                ComboBox6.Text = ""
+                ComboBox6.Text = " "
                 ComboBox6.Enabled = False
                 Button15.Enabled = False
                 Button11.Enabled = False
                 Label4.Visible = True
                 TextBox4.Visible = True
+                ComboBox7.Visible = True
+                Button16.Visible = True
             Else
                 MsgBox("Constraseña Incorrecta", False, "Error")
                 Exit Sub
@@ -2378,63 +2801,256 @@ Public Class Form1
     Private Sub Cargar_MuestrasBandejas_Admin()
         Dim reader As MySqlDataReader
         Dim query As String
-        Try
-            conn.Open()
-            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+
+        Dim filtro As String = TextBox4.Text
+        Dim filtro2 As String = ComboBox7.Text
+
+        If filtro = "" And filtro2 = "" Then
+            Try
+                conn.Open()
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM rev_muestras left join analistas on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo;"
-            'Where rev_muestras.Estado in ('Revisado','Pendiente');"
-            Dim cmd As New MySqlCommand(query, conn)
+                'Where rev_muestras.Estado in ('Revisado','Pendiente');"
+                Dim cmd As New MySqlCommand(query, conn)
 
-            reader = cmd.ExecuteReader()
+                reader = cmd.ExecuteReader()
 
-            Dim table As New DataTable
-            table.Load(reader)
-            DataGridView2.DataSource = table
-            DataGridView2.ReadOnly = True
-            DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            DataGridView2.Columns(0).Visible = False
-            DataGridView2.Columns(9).Visible = False
-            DataGridView2.Columns(10).Visible = False
-            DataGridView2.Columns(11).Visible = False
-            DataGridView2.Columns(12).Visible = False
-            DataGridView2.Columns(13).Visible = False
-            DataGridView2.Columns(14).Visible = False
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView2.DataSource = table
+                DataGridView2.ReadOnly = True
+                DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView2.Columns(0).Visible = False
+                DataGridView2.Columns(9).Visible = False
+                DataGridView2.Columns(10).Visible = False
+                DataGridView2.Columns(11).Visible = False
+                DataGridView2.Columns(12).Visible = False
+                DataGridView2.Columns(13).Visible = False
+                DataGridView2.Columns(14).Visible = False
 
-            reader.Close()
-            conn.Close()
-        Catch ex As MySqlException
-            MsgBox(ex.Message)
-            conn.Close()
-        End Try
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
 
-        Try
-            conn.Open()
-            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa' , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+            Try
+                conn.Open()
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa' , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
                     FROM rev_bandejas left join analistas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo;"
-            'Where rev_bandejas.Estado in ('Revisado','Pendiente');"
-            Dim cmd As New MySqlCommand(query, conn)
+                'Where rev_bandejas.Estado in ('Revisado','Pendiente');"
+                Dim cmd As New MySqlCommand(query, conn)
 
-            reader = cmd.ExecuteReader()
+                reader = cmd.ExecuteReader()
 
-            Dim table As New DataTable
-            table.Load(reader)
-            DataGridView3.DataSource = table
-            DataGridView3.ReadOnly = True
-            DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            DataGridView3.Columns(0).Visible = False
-            DataGridView3.Columns(9).Visible = False
-            DataGridView3.Columns(10).Visible = False
-            DataGridView3.Columns(11).Visible = False
-            DataGridView3.Columns(12).Visible = False
-            DataGridView3.Columns(13).Visible = False
-            DataGridView3.Columns(14).Visible = False
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView3.DataSource = table
+                DataGridView3.ReadOnly = True
+                DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView3.Columns(0).Visible = False
+                DataGridView3.Columns(9).Visible = False
+                DataGridView3.Columns(10).Visible = False
+                DataGridView3.Columns(11).Visible = False
+                DataGridView3.Columns(12).Visible = False
+                DataGridView3.Columns(13).Visible = False
+                DataGridView3.Columns(14).Visible = False
 
-            reader.Close()
-            conn.Close()
-        Catch ex As MySqlException
-            MsgBox(ex.Message)
-            conn.Close()
-        End Try
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+
+        ElseIf filtro2 = "" And Not (filtro = "") Then
+            Try
+                conn.Open()
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_muestras left join analistas on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where Muestra_No like '" & filtro & "%';"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Muestras del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView2.DataSource = table
+                DataGridView2.ReadOnly = True
+                DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView2.Columns(0).Visible = False
+                DataGridView2.Columns(9).Visible = False
+                DataGridView2.Columns(10).Visible = False
+                DataGridView2.Columns(11).Visible = False
+                DataGridView2.Columns(12).Visible = False
+                DataGridView2.Columns(13).Visible = False
+                DataGridView2.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+
+            Try
+                conn.Open()
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa' , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_bandejas left join analistas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    Where Bandeja_No like '" & filtro & "%';"
+                'Where rev_bandejas.Estado in ('Revisado','Pendiente');"
+                Dim cmd As New MySqlCommand(query, conn)
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView3.DataSource = table
+                DataGridView3.ReadOnly = True
+                DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView3.Columns(0).Visible = False
+                DataGridView3.Columns(9).Visible = False
+                DataGridView3.Columns(10).Visible = False
+                DataGridView3.Columns(11).Visible = False
+                DataGridView3.Columns(12).Visible = False
+                DataGridView3.Columns(13).Visible = False
+                DataGridView3.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+
+        ElseIf filtro = "" And Not (filtro2 = "") Then
+            Try
+                conn.Open()
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_muestras left join analistas on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where pruebas.Nombre = '" & filtro2 & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Muestras del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView2.DataSource = table
+                DataGridView2.ReadOnly = True
+                DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView2.Columns(0).Visible = False
+                DataGridView2.Columns(9).Visible = False
+                DataGridView2.Columns(10).Visible = False
+                DataGridView2.Columns(11).Visible = False
+                DataGridView2.Columns(12).Visible = False
+                DataGridView2.Columns(13).Visible = False
+                DataGridView2.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+
+            Try
+                conn.Open()
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa' , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_bandejas left join analistas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    Where pruebas.Nombre = '" & filtro2 & "';"
+                'Where rev_bandejas.Estado in ('Revisado','Pendiente');"
+                Dim cmd As New MySqlCommand(query, conn)
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView3.DataSource = table
+                DataGridView3.ReadOnly = True
+                DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView3.Columns(0).Visible = False
+                DataGridView3.Columns(9).Visible = False
+                DataGridView3.Columns(10).Visible = False
+                DataGridView3.Columns(11).Visible = False
+                DataGridView3.Columns(12).Visible = False
+                DataGridView3.Columns(13).Visible = False
+                DataGridView3.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+
+
+        ElseIf (Not filtro = "") And (Not filtro2 = "") Then
+            Try
+                conn.Open()
+                query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_muestras left join analistas on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                    where Muestra_No like '" & filtro & "%' and pruebas.Nombre = '" & filtro2 & "';"
+                Dim cmd As New MySqlCommand(query, conn)
+                Console.WriteLine("Cargando Muestras del analista")
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView2.DataSource = table
+                DataGridView2.ReadOnly = True
+                DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView2.Columns(0).Visible = False
+                DataGridView2.Columns(9).Visible = False
+                DataGridView2.Columns(10).Visible = False
+                DataGridView2.Columns(11).Visible = False
+                DataGridView2.Columns(12).Visible = False
+                DataGridView2.Columns(13).Visible = False
+                DataGridView2.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+
+            Try
+                conn.Open()
+                query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa' , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                    FROM rev_bandejas left join analistas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                    where Bandeja_No like '" & filtro & "%' and pruebas.Nombre = '" & filtro2 & "';"
+                'Where rev_bandejas.Estado in ('Revisado','Pendiente');"
+                Dim cmd As New MySqlCommand(query, conn)
+
+                reader = cmd.ExecuteReader()
+
+                Dim table As New DataTable
+                table.Load(reader)
+                DataGridView3.DataSource = table
+                DataGridView3.ReadOnly = True
+                DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                DataGridView3.Columns(0).Visible = False
+                DataGridView3.Columns(9).Visible = False
+                DataGridView3.Columns(10).Visible = False
+                DataGridView3.Columns(11).Visible = False
+                DataGridView3.Columns(12).Visible = False
+                DataGridView3.Columns(13).Visible = False
+                DataGridView3.Columns(14).Visible = False
+
+                reader.Close()
+                conn.Close()
+            Catch ex As MySqlException
+                MsgBox(ex.Message)
+                conn.Close()
+            End Try
+
+        End If
+
+
     End Sub
 
     Dim flag1 As Byte
@@ -2562,186 +3178,665 @@ Public Class Form1
 
         Select Case Pest_actual
             Case 1
-                Dim tabla_actual = Label22.Text
-                Select Case tabla_actual
-                    Case "Muestras Asignadas"
+                Cargar()
+                'Dim Nombre_Tabla = Label22.Text
+                'Dim query As String
+                'Select Case Nombre_Tabla
+                '    Case "Muestras Asignadas"
+                '        Try
+                '            conn.Open()
+                '            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                '                    where rev_muestras.Estado in ('Revisado','Pendiente') and Muestra_No like '" & TextBox4.Text & "%'; "
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Muestras del analista")
 
-                        Exit Sub
-                    Case "Muestras no Asignadas"
+                '            reader = cmd.ExecuteReader()
 
-                        Exit Sub
-                    Case "Bandejas Asignadas"
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
 
-                        Exit Sub
-                    Case "Bandejas no Asignadas"
+                '            reader.Close()
+                '            conn.Close()
+                '        Catch ex As MySqlException
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+                '        End Try
 
-                        Exit Sub
-                    Case "Historial de Muestras"
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        DataGridView1.Columns(14).Visible = False
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        GroupBox1.Visible = True
+                '        TextBox1.Visible = False
+                '        TextBox2.Visible = False
+                '        ComboBox8.Visible = False
+                '        ComboBox9.Visible = False
+                '        Label1.Visible = False
+                '        Label2.Visible = False
+                '        Button8.Visible = False
+                '        ComboBox2.Visible = False
+                '        ComboBox3.Visible = False
+                '        TextBox3.Visible = False
+                '        TextBox6.Visible = False
+                '        Panel1.Visible = True
+                '        Label3.Visible = False
+                '        ComboBox4.Visible = False
+                '        GroupBox2.Visible = False
+                '        Button5.Text = "Aceptar"
+                '        Button5.Visible = True
+                '        Label6.Text = "Pasa"
+                '        Label6.Visible = True
+                '        ComboBox5.DataSource = Nothing
+                '        ComboBox5.Items.Clear()
+                '        ComboBox5.Items.Add("Si")
+                '        ComboBox5.Items.Add("No")
+                '        ComboBox5.Visible = True
+                '        Exit Sub
 
-                        Exit Sub
-                    Case "Historial de Bandejas"
+                '    Case "Muestras no Asignadas"
+                '        Try
+                '            conn.Open()
+                '            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '            FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                '            where rev_muestras.Estado in ('Revisado','Pendiente') and rev_muestras.AnalistNo is NULL and Muestra_No like '" & TextBox4.Text & "%';"
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Muestras del analista")
 
-                        Exit Sub
-                    Case Else
-                        Label17.Visible = False
-                        Label18.Visible = False
-                        Label19.Visible = False
-                        Exit Sub
-                End Select
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+                '        Catch ex As MySqlException
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+                '        End Try
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(8).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        GroupBox2.Visible = True
+                '        Button2.Visible = True
+                '        Button3.Visible = False
+                '        Button4.Visible = False
+                '        Button2.Enabled = True
+                '        Button3.Enabled = False
+                '        Button4.Enabled = False
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        Exit Sub
+
+                '    Case "Bandejas Asignadas"
+                '        Try
+
+                '            conn.Open()
+                '            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '                FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                '                where rev_bandejas.Estado in ('Revisado','Pendiente') and Bandeja_No like '" & TextBox4.Text & "%';"
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Muestras del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+
+                '        Catch ex As MySqlException
+
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+
+                '        End Try
+
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        DataGridView1.Columns(14).Visible = False
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        GroupBox1.Visible = True
+                '        TextBox1.Visible = False
+                '        TextBox2.Visible = False
+                '        ComboBox8.Visible = False
+                '        ComboBox9.Visible = False
+                '        Label1.Visible = False
+                '        Label2.Visible = False
+                '        Button8.Visible = False
+                '        ComboBox2.Visible = False
+                '        ComboBox3.Visible = False
+                '        TextBox3.Visible = False
+                '        TextBox6.Visible = False
+                '        Panel1.Visible = True
+                '        Label3.Visible = False
+                '        ComboBox4.Visible = False
+                '        GroupBox2.Visible = False
+                '        Button5.Text = "Aceptar"
+                '        Button5.Visible = True
+                '        Label6.Text = "Pasa"
+                '        Label6.Visible = True
+                '        ComboBox5.DataSource = Nothing
+                '        ComboBox5.Items.Clear()
+                '        ComboBox5.Items.Add("Si")
+                '        ComboBox5.Items.Add("No")
+                '        ComboBox5.Visible = True
+
+                '        Exit Sub
+
+                '    Case "Bandejas no Asignadas"
+                '        Try
+                '            conn.Open()
+
+                '            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '            FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                '            where rev_bandejas.Estado in ('Revisado','Pendiente') and rev_bandejas.AnalistNo is null and Bandeja_No like '" & TextBox4.Text & "%';"
+
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Bandejas del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+                '        Catch ex As MySqlException
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+                '        End Try
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(8).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        GroupBox2.Visible = True
+                '        Button2.Visible = True
+                '        Button3.Visible = False
+                '        Button4.Visible = False
+                '        Button2.Enabled = True
+                '        Button3.Enabled = False
+                '        Button4.Enabled = False
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        Exit Sub
+
+                '    Case "Historial de Muestras"
+
+                '        Try
+                '            conn.Open()
+                '            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                '                    where rev_muestras.Estado in ('Finalizado') and Muestra_No like '" & TextBox4.Text & "%';"
+
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Bandejas del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+
+                '        Catch ex As Exception
+
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+
+                '        End Try
+
+                '        GroupBox2.Visible = False
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        DataGridView1.Columns(14).Visible = False
+
+                '    Case "Historial de Bandejas"
+
+                '        Try
+                '            conn.Open()
+                '            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '                FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                '                where rev_bandejas.Estado in ('Finalizado')and Bandeja_No like '" & TextBox4.Text & "%';"
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Bandejas del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+                '        Catch ex As Exception
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+                '        End Try
+
+                '        GroupBox2.Visible = False
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        DataGridView1.Columns(14).Visible = False
+
+                '    Case Else
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        Exit Sub
+
+                'End Select
+
             Case 2
                 If usuario > 1 Then
-                    Try
-                        conn.Open()
-                        Dim query As String = "Select Muestra_ID, Muestra_No, pruebas.Nombre as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
-                                    from(
-                                    Select Muestra_ID, Muestra_No, Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
-                                    from(
-                                    SELECT Muestra_ID, Muestra_No, pruebas.PrueNo as Prueba, Valor_In, Valor_C1, Estado, Valor_C2, Pasa, analistas.AnalistNo as Revisa, rev_muestras.Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
-                                    FROM pruebas inner join rev_muestras on pruebas.PrueNo = rev_muestras.PrueNo left join analistas on rev_muestras.AnalistNo = analistas.AnalistNo
-                                    where (rev_muestras.AnalistNo = " & usuario & " or rev_muestras.AnalistNo is Null) and Estado in ('Revisado','Pendiente') and Muestra_No like '" & TextBox4.Text & "%'
-                                    )a 
-                                    inner join 
-                                    (Select * from rel_prue_analistas
-                                    where AnalistNo = " & usuario & ")b
-                                    on a.Prueba = b.PrueNo)c
-                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa;"
-                        Dim cmd As New MySqlCommand(query, conn)
-                        Console.WriteLine("Cargando Muestras del analista")
-
-                        reader = cmd.ExecuteReader()
-
-                        Dim table As New DataTable
-                        table.Load(reader)
-                        DataGridView2.DataSource = table
-                        DataGridView2.ReadOnly = True
-                        DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-                        DataGridView2.Columns(0).Visible = False
-                        DataGridView2.Columns(9).Visible = False
-                        DataGridView2.Columns(10).Visible = False
-                        DataGridView2.Columns(11).Visible = False
-                        DataGridView2.Columns(12).Visible = False
-                        DataGridView2.Columns(13).Visible = False
-                        DataGridView2.Columns(14).Visible = False
-
-                        reader.Close()
-                        conn.Close()
-                    Catch ex As MySqlException
-                        MsgBox(ex.Message)
-                        conn.Close()
-                    End Try
+                    Cargar_muestras(usuario)
                 Else
-                    Try
-                        conn.Open()
-                        Dim query As String
-                        query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
-                    FROM rev_muestras left join analistas on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
-                    where muestra_No like ('" & TextBox4.Text & "%');"
-                        'Where rev_muestras.Estado in ('Revisado','Pendiente');"
-                        Dim cmd As New MySqlCommand(query, conn)
-
-                        reader = cmd.ExecuteReader()
-
-                        Dim table As New DataTable
-                        table.Load(reader)
-                        DataGridView2.DataSource = table
-                        DataGridView2.ReadOnly = True
-                        DataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-                        DataGridView2.Columns(0).Visible = False
-                        DataGridView2.Columns(9).Visible = False
-                        DataGridView2.Columns(10).Visible = False
-                        DataGridView2.Columns(11).Visible = False
-                        DataGridView2.Columns(12).Visible = False
-                        DataGridView2.Columns(13).Visible = False
-                        DataGridView2.Columns(14).Visible = False
-
-                        reader.Close()
-                        conn.Close()
-                    Catch ex As MySqlException
-                        MsgBox(ex.Message)
-                        conn.Close()
-                    End Try
+                    Cargar_MuestrasBandejas_Admin()
                 End If
                 Exit Sub
             Case 3
                 If usuario > 1 Then
-                    Try
-                        conn.Open()
-                        Dim query As String = "Select Bandeja_ID, Bandeja_No, pruebas.Nombre as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.Nombre as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
-                                    from(
-                                    Select Bandeja_ID, Bandeja_No, Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, Revisa , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
-                                    from(
-                                    SELECT Bandeja_ID, Bandeja_No, pruebas.PrueNo as Prueba, Comentario, Comentario_Revision, Estado, Comentario_Revision_2, Pasa, analistas.AnalistNo as Revisa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
-                                    FROM pruebas inner join rev_bandejas on pruebas.PrueNo = rev_bandejas.PrueNo left join analistas on rev_bandejas.AnalistNo = analistas.AnalistNo
-                                    where (rev_bandejas.AnalistNo = " & usuario & " or rev_bandejas.AnalistNo is Null) and Estado in ('Revisado','Pendiente')and Bandeja_No like '" & TextBox4.Text & "%'
-                                    )a 
-                                    inner join 
-                                    (Select * from rel_prue_analistas
-                                    where AnalistNo = " & usuario & ")b
-                                    on a.Prueba = b.PrueNo)c
-                                    inner join pruebas on pruebas.PrueNo = c.Prueba left join analistas on analistas.AnalistNo = c.Revisa;"
-                        Dim cmd As New MySqlCommand(query, conn)
-                        Console.WriteLine("Cargando bandejas del analista")
-
-                        reader = cmd.ExecuteReader()
-
-                        Dim table As New DataTable
-                        table.Load(reader)
-                        DataGridView3.DataSource = table
-                        DataGridView3.ReadOnly = True
-                        DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-                        DataGridView3.Columns(0).Visible = False
-                        DataGridView3.Columns(9).Visible = False
-                        DataGridView3.Columns(10).Visible = False
-                        DataGridView3.Columns(11).Visible = False
-                        DataGridView3.Columns(12).Visible = False
-                        DataGridView3.Columns(13).Visible = False
-                        DataGridView3.Columns(14).Visible = False
-
-                        reader.Close()
-                        conn.Close()
-                    Catch ex As MySqlException
-                        MsgBox(ex.Message)
-                        conn.Close()
-                    End Try
+                    Cargar_bandejas(usuario)
                 Else
-                    Try
-                        conn.Open()
-                        Dim query As String
-                        query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa' , Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
-                        FROM rev_bandejas left join analistas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
-                        where rev_bandejas.Bandeja_No like ('" & TextBox4.Text & "%');"
-                        'Where rev_muestras.Estado in ('Revisado','Pendiente');"
-                        Dim cmd As New MySqlCommand(query, conn)
-
-                        reader = cmd.ExecuteReader()
-
-                        Dim table As New DataTable
-                        table.Load(reader)
-                        DataGridView3.DataSource = table
-                        DataGridView3.ReadOnly = True
-                        DataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-                        DataGridView3.Columns(0).Visible = False
-                        DataGridView3.Columns(9).Visible = False
-                        DataGridView3.Columns(10).Visible = False
-                        DataGridView3.Columns(11).Visible = False
-                        DataGridView3.Columns(12).Visible = False
-                        DataGridView3.Columns(13).Visible = False
-                        DataGridView3.Columns(14).Visible = False
-
-                        reader.Close()
-                        conn.Close()
-                    Catch ex As MySqlException
-                        MsgBox(ex.Message)
-                        conn.Close()
-                    End Try
+                    Cargar_MuestrasBandejas_Admin()
                 End If
                 Exit Sub
         End Select
 
+    End Sub
 
+    Private Sub Button16_Click(sender As Object, e As EventArgs) Handles Button16.Click
 
+        Dim usuario As String
 
+        If ComboBox6.Text = " " Then
+            usuario = 1
+        Else
+            usuario = ComboBox6.SelectedValue
+        End If
 
+        Select Case Pest_actual
+            Case 1
+                Cargar()
+                'Dim Nombre_Tabla = Label22.Text
+                'Dim query As String
+                'Select Case Nombre_Tabla
+                '    Case "Muestras Asignadas"
+                '        Try
+                '            conn.Open()
+                '            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                '                    where rev_muestras.Estado in ('Revisado','Pendiente') and pruebas.Nombre = '" & ComboBox7.Text & "'; "
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Muestras del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+                '        Catch ex As MySqlException
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+                '        End Try
+
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        DataGridView1.Columns(14).Visible = False
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        GroupBox1.Visible = True
+                '        TextBox1.Visible = False
+                '        TextBox2.Visible = False
+                '        ComboBox8.Visible = False
+                '        ComboBox9.Visible = False
+                '        Label1.Visible = False
+                '        Label2.Visible = False
+                '        Button8.Visible = False
+                '        ComboBox2.Visible = False
+                '        ComboBox3.Visible = False
+                '        TextBox3.Visible = False
+                '        TextBox6.Visible = False
+                '        Panel1.Visible = True
+                '        Label3.Visible = False
+                '        ComboBox4.Visible = False
+                '        GroupBox2.Visible = False
+                '        Button5.Text = "Aceptar"
+                '        Button5.Visible = True
+                '        Label6.Text = "Pasa"
+                '        Label6.Visible = True
+                '        ComboBox5.DataSource = Nothing
+                '        ComboBox5.Items.Clear()
+                '        ComboBox5.Items.Add("Si")
+                '        ComboBox5.Items.Add("No")
+                '        ComboBox5.Visible = True
+                '        Exit Sub
+
+                '    Case "Muestras no Asignadas"
+                '        Try
+                '            conn.Open()
+                '            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '            FROM rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                '            where rev_muestras.Estado in ('Revisado','Pendiente') and rev_muestras.AnalistNo is NULL and pruebas.Nombre = '" & ComboBox7.Text & "';"
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Muestras del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+                '        Catch ex As MySqlException
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+                '        End Try
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(8).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        GroupBox2.Visible = True
+                '        Button2.Visible = True
+                '        Button3.Visible = False
+                '        Button4.Visible = False
+                '        Button2.Enabled = True
+                '        Button3.Enabled = False
+                '        Button4.Enabled = False
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        Exit Sub
+
+                '    Case "Bandejas Asignadas"
+                '        Try
+
+                '            conn.Open()
+                '            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '                FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                '                where rev_bandejas.Estado in ('Revisado','Pendiente') and pruebas.Nombre = '" & ComboBox7.Text & "';"
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Muestras del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+
+                '        Catch ex As MySqlException
+
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+
+                '        End Try
+
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        DataGridView1.Columns(14).Visible = False
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        GroupBox1.Visible = True
+                '        TextBox1.Visible = False
+                '        TextBox2.Visible = False
+                '        ComboBox8.Visible = False
+                '        ComboBox9.Visible = False
+                '        Label1.Visible = False
+                '        Label2.Visible = False
+                '        Button8.Visible = False
+                '        ComboBox2.Visible = False
+                '        ComboBox3.Visible = False
+                '        TextBox3.Visible = False
+                '        TextBox6.Visible = False
+                '        Panel1.Visible = True
+                '        Label3.Visible = False
+                '        ComboBox4.Visible = False
+                '        GroupBox2.Visible = False
+                '        Button5.Text = "Aceptar"
+                '        Button5.Visible = True
+                '        Label6.Text = "Pasa"
+                '        Label6.Visible = True
+                '        ComboBox5.DataSource = Nothing
+                '        ComboBox5.Items.Clear()
+                '        ComboBox5.Items.Add("Si")
+                '        ComboBox5.Items.Add("No")
+                '        ComboBox5.Visible = True
+
+                '        Exit Sub
+
+                '    Case "Bandejas no Asignadas"
+                '        Try
+                '            conn.Open()
+
+                '            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '            FROM rev_bandejas inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                '            where rev_bandejas.Estado in ('Revisado','Pendiente') and rev_bandejas.AnalistNo is null and pruebas.Nombre = '" & ComboBox7.Text & "';"
+
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Bandejas del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+                '        Catch ex As MySqlException
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+                '        End Try
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(8).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        GroupBox2.Visible = True
+                '        Button2.Visible = True
+                '        Button3.Visible = False
+                '        Button4.Visible = False
+                '        Button2.Enabled = True
+                '        Button3.Enabled = False
+                '        Button4.Enabled = False
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        Exit Sub
+
+                '    Case "Historial de Muestras"
+
+                '        Try
+                '            conn.Open()
+                '            query = "SELECT Muestra_ID, rev_muestras.Muestra_No as 'Numero de muestra',pruebas.Nombre as 'Prueba', rev_muestras.Valor_In, rev_muestras.Valor_C1, rev_muestras.Estado, rev_muestras.Valor_C2, rev_muestras.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '                    FROM analistas inner join rev_muestras on analistas.AnalistNo = rev_muestras.AnalistNo inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                '                    where rev_muestras.Estado in ('Finalizado') and pruebas.Nombre = '" & ComboBox7.Text & "';"
+
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Bandejas del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+
+                '        Catch ex As Exception
+
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+
+                '        End Try
+
+                '        GroupBox2.Visible = False
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        DataGridView1.Columns(14).Visible = False
+
+                '    Case "Historial de Bandejas"
+
+                '        Try
+                '            conn.Open()
+                '            query = "SELECT Bandeja_ID, rev_bandejas.Bandeja_No as 'Bandeja', pruebas.Nombre as 'Prueba', rev_bandejas.Comentario, rev_bandejas.Comentario_Revision, rev_bandejas.Estado, rev_bandejas.Comentario_Revision_2, rev_bandejas.Pasa, analistas.Nombre as 'Revisa', Tiempo_C, Tiempo_A, Tiempo_V, Tiempo_A2, Tiempo_V2, Tiempo_T
+                '                FROM analistas inner join rev_bandejas on analistas.AnalistNo = rev_bandejas.AnalistNo inner join pruebas on rev_bandejas.PrueNo = pruebas.PrueNo
+                '                where rev_bandejas.Estado in ('Finalizado') and  pruebas.Nombre = '" & ComboBox7.Text & "';"
+                '            Dim cmd As New MySqlCommand(query, conn)
+                '            Console.WriteLine("Cargando Bandejas del analista")
+
+                '            reader = cmd.ExecuteReader()
+
+                '            Dim table As New DataTable
+                '            table.Load(reader)
+                '            DataGridView1.DataSource = table
+                '            DataGridView1.ReadOnly = True
+                '            DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                '            reader.Close()
+                '            conn.Close()
+                '        Catch ex As Exception
+                '            MsgBox(ex.Message)
+                '            conn.Close()
+                '        End Try
+
+                '        GroupBox2.Visible = False
+                '        DataGridView1.Columns(0).Visible = False
+                '        DataGridView1.Columns(9).Visible = False
+                '        DataGridView1.Columns(10).Visible = False
+                '        DataGridView1.Columns(11).Visible = False
+                '        DataGridView1.Columns(12).Visible = False
+                '        DataGridView1.Columns(13).Visible = False
+                '        DataGridView1.Columns(14).Visible = False
+
+                '    Case Else
+                '        Label17.Visible = False
+                '        Label18.Visible = False
+                '        Label19.Visible = False
+                '        Exit Sub
+
+            Case 2
+                If usuario > 1 Then
+                    Cargar_muestras(usuario)
+                Else
+                    Cargar_MuestrasBandejas_Admin()
+                End If
+                Exit Sub
+            Case 3
+                If usuario > 1 Then
+                    Cargar_bandejas(usuario)
+                Else
+                    Cargar_MuestrasBandejas_Admin()
+                End If
+                Exit Sub
+        End Select
+    End Sub
+
+    Private Sub Button1_Click_1(sender As Object, e As EventArgs) Handles Button1.Click
+
+        If conectado = 1 Then
+            ComboBox7.Text = Nothing
+            TextBox4.Text = Nothing
+            Dim usuario As Integer
+            If ComboBox6.Text = " " Then
+                usuario = 1
+            Else
+                usuario = ComboBox6.SelectedValue
+            End If
+            If usuario > 1 Then
+                Cargar_muestras(usuario)
+                Cargar_bandejas(usuario)
+            Else
+                Cargar_MuestrasBandejas_Admin()
+                Cargar()
+            End If
+        Else MsgBox("No hay sesion activa", False, "Error")
+        End If
 
     End Sub
 End Class
