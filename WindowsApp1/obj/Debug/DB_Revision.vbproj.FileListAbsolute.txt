@@ -5,11 +5,11 @@ C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\bin\Debug\Revisiones 1.1.x
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\bin\Debug\MySql.Data.dll
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\bin\Debug\MySql.Data.xml
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\DB_Revision.vbprojResolveAssemblyReference.cache
-C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.Form1.resources
-C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.Form2.resources
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.Resources.resources
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\DB_Revision.vbproj.GenerateResource.Cache
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\DB_Revision.vbproj.CoreCompileInputs.cache
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\Revisiones 1.1.exe
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\Revisiones 1.1.xml
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\Revisiones 1.1.pdb
+C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.MainForm.resources
+C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.FormContraseña.resources

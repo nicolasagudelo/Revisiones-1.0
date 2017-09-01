@@ -22,16 +22,5 @@ Revisiones 1.1
   búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
 </summary>
 </member>
-<member name="M:WindowsApp1.Form1.PrintDocument1_PrintPage(System.Object,System.Drawing.Printing.PrintPageEventArgs)">
- <summary>
- this is the actual printing routine.
- using the pagedetails i calculated earlier, it prints a title,
- + as much of the datagridview as will fit on 1 page, then moves to the next page.
- this is setup to be dynamic. try resizing the dgv columns or rows
- </summary>
- <param name="sender"></param>
- <param name="e"></param>
- <remarks></remarks>
-</member>
 </members>
 </doc>
