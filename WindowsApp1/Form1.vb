@@ -3,6 +3,900 @@ Public Class Form1
     Implements IMessageFilter
     Dim conn As New MySqlConnection
 
+    Private Structure pageDetails
+        Dim columns As Integer
+        Dim rows As Integer
+        Dim startCol As Integer
+        Dim startRow As Integer
+    End Structure
+
+    Private pages As Dictionary(Of Integer, pageDetails)
+
+    Dim maxPagesWide As Integer
+    Dim maxPagesTall As Integer
+
+    Private Sub btnPreview_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPreview.Click
+        Try
+            Dim pod As New PrintDialog
+            pod.Document = PrintDocument1
+            pod.ShowDialog()
+            Dim ppd As New PrintPreviewDialog
+            ppd.WindowState = FormWindowState.Maximized
+            ppd.Document = PrintDocument1
+            ppd.ShowDialog()
+        Catch ex As Exception
+            Exit Sub
+        End Try
+    End Sub
+
+    Private Sub PrintDocument1_BeginPrint(ByVal sender As Object, ByVal e As System.Drawing.Printing.PrintEventArgs) Handles PrintDocument1.BeginPrint
+        Select Case Pest_actual
+            Case 1
+                PrintDocument1.OriginAtMargins = True
+                PrintDocument1.DefaultPageSettings.Margins = New Drawing.Printing.Margins(0, 0, 0, 0)
+
+                pages = New Dictionary(Of Integer, pageDetails)
+                Dim maxHeight As Integer = CInt(PrintDocument1.DefaultPageSettings.Bounds.Height)
+                Dim maxWidth As Integer = CInt(PrintDocument1.DefaultPageSettings.Bounds.Width)
+                'Dim maxWidth As Integer = CInt(PrintDocument1.DefaultPageSettings.PrintableArea.Width) - 40
+                'Dim maxHeight As Integer = CInt(PrintDocument1.DefaultPageSettings.PrintableArea.Height) - 40 + Label1.Height
+
+                Dim pageCounter As Integer = 0
+                pages.Add(pageCounter, New pageDetails)
+
+                Dim columnCounter As Integer = 0
+
+                Dim columnSum As Integer = DataGridView1.RowHeadersWidth
+
+                Dim tabla_actual = Label22.Text
+
+                If tabla_actual = "Analistas" Then
+                    For c As Integer = 1 To DataGridView1.Columns.Count - 1
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = DataGridView1.Columns.Count - 1 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+
+                ElseIf tabla_actual = "Pruebas" Then
+                    For c As Integer = 1 To DataGridView1.Columns.Count - 1
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = DataGridView1.Columns.Count - 1 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+                ElseIf tabla_actual = "Relacion Analistas Pruebas" Then
+                    For c As Integer = 0 To DataGridView1.Columns.Count - 1
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = DataGridView1.Columns.Count - 1 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+                ElseIf tabla_actual = "Muestras Asignadas" Then
+                    For c As Integer = 0 To 8
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = 8 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+                ElseIf tabla_actual = "Muestras no Asignadas" Then
+                    For c As Integer = 0 To 7
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = 7 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+                ElseIf tabla_actual = "Bandejas Asignadas" Then
+                    For c As Integer = 0 To 8
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = 8 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+                ElseIf tabla_actual = "Bandejas no Asignadas" Then
+                    For c As Integer = 0 To 7
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = 7 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+                ElseIf tabla_actual = "Historial de Muestras" Then
+
+                    For c As Integer = 0 To 8
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = 8 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+                ElseIf tabla_actual = "Historial de Bandejas" Then
+
+                    For c As Integer = 0 To 8
+                        If columnSum + DataGridView1.Columns(c).Width < maxWidth Then
+                            columnSum += DataGridView1.Columns(c).Width
+                            columnCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            columnSum = DataGridView1.RowHeadersWidth + DataGridView1.Columns(c).Width
+                            columnCounter = 1
+                            pageCounter += 1
+                            pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                        End If
+                        If c = 8 Then
+                            If pages(pageCounter).columns = 0 Then
+                                pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                            End If
+                        End If
+                    Next
+                    maxPagesWide = pages.Keys.Max + 1
+
+                    pageCounter = 0
+
+                    Dim rowCounter As Integer = 0
+
+                    Dim rowSum As Integer = DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = 0 To DataGridView1.Rows.Count - 2
+                        If rowSum + DataGridView1.Rows(r).Height < maxHeight Then
+                            rowSum += DataGridView1.Rows(r).Height
+                            rowCounter += 1
+                        Else
+                            pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                            For x As Integer = 1 To maxPagesWide - 1
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                            Next
+
+                            pageCounter += maxPagesWide
+                            For x As Integer = 0 To maxPagesWide - 1
+                                pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                            Next
+
+                            rowSum = DataGridView1.ColumnHeadersHeight + DataGridView1.Rows(r).Height
+                            rowCounter = 1
+                        End If
+                        If r = DataGridView1.Rows.Count - 2 Then
+                            For x As Integer = 0 To maxPagesWide - 1
+                                If pages(pageCounter + x).rows = 0 Then
+                                    pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    maxPagesTall = pages.Count \ maxPagesWide
+                End If
+
+
+                Exit Sub
+
+            Case 2
+                PrintDocument1.OriginAtMargins = True
+                PrintDocument1.DefaultPageSettings.Margins = New Drawing.Printing.Margins(0, 0, 0, 0)
+
+                pages = New Dictionary(Of Integer, pageDetails)
+
+                Dim maxWidth As Integer = CInt(PrintDocument1.DefaultPageSettings.PrintableArea.Width) - 40
+                Dim maxHeight As Integer = CInt(PrintDocument1.DefaultPageSettings.PrintableArea.Height) - 40 + Label1.Height
+
+                Dim pageCounter As Integer = 0
+                pages.Add(pageCounter, New pageDetails)
+
+                Dim columnCounter As Integer = 0
+
+                Dim columnSum As Integer = DataGridView2.RowHeadersWidth
+
+                For c As Integer = 0 To 3
+                    If columnSum + DataGridView2.Columns(c).Width < maxWidth Then
+                        columnSum += DataGridView2.Columns(c).Width
+                        columnCounter += 1
+                    Else
+                        pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                        columnSum = DataGridView2.RowHeadersWidth + DataGridView2.Columns(c).Width
+                        columnCounter = 1
+                        pageCounter += 1
+                        pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                    End If
+                    If c = 3 Then
+                        If pages(pageCounter).columns = 0 Then
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                        End If
+                    End If
+                Next
+                maxPagesWide = pages.Keys.Max + 1
+
+                pageCounter = 0
+
+                Dim rowCounter As Integer = 0
+
+                Dim rowSum As Integer = DataGridView2.ColumnHeadersHeight
+
+                For r As Integer = 0 To DataGridView2.Rows.Count - 2
+                    If rowSum + DataGridView2.Rows(r).Height < maxHeight Then
+                        rowSum += DataGridView2.Rows(r).Height
+                        rowCounter += 1
+                    Else
+                        pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                        For x As Integer = 1 To maxPagesWide - 1
+                            pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                        Next
+
+                        pageCounter += maxPagesWide
+                        For x As Integer = 0 To maxPagesWide - 1
+                            pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                        Next
+
+                        rowSum = DataGridView2.ColumnHeadersHeight + DataGridView2.Rows(r).Height
+                        rowCounter = 1
+                    End If
+                    If r = DataGridView2.Rows.Count - 2 Then
+                        For x As Integer = 0 To maxPagesWide - 1
+                            If pages(pageCounter + x).rows = 0 Then
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                            End If
+                        Next
+                    End If
+                Next
+
+                maxPagesTall = pages.Count \ maxPagesWide
+                Exit Sub
+
+            Case 3
+                PrintDocument1.OriginAtMargins = True
+                PrintDocument1.DefaultPageSettings.Margins = New Drawing.Printing.Margins(0, 0, 0, 0)
+
+                pages = New Dictionary(Of Integer, pageDetails)
+
+                Dim maxWidth As Integer = CInt(PrintDocument1.DefaultPageSettings.PrintableArea.Width) - 40
+                Dim maxHeight As Integer = CInt(PrintDocument1.DefaultPageSettings.PrintableArea.Height) - 40 + Label1.Height
+
+                Dim pageCounter As Integer = 0
+                pages.Add(pageCounter, New pageDetails)
+
+                Dim columnCounter As Integer = 0
+
+                Dim columnSum As Integer = DataGridView3.RowHeadersWidth
+
+                For c As Integer = 0 To 3
+                    If columnSum + DataGridView3.Columns(c).Width < maxWidth Then
+                        columnSum += DataGridView3.Columns(c).Width
+                        columnCounter += 1
+                    Else
+                        pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                        columnSum = DataGridView3.RowHeadersWidth + DataGridView3.Columns(c).Width
+                        columnCounter = 1
+                        pageCounter += 1
+                        pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                    End If
+                    If c = 3 Then
+                        If pages(pageCounter).columns = 0 Then
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                        End If
+                    End If
+                Next
+                maxPagesWide = pages.Keys.Max + 1
+
+                pageCounter = 0
+
+                Dim rowCounter As Integer = 0
+
+                Dim rowSum As Integer = DataGridView3.ColumnHeadersHeight
+
+                For r As Integer = 0 To DataGridView3.Rows.Count - 2
+                    If rowSum + DataGridView3.Rows(r).Height < maxHeight Then
+                        rowSum += DataGridView3.Rows(r).Height
+                        rowCounter += 1
+                    Else
+                        pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                        For x As Integer = 1 To maxPagesWide - 1
+                            pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                        Next
+
+                        pageCounter += maxPagesWide
+                        For x As Integer = 0 To maxPagesWide - 1
+                            pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                        Next
+
+                        rowSum = DataGridView3.ColumnHeadersHeight + DataGridView3.Rows(r).Height
+                        rowCounter = 1
+                    End If
+                    If r = DataGridView3.Rows.Count - 2 Then
+                        For x As Integer = 0 To maxPagesWide - 1
+                            If pages(pageCounter + x).rows = 0 Then
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                            End If
+                        Next
+                    End If
+                Next
+
+                maxPagesTall = pages.Count \ maxPagesWide
+                Exit Sub
+            Case Else
+                Exit Sub
+
+        End Select
+
+    End Sub
+
+    Private Sub PrintDocument1_PrintPage(ByVal sender As System.Object, ByVal e As System.Drawing.Printing.PrintPageEventArgs) Handles PrintDocument1.PrintPage
+
+        Select Case Pest_actual
+            Case 1
+                Dim rect As New Rectangle(20, 20, CInt(PrintDocument1.DefaultPageSettings.Bounds.Width), Label1.Height)
+                Dim sf As New StringFormat
+                sf.Alignment = StringAlignment.Center
+                sf.LineAlignment = StringAlignment.Center
+                Label1.Text = Label22.Text
+                e.Graphics.DrawString(Label1.Text, Label1.Font, Brushes.Black, rect, sf)
+
+                sf.Alignment = StringAlignment.Near
+
+                Dim startX As Integer = 50
+                Dim startY As Integer = rect.Bottom
+
+                Static startPage As Integer = 0
+
+                For p As Integer = startPage To pages.Count - 1
+                    PrintDocument1.DefaultPageSettings.Landscape = True
+                    Dim cell As New Rectangle(startX, startY, DataGridView1.RowHeadersWidth, DataGridView1.ColumnHeadersHeight)
+                    e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                    e.Graphics.DrawRectangle(Pens.Black, cell)
+
+                    startY += DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = pages(p).startRow To pages(p).startRow + pages(p).rows - 1
+                        cell = New Rectangle(startX, startY, DataGridView1.RowHeadersWidth, DataGridView1.Rows(r).Height)
+                        e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                        e.Graphics.DrawRectangle(Pens.Black, cell)
+                        'e.Graphics.DrawString(DataGridView1.Rows(r).HeaderCell.Value.ToString, DataGridView1.Font, Brushes.Black, cell, sf)
+                        startY += DataGridView1.Rows(r).Height
+                    Next
+
+                    startX += cell.Width
+                    startY = rect.Bottom
+
+                    For c As Integer = pages(p).startCol To pages(p).startCol + pages(p).columns - 1
+                        cell = New Rectangle(startX, startY, DataGridView1.Columns(c).Width, DataGridView1.ColumnHeadersHeight)
+                        e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                        e.Graphics.DrawRectangle(Pens.Black, cell)
+                        e.Graphics.DrawString(DataGridView1.Columns(c).HeaderCell.Value.ToString, DataGridView1.Font, Brushes.Black, cell, sf)
+                        startX += DataGridView1.Columns(c).Width
+                    Next
+
+                    startY = rect.Bottom + DataGridView1.ColumnHeadersHeight
+
+                    For r As Integer = pages(p).startRow To pages(p).startRow + pages(p).rows - 1
+                        startX = 50 + DataGridView1.RowHeadersWidth
+                        For c As Integer = pages(p).startCol To pages(p).startCol + pages(p).columns - 1
+                            cell = New Rectangle(startX, startY, DataGridView1.Columns(c).Width, DataGridView1.Rows(r).Height)
+                            e.Graphics.DrawRectangle(Pens.Black, cell)
+                            e.Graphics.DrawString(DataGridView1(c, r).Value.ToString, DataGridView1.Font, Brushes.Black, cell, sf)
+                            startX += DataGridView1.Columns(c).Width
+                        Next
+                        startY += DataGridView1.Rows(r).Height
+                    Next
+
+                    If p <> pages.Count - 1 Then
+                        startPage = p + 1
+                        e.HasMorePages = True
+                        Return
+                    Else
+                        startPage = 0
+                    End If
+
+                Next
+                Exit Sub
+            Case 2
+                Dim rect As New Rectangle(20, 20, CInt(PrintDocument1.DefaultPageSettings.Bounds.Width), Label1.Height)
+                Dim sf As New StringFormat
+                sf.Alignment = StringAlignment.Center
+                sf.LineAlignment = StringAlignment.Center
+                Label1.Text = Label21.Text
+
+                e.Graphics.DrawString(Label1.Text, Label1.Font, Brushes.Black, rect, sf)
+
+                sf.Alignment = StringAlignment.Near
+
+                Dim startX As Integer = 50
+                Dim startY As Integer = rect.Bottom
+
+                Static startpage2 As Integer = 0
+
+                For p As Integer = startpage2 To pages.Count - 1
+                    Dim cell As New Rectangle(startX, startY, DataGridView2.RowHeadersWidth, DataGridView2.ColumnHeadersHeight)
+                    e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                    e.Graphics.DrawRectangle(Pens.Black, cell)
+
+                    startY += DataGridView2.ColumnHeadersHeight
+
+                    For r As Integer = pages(p).startRow To pages(p).startRow + pages(p).rows - 1
+                        cell = New Rectangle(startX, startY, DataGridView2.RowHeadersWidth, DataGridView2.Rows(r).Height)
+                        e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                        e.Graphics.DrawRectangle(Pens.Black, cell)
+                        'e.Graphics.DrawString(datagridview2.Rows(r).HeaderCell.Value.ToString, datagridview2.Font, Brushes.Black, cell, sf)
+                        startY += DataGridView2.Rows(r).Height
+                    Next
+
+                    startX += cell.Width
+                    startY = rect.Bottom
+
+                    For c As Integer = pages(p).startCol To pages(p).startCol + pages(p).columns - 1
+                        cell = New Rectangle(startX, startY, DataGridView2.Columns(c).Width, DataGridView2.ColumnHeadersHeight)
+                        e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                        e.Graphics.DrawRectangle(Pens.Black, cell)
+                        e.Graphics.DrawString(DataGridView2.Columns(c).HeaderCell.Value.ToString, DataGridView2.Font, Brushes.Black, cell, sf)
+                        startX += DataGridView2.Columns(c).Width
+                    Next
+
+                    startY = rect.Bottom + DataGridView2.ColumnHeadersHeight
+
+                    For r As Integer = pages(p).startRow To pages(p).startRow + pages(p).rows - 1
+                        startX = 50 + DataGridView2.RowHeadersWidth
+                        For c As Integer = pages(p).startCol To pages(p).startCol + pages(p).columns - 1
+                            cell = New Rectangle(startX, startY, DataGridView2.Columns(c).Width, DataGridView2.Rows(r).Height)
+                            e.Graphics.DrawRectangle(Pens.Black, cell)
+                            e.Graphics.DrawString(DataGridView2(c, r).Value.ToString, DataGridView2.Font, Brushes.Black, cell, sf)
+                            startX += DataGridView2.Columns(c).Width
+                        Next
+                        startY += DataGridView2.Rows(r).Height
+                    Next
+
+                    If p <> pages.Count - 1 Then
+                        startpage2 = p + 1
+                        e.HasMorePages = True
+                        Return
+                    Else
+                        startpage2 = 0
+                    End If
+
+                Next
+                Exit Sub
+            Case 3
+                Dim rect As New Rectangle(20, 20, CInt(PrintDocument1.DefaultPageSettings.Bounds.Width), Label1.Height)
+                Dim sf As New StringFormat
+                sf.Alignment = StringAlignment.Center
+                sf.LineAlignment = StringAlignment.Center
+                Label1.Text = Label20.Text
+                e.Graphics.DrawString(Label1.Text, Label1.Font, Brushes.Black, rect, sf)
+
+                sf.Alignment = StringAlignment.Near
+
+                Dim startX As Integer = 50
+                Dim startY As Integer = rect.Bottom
+
+                Static startpage3 As Integer = 0
+
+                For p As Integer = startpage3 To pages.Count - 1
+                    Dim cell As New Rectangle(startX, startY, DataGridView3.RowHeadersWidth, DataGridView3.ColumnHeadersHeight)
+                    e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                    e.Graphics.DrawRectangle(Pens.Black, cell)
+
+                    startY += DataGridView3.ColumnHeadersHeight
+
+                    For r As Integer = pages(p).startRow To pages(p).startRow + pages(p).rows - 1
+                        cell = New Rectangle(startX, startY, DataGridView3.RowHeadersWidth, DataGridView3.Rows(r).Height)
+                        e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                        e.Graphics.DrawRectangle(Pens.Black, cell)
+                        'e.Graphics.DrawString(datagridview3.Rows(r).HeaderCell.Value.ToString, datagridview3.Font, Brushes.Black, cell, sf)
+                        startY += DataGridView3.Rows(r).Height
+                    Next
+
+                    startX += cell.Width
+                    startY = rect.Bottom
+
+                    For c As Integer = pages(p).startCol To pages(p).startCol + pages(p).columns - 1
+                        cell = New Rectangle(startX, startY, DataGridView3.Columns(c).Width, DataGridView3.ColumnHeadersHeight)
+                        e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                        e.Graphics.DrawRectangle(Pens.Black, cell)
+                        e.Graphics.DrawString(DataGridView3.Columns(c).HeaderCell.Value.ToString, DataGridView3.Font, Brushes.Black, cell, sf)
+                        startX += DataGridView3.Columns(c).Width
+                    Next
+
+                    startY = rect.Bottom + DataGridView3.ColumnHeadersHeight
+
+                    For r As Integer = pages(p).startRow To pages(p).startRow + pages(p).rows - 1
+                        startX = 50 + DataGridView3.RowHeadersWidth
+                        For c As Integer = pages(p).startCol To pages(p).startCol + pages(p).columns - 1
+                            cell = New Rectangle(startX, startY, DataGridView3.Columns(c).Width, DataGridView3.Rows(r).Height)
+                            e.Graphics.DrawRectangle(Pens.Black, cell)
+                            e.Graphics.DrawString(DataGridView3(c, r).Value.ToString, DataGridView3.Font, Brushes.Black, cell, sf)
+                            startX += DataGridView3.Columns(c).Width
+                        Next
+                        startY += DataGridView3.Rows(r).Height
+                    Next
+
+                    If p <> pages.Count - 1 Then
+                        startpage3 = p + 1
+                        e.HasMorePages = True
+                        Return
+                    Else
+                        startpage3 = 0
+                    End If
+
+                Next
+                Exit Sub
+            Case Else
+                Exit Sub
+        End Select
+
+
+    End Sub
+
     Public Sub New()
         InitializeComponent()
         Application.AddMessageFilter(Me)
@@ -10,7 +904,7 @@ Public Class Form1
     End Sub
 
     Public Function PreFilterMessage(ByRef m As Message) As Boolean Implements IMessageFilter.PreFilterMessage
-        '' Retrigger timer on keyboard and mouse messages
+        'Reinicio del timer cuando se detecta uso del teclado o mouse
         If (m.Msg >= &H100 And m.Msg <= &H109) Or (m.Msg >= &H200 And m.Msg <= &H20E) Then
             Timer1.Stop()
             Timer1.Start()
@@ -643,115 +1537,115 @@ Public Class Form1
 
                         Dim fila_actual As Integer = (DataGridView2.CurrentRow.Index)
 
-                            Dim at As Integer = DataGridView2.RowCount
-                            If fila_actual = at Then
-                                Exit Sub
-                            End If
-                            If IsDBNull(DataGridView2(14, fila_actual).Value) Then
-                                Dim t_total As String
-                                Dim fecha_creacion As String
-                                Dim fecha_creacion_datetime As DateTime
-                                fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
-                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
-                                t_total = (fecha_actual_datetime - fecha_creacion_datetime).ToString
-                                Label19.ForeColor = Color.Red
-                                Label19.Visible = True
-                                Label19.Text = "Tiempo Total: " & t_total
-                            Else
-                                Dim t_total As String
-                                Dim fecha_terminado As String
-                                Dim fecha_terminado_datetime As DateTime
-                                Dim fecha_creacion As String
-                                Dim fecha_creacion_datetime As DateTime
-                                fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
-                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
-                                fecha_terminado = DataGridView2(14, fila_actual).Value.ToString
-                                fecha_terminado_datetime = Convert.ToDateTime(fecha_terminado)
-                                t_total = (fecha_terminado_datetime - fecha_creacion_datetime).ToString
-                                Label19.ForeColor = Color.Green
-                                Label19.Text = "Tiempo Total: " & t_total
-                                Label19.Visible = True
-                            End If
-
-                            If IsDBNull(DataGridView2(10, fila_actual).Value) Then
-                                Dim fecha_creacion As String
-                                Dim fecha_creacion_datetime As DateTime
-                                fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
-                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
-                                Label17.ForeColor = Color.Red
-                                Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
-                            Else
-                                Dim fecha_asignacion As String
-                                Dim fecha_asignacion_datetime As DateTime
-                                Dim fecha_creacion As String
-                                Dim fecha_creacion_datetime As DateTime
-                                fecha_asignacion = DataGridView2(10, fila_actual).Value.ToString()
-                                fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
-                                fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
-                                fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
-                                Label17.ForeColor = Color.Green
-                                Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
-                            End If
-
-                            If IsDBNull(DataGridView2(11, fila_actual).Value) Then
-                                Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
-                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
-                                Dim t_verificacion As String = (fecha_actual_datetime - fecha_asignacion_datetime).ToString()
-                                Label18.ForeColor = Color.Red
-                                Label18.Text = "Tiempo Verificacion: " & t_verificacion
-                                Label18.Visible = True
-                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And IsDBNull(DataGridView2(12, fila_actual).Value) And IsDBNull(DataGridView2(13, fila_actual).Value) And IsDBNull(DataGridView2(7, fila_actual).Value) Then
-                                Dim fecha_verificacion_string As String = DataGridView2(11, fila_actual).Value.ToString()
-                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
-                                Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
-                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
-                                Label18.ForeColor = Color.DarkGoldenrod
-                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
-                                Label18.Visible = True
-                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And IsDBNull(DataGridView2(12, fila_actual).Value) And IsDBNull(DataGridView2(13, fila_actual).Value) And (DataGridView2(7, fila_actual).Value.ToString() = "Si") Then
-                                Dim fecha_verificacion_string As String = DataGridView2(11, fila_actual).Value.ToString()
-                                Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
-                                Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
-                                Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
-                                Label18.ForeColor = Color.Green
-                                Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
-                                Label18.Visible = True
-                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And IsDBNull(DataGridView2(13, fila_actual).Value) And (DataGridView2(7, fila_actual).Value.ToString() = "No") Then
-                                Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
-                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
-                                Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
-                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
-                                Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
-                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
-                                Label18.ForeColor = Color.Red
-                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_actual_datetime - fecha_asignacion2_datetime)).ToString()
-                                Label18.Visible = True
-                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And (Not IsDBNull(DataGridView2(13, fila_actual).Value)) And IsDBNull(DataGridView2(7, fila_actual).Value) Then
-                                Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
-                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
-                                Dim fecha_verificacion2 As String = DataGridView2(13, fila_actual).Value.ToString()
-                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
-                                Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
-                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
-                                Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
-                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
-                                Label18.ForeColor = Color.DarkGoldenrod
-                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
-                                Label18.Visible = True
-                            ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And (Not IsDBNull(DataGridView2(13, fila_actual).Value)) And (Not IsDBNull(DataGridView2(7, fila_actual).Value)) Then
-                                Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
-                                Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
-                                Dim fecha_verificacion2 As String = DataGridView2(13, fila_actual).Value.ToString()
-                                Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
-                                Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
-                                Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
-                                Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
-                                Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
-                                Label18.ForeColor = Color.Green
-                                Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
-                                Label18.Visible = True
-                            End If
+                        Dim at As Integer = DataGridView2.RowCount
+                        If fila_actual = at Then
+                            Exit Sub
                         End If
+                        If IsDBNull(DataGridView2(14, fila_actual).Value) Then
+                            Dim t_total As String
+                            Dim fecha_creacion As String
+                            Dim fecha_creacion_datetime As DateTime
+                            fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
+                            fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                            t_total = (fecha_actual_datetime - fecha_creacion_datetime).ToString
+                            Label19.ForeColor = Color.Red
+                            Label19.Visible = True
+                            Label19.Text = "Tiempo Total: " & t_total
+                        Else
+                            Dim t_total As String
+                            Dim fecha_terminado As String
+                            Dim fecha_terminado_datetime As DateTime
+                            Dim fecha_creacion As String
+                            Dim fecha_creacion_datetime As DateTime
+                            fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
+                            fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                            fecha_terminado = DataGridView2(14, fila_actual).Value.ToString
+                            fecha_terminado_datetime = Convert.ToDateTime(fecha_terminado)
+                            t_total = (fecha_terminado_datetime - fecha_creacion_datetime).ToString
+                            Label19.ForeColor = Color.Green
+                            Label19.Text = "Tiempo Total: " & t_total
+                            Label19.Visible = True
+                        End If
+
+                        If IsDBNull(DataGridView2(10, fila_actual).Value) Then
+                            Dim fecha_creacion As String
+                            Dim fecha_creacion_datetime As DateTime
+                            fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
+                            fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                            Label17.ForeColor = Color.Red
+                            Label17.Text = "Tiempo Asignacion: " & (fecha_actual_datetime - fecha_creacion_datetime).ToString()
+                        Else
+                            Dim fecha_asignacion As String
+                            Dim fecha_asignacion_datetime As DateTime
+                            Dim fecha_creacion As String
+                            Dim fecha_creacion_datetime As DateTime
+                            fecha_asignacion = DataGridView2(10, fila_actual).Value.ToString()
+                            fecha_asignacion_datetime = Convert.ToDateTime(fecha_asignacion)
+                            fecha_creacion = DataGridView2(9, fila_actual).Value.ToString
+                            fecha_creacion_datetime = Convert.ToDateTime(fecha_creacion)
+                            Label17.ForeColor = Color.Green
+                            Label17.Text = "Tiempo Asignacion: " & (fecha_asignacion_datetime - fecha_creacion_datetime).ToString()
+                        End If
+
+                        If IsDBNull(DataGridView2(11, fila_actual).Value) Then
+                            Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                            Dim t_verificacion As String = (fecha_actual_datetime - fecha_asignacion_datetime).ToString()
+                            Label18.ForeColor = Color.Red
+                            Label18.Text = "Tiempo Verificacion: " & t_verificacion
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And IsDBNull(DataGridView2(12, fila_actual).Value) And IsDBNull(DataGridView2(13, fila_actual).Value) And IsDBNull(DataGridView2(7, fila_actual).Value) Then
+                            Dim fecha_verificacion_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                            Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                            Label18.ForeColor = Color.DarkGoldenrod
+                            Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And IsDBNull(DataGridView2(12, fila_actual).Value) And IsDBNull(DataGridView2(13, fila_actual).Value) And (DataGridView2(7, fila_actual).Value.ToString() = "Si") Then
+                            Dim fecha_verificacion_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion_datetime As DateTime = Convert.ToDateTime(fecha_verificacion_string)
+                            Dim fecha_asignacion As String = DataGridView2(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion_datetime As DateTime = Convert.ToDateTime(fecha_asignacion)
+                            Label18.ForeColor = Color.Green
+                            Label18.Text = "Tiempo Verificacion: " & (fecha_verificacion_datetime - fecha_asignacion_datetime).ToString()
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And IsDBNull(DataGridView2(13, fila_actual).Value) And (DataGridView2(7, fila_actual).Value.ToString() = "No") Then
+                            Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                            Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                            Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
+                            Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                            Label18.ForeColor = Color.Red
+                            Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_actual_datetime - fecha_asignacion2_datetime)).ToString()
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And (Not IsDBNull(DataGridView2(13, fila_actual).Value)) And IsDBNull(DataGridView2(7, fila_actual).Value) Then
+                            Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                            Dim fecha_verificacion2 As String = DataGridView2(13, fila_actual).Value.ToString()
+                            Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                            Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                            Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
+                            Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                            Label18.ForeColor = Color.DarkGoldenrod
+                            Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                            Label18.Visible = True
+                        ElseIf (Not IsDBNull(DataGridView2(11, fila_actual).Value)) And (Not IsDBNull(DataGridView2(12, fila_actual).Value)) And (Not IsDBNull(DataGridView2(13, fila_actual).Value)) And (Not IsDBNull(DataGridView2(7, fila_actual).Value)) Then
+                            Dim fecha_verificacion1_string As String = DataGridView2(11, fila_actual).Value.ToString()
+                            Dim fecha_verificacion1_datetime As DateTime = Convert.ToDateTime(fecha_verificacion1_string)
+                            Dim fecha_verificacion2 As String = DataGridView2(13, fila_actual).Value.ToString()
+                            Dim fecha_verificacion2_datetime As DateTime = Convert.ToDateTime(fecha_verificacion2)
+                            Dim fecha_asignacion1 As String = DataGridView2(10, fila_actual).Value.ToString()
+                            Dim fecha_asignacion1_datetime As DateTime = Convert.ToDateTime(fecha_asignacion1)
+                            Dim fecha_asignacion2 As String = DataGridView2(12, fila_actual).Value.ToString()
+                            Dim fecha_asignacion2_datetime As DateTime = Convert.ToDateTime(fecha_asignacion2)
+                            Label18.ForeColor = Color.Green
+                            Label18.Text = "Tiempo Verificacion: " & ((fecha_verificacion1_datetime - fecha_asignacion1_datetime) + (fecha_verificacion2_datetime - fecha_asignacion2_datetime)).ToString()
+                            Label18.Visible = True
+                        End If
+                    End If
                 Catch ex As Exception
                 End Try
             Case 3 'Pestaña Bandejas
@@ -1262,6 +2156,7 @@ Public Class Form1
             table.Load(reader)
             DataGridView1.DataSource = table
             DataGridView1.ReadOnly = True
+            DataGridView1.AllowUserToResizeColumns = True
             DataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect
 
             reader.Close()
@@ -2141,6 +3036,8 @@ Public Class Form1
                 Button11.Enabled = False
                 TextBox4.Visible = True
                 Label4.Visible = True
+                DataGridView2.Rows(0).Selected = True
+                DataGridView3.Rows(0).Selected = True
             Else
                 MsgBox("Constraseña Incorrecta")
                 Exit Sub
@@ -2624,7 +3521,17 @@ Public Class Form1
             MsgBox("No existen Muestras para revisar actualmente")
             Exit Sub
         End If
+
+        Try
+            Dim fila = DataGridView2.CurrentRow.Index
+        Catch ex As Exception
+            MsgBox("Seleccione una fila", False, "Error")
+            Exit Sub
+        End Try
+
         Dim fila_actual As Integer = (DataGridView2.CurrentRow.Index)
+
+
         Dim analista As Integer = ComboBox6.SelectedValue
         If IsDBNull(DataGridView2(8, fila_actual).Value) Then
             t_asignacion = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
@@ -2678,6 +3585,14 @@ Public Class Form1
             MsgBox("No existen Bandejas para revisar actualmente")
             Exit Sub
         End If
+
+        Try
+            Dim fila = DataGridView3.CurrentRow.Index
+        Catch ex As Exception
+            MsgBox("Seleccione una fila", False, "Error")
+            Exit Sub
+        End Try
+
         Dim fila_actual As Integer = (DataGridView3.CurrentRow.Index)
         Dim analista As Integer = ComboBox6.SelectedValue
         If IsDBNull(DataGridView3(8, fila_actual).Value) Then
@@ -2726,27 +3641,31 @@ Public Class Form1
     End Sub
 
     Private Sub Button12_Click(sender As Object, e As EventArgs) Handles Button12.Click
-        ComboBox6.Enabled = True
-        TextBox4.Text = Nothing
-        TextBox4.Visible = False
-        ComboBox7.Text = Nothing
-        ComboBox7.Visible = False
-        Button16.Visible = False
-        Label4.Visible = False
-        Button15.Enabled = True
-        Button11.Enabled = True
-        TabControl1.TabPages.Remove(TabPage1)
-        ComboBox6.Text = " "
-        MsgBox("Desconectado", False, "Log-Out")
-        conectado = 0
-        DataGridView2.Visible = False
-        DataGridView3.Visible = False
-        DataGridView2.DataSource = Nothing
-        DataGridView2.Rows.Clear()
-        DataGridView3.DataSource = Nothing
-        DataGridView3.Rows.Clear()
-        GroupBox4.Visible = False
-        GroupBox5.Visible = False
+        If conectado = 1 Then
+            ComboBox6.Enabled = True
+            TextBox4.Text = Nothing
+            TextBox4.Visible = False
+            ComboBox7.Text = Nothing
+            ComboBox7.Visible = False
+            Button16.Visible = False
+            Label4.Visible = False
+            Button15.Enabled = True
+            Button11.Enabled = True
+            TabControl1.TabPages.Remove(TabPage1)
+            ComboBox6.Text = " "
+            MsgBox("Desconectado", False, "Log-Out")
+            conectado = 0
+            DataGridView2.Visible = False
+            DataGridView3.Visible = False
+            DataGridView2.DataSource = Nothing
+            DataGridView2.Rows.Clear()
+            DataGridView3.DataSource = Nothing
+            DataGridView3.Rows.Clear()
+            GroupBox4.Visible = False
+            GroupBox5.Visible = False
+        Else
+            MsgBox("No hay sesión activa", False, "Error")
+        End If
     End Sub
     Dim conectado As Integer = 0
     Private Sub Button11_Click(sender As Object, e As EventArgs) Handles Button11.Click
@@ -3167,7 +4086,6 @@ Public Class Form1
 
     Private Sub textbox4_TextChanged(sender As Object, e As EventArgs) Handles TextBox4.TextChanged
 
-        Dim reader As MySqlDataReader
         Dim usuario As String
 
         If ComboBox6.Text = "" Then
@@ -3839,4 +4757,5 @@ Public Class Form1
         End If
 
     End Sub
+
 End Class

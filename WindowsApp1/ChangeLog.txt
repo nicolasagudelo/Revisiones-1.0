@@ -1,0 +1,36 @@
+Versión 1.1
+===================
+Publicada: 
+
+Cambios:
+
+* Se cambió el icono del botón de actualizar
+* El botón con el icono rojo ahora sirve para cerrar sesiones y no para cerrar el programa
+* El dialogo de impresión ahora muestra una vista previa del documento a imprimir
+* Se cambió la forma de imprimir para que ahora se imprima la tabla junto con los datos en lugar de únicamente los datos.
+* El ingreso de contraseña ahora es Case Sensitive y no permite que se vean los caracteres escritos
+* Se agregó un mensaje de bienvenida personalizado cuando un analista realiza su login
+* Ahora se pueden copiar los valores que aparecen en la pestaña de revisiones x prueba.
+* Se eliminaron algunos botones existentes en la versión anterior
+* Los filtros ahora pueden combinarse para filtrar por prueba y/o por número de muestra o bandeja.
+* Se agregó el color amarillo para el temer de tiempo de revisión este simboliza que el analista llevo a cabo la revisión, pero aún no ha sido aprobada por el administrador
+* El botón de Actualizar reinicia los filtros.
+* Agregados mensajes de error para ciertos escenarios
+* Se pueden llevar a cabo modificaciones con los filtros activos.
+* Se cambió el texto del antiguo botón "Actualizar" por "Conectar" Ahora es necesario oprimir este botón para llevar a cabo el login.
+* Se eliminó el botón de "Seleccionar Tabla" de la pestaña de administrador, ahora cuando se escoge la tabla esta carga inmediatamente.
+* Todas las tablas son read-only para evitar errores por modificar un valor dentro de la tabla misma, para cambiar los valores de las mismas (si se permite) se usarán los campos de texto y botones correspondientes a dicha tarea.
+* Se modificó el texto de algunos botones para que estos sean más claros respecto a la función que cumplen.
+* En el listado de tablas del administrador se dividieron las muestras y bandejas en 3 listados: "Muestras/Bandejas no Asignadas", "Muestras/Bandejas Asignadas", "Historial de Muestras/Bandejas" esto con el fin de facilitar al administrador la tarea de encontrar rápidamente lo que busca.
+* Si pasan los 5 minutos de inactividad, pero no hay ninguna sesión activa no aparecerá el mensaje de notificación que cierra la sesión.
+
+Correcciones:
+
+* Cuando se realiza una actualización en la tabla con un filtro activo ya no se reinician los filtros, estos se mantienen.
+* Se agregó la integridad referencial a la base de datos para no poder eliminar valores que estén relacionados en distintas tablas.
+* Se corrigió la manera en que funcionan los timers de las muestras, ahora el tiempo de revisión se detendrá cuando el analista lleve a cabo la primera revisión en caso de que se le asigne una segunda revisión este temer se reanudará donde termino después de la primera revisión.
+* Se corrigió el error que duplicaba el nombre de las tablas en el combobox en la pestaña de administrador
+* Ahora es posible que una muestra o bandeja pase a estado finalizado, aunque su campo "pasa" se "No" esto sucede cuando después de dos revisiones el administrador considera que la muestra/bandeja aun no cumple los requisitos para pasar, de este modo se deja constancia en el historial de esto.
+* Cuando se presiona el botón de cancelar mientras se ingresa la contraseña ya no aparecerá un mensaje de error de contraseña incorrecta, simplemente se volverá a la ventana principal.
+* La lista de tablas en la pestaña de administrador ya no presenta problemas cuando se quiere elegir otra tabla.
+* Se eliminó el problema que causaba que apareciese una nueva tabla tanto en la base de datos como en el listado de tablas.
