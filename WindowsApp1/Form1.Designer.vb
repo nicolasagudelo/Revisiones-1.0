@@ -23,12 +23,12 @@ Partial Class MainForm
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle19 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle20 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle21 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle22 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle23 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle24 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.BtnNuevoRegistro = New System.Windows.Forms.Button()
         Me.BtnModificarRegistro = New System.Windows.Forms.Button()
@@ -61,6 +61,8 @@ Partial Class MainForm
         Me.DGVBandejas = New System.Windows.Forms.DataGridView()
         Me.TabPageAdmin = New System.Windows.Forms.TabPage()
         Me.GroupBoxAdmin = New System.Windows.Forms.GroupBox()
+        Me.BtnSi = New System.Windows.Forms.Button()
+        Me.BtnNo = New System.Windows.Forms.Button()
         Me.PanelAdmin = New System.Windows.Forms.Panel()
         Me.ComboBox5 = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
@@ -96,8 +98,10 @@ Partial Class MainForm
         Me.Timer2 = New System.Windows.Forms.Timer(Me.components)
         Me.BtnRecargar = New System.Windows.Forms.Button()
         Me.btnPreviewPrint = New System.Windows.Forms.Button()
-        Me.BtnSi = New System.Windows.Forms.Button()
-        Me.BtnNo = New System.Windows.Forms.Button()
+        Me.LabelCambiarContraseña = New System.Windows.Forms.Label()
+        Me.TxBxContraseñaNueva = New System.Windows.Forms.TextBox()
+        Me.TxBxContraseñaAnterior = New System.Windows.Forms.TextBox()
+        Me.TxBxRespuestaForm3 = New System.Windows.Forms.TextBox()
         CType(Me.DGVAdmin, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBoxControlesTablas.SuspendLayout()
         Me.TabControl1.SuspendLayout()
@@ -118,7 +122,7 @@ Partial Class MainForm
         Me.BtnNuevoRegistro.Location = New System.Drawing.Point(11, 17)
         Me.BtnNuevoRegistro.Name = "BtnNuevoRegistro"
         Me.BtnNuevoRegistro.Size = New System.Drawing.Size(89, 39)
-        Me.BtnNuevoRegistro.TabIndex = 1
+        Me.BtnNuevoRegistro.TabIndex = 2
         Me.BtnNuevoRegistro.Text = "Nuevo Registro"
         Me.BtnNuevoRegistro.UseVisualStyleBackColor = True
         '
@@ -128,14 +132,14 @@ Partial Class MainForm
         Me.BtnModificarRegistro.Location = New System.Drawing.Point(106, 17)
         Me.BtnModificarRegistro.Name = "BtnModificarRegistro"
         Me.BtnModificarRegistro.Size = New System.Drawing.Size(89, 39)
-        Me.BtnModificarRegistro.TabIndex = 2
+        Me.BtnModificarRegistro.TabIndex = 3
         Me.BtnModificarRegistro.Text = "Modificar Registro"
         Me.BtnModificarRegistro.UseVisualStyleBackColor = True
         '
         'DGVAdmin
         '
-        DataGridViewCellStyle19.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DGVAdmin.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle19
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.DGVAdmin.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.DGVAdmin.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DGVAdmin.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
@@ -143,14 +147,14 @@ Partial Class MainForm
         Me.DGVAdmin.BackgroundColor = System.Drawing.Color.Azure
         Me.DGVAdmin.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DGVAdmin.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle20.BackColor = System.Drawing.SystemColors.ActiveBorder
-        DataGridViewCellStyle20.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        DataGridViewCellStyle20.ForeColor = System.Drawing.Color.Coral
-        DataGridViewCellStyle20.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle20.SelectionForeColor = System.Drawing.SystemColors.ControlDark
-        DataGridViewCellStyle20.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVAdmin.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle20
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.Coral
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlDark
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVAdmin.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.DGVAdmin.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVAdmin.Cursor = System.Windows.Forms.Cursors.Hand
         Me.DGVAdmin.GridColor = System.Drawing.Color.DarkRed
@@ -159,6 +163,7 @@ Partial Class MainForm
         Me.DGVAdmin.Name = "DGVAdmin"
         Me.DGVAdmin.Size = New System.Drawing.Size(1023, 299)
         Me.DGVAdmin.TabIndex = 3
+        Me.DGVAdmin.TabStop = False
         '
         'TxtBxFiltroRegistro
         '
@@ -166,7 +171,8 @@ Partial Class MainForm
         Me.TxtBxFiltroRegistro.Location = New System.Drawing.Point(1121, 478)
         Me.TxtBxFiltroRegistro.Name = "TxtBxFiltroRegistro"
         Me.TxtBxFiltroRegistro.Size = New System.Drawing.Size(132, 20)
-        Me.TxtBxFiltroRegistro.TabIndex = 25
+        Me.TxtBxFiltroRegistro.TabIndex = 13
+        Me.TxtBxFiltroRegistro.TabStop = False
         Me.TxtBxFiltroRegistro.Visible = False
         '
         'BtnEliminarRegistro
@@ -175,7 +181,7 @@ Partial Class MainForm
         Me.BtnEliminarRegistro.Location = New System.Drawing.Point(201, 17)
         Me.BtnEliminarRegistro.Name = "BtnEliminarRegistro"
         Me.BtnEliminarRegistro.Size = New System.Drawing.Size(78, 39)
-        Me.BtnEliminarRegistro.TabIndex = 3
+        Me.BtnEliminarRegistro.TabIndex = 4
         Me.BtnEliminarRegistro.Text = "Eliminar Registro"
         Me.BtnEliminarRegistro.UseVisualStyleBackColor = True
         '
@@ -189,7 +195,8 @@ Partial Class MainForm
         Me.CbBxTablas.Location = New System.Drawing.Point(16, 384)
         Me.CbBxTablas.Name = "CbBxTablas"
         Me.CbBxTablas.Size = New System.Drawing.Size(184, 21)
-        Me.CbBxTablas.TabIndex = 9
+        Me.CbBxTablas.TabIndex = 1
+        Me.CbBxTablas.TabStop = False
         '
         'LabelTituloFiltroRegistro
         '
@@ -211,7 +218,7 @@ Partial Class MainForm
         Me.GroupBoxControlesTablas.Location = New System.Drawing.Point(225, 373)
         Me.GroupBoxControlesTablas.Name = "GroupBoxControlesTablas"
         Me.GroupBoxControlesTablas.Size = New System.Drawing.Size(285, 68)
-        Me.GroupBoxControlesTablas.TabIndex = 19
+        Me.GroupBoxControlesTablas.TabIndex = 0
         Me.GroupBoxControlesTablas.TabStop = False
         Me.GroupBoxControlesTablas.Visible = False
         '
@@ -237,7 +244,8 @@ Partial Class MainForm
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
         Me.TabControl1.Size = New System.Drawing.Size(1077, 464)
-        Me.TabControl1.TabIndex = 20
+        Me.TabControl1.TabIndex = 0
+        Me.TabControl1.TabStop = False
         '
         'TabPageRevisionesXPrueba
         '
@@ -284,7 +292,7 @@ Partial Class MainForm
         Me.LabelValorC2Muestra.Location = New System.Drawing.Point(162, 27)
         Me.LabelValorC2Muestra.Name = "LabelValorC2Muestra"
         Me.LabelValorC2Muestra.Size = New System.Drawing.Size(50, 13)
-        Me.LabelValorC2Muestra.TabIndex = 27
+        Me.LabelValorC2Muestra.TabIndex = 0
         Me.LabelValorC2Muestra.Text = "Valor_C2"
         Me.LabelValorC2Muestra.Visible = False
         '
@@ -295,7 +303,7 @@ Partial Class MainForm
         Me.LabelValorC1Muestra.Location = New System.Drawing.Point(17, 27)
         Me.LabelValorC1Muestra.Name = "LabelValorC1Muestra"
         Me.LabelValorC1Muestra.Size = New System.Drawing.Size(50, 13)
-        Me.LabelValorC1Muestra.TabIndex = 26
+        Me.LabelValorC1Muestra.TabIndex = 0
         Me.LabelValorC1Muestra.Text = "Valor_C1"
         Me.LabelValorC1Muestra.Visible = False
         '
@@ -305,7 +313,7 @@ Partial Class MainForm
         Me.TxBxValorC2Muestra.Location = New System.Drawing.Point(165, 52)
         Me.TxBxValorC2Muestra.Name = "TxBxValorC2Muestra"
         Me.TxBxValorC2Muestra.Size = New System.Drawing.Size(110, 20)
-        Me.TxBxValorC2Muestra.TabIndex = 20
+        Me.TxBxValorC2Muestra.TabIndex = 1
         Me.TxBxValorC2Muestra.Visible = False
         '
         'BtnAsignarMuestras
@@ -315,7 +323,7 @@ Partial Class MainForm
         Me.BtnAsignarMuestras.Location = New System.Drawing.Point(323, 27)
         Me.BtnAsignarMuestras.Name = "BtnAsignarMuestras"
         Me.BtnAsignarMuestras.Size = New System.Drawing.Size(110, 45)
-        Me.BtnAsignarMuestras.TabIndex = 21
+        Me.BtnAsignarMuestras.TabIndex = 2
         Me.BtnAsignarMuestras.Text = "Asignar e ingresar datos"
         Me.BtnAsignarMuestras.UseVisualStyleBackColor = True
         Me.BtnAsignarMuestras.Visible = False
@@ -326,7 +334,7 @@ Partial Class MainForm
         Me.TxBxValorC1Muestra.Location = New System.Drawing.Point(20, 52)
         Me.TxBxValorC1Muestra.Name = "TxBxValorC1Muestra"
         Me.TxBxValorC1Muestra.Size = New System.Drawing.Size(110, 20)
-        Me.TxBxValorC1Muestra.TabIndex = 19
+        Me.TxBxValorC1Muestra.TabIndex = 0
         Me.TxBxValorC1Muestra.Visible = False
         '
         'LabelMuestras
@@ -337,13 +345,13 @@ Partial Class MainForm
         Me.LabelMuestras.Location = New System.Drawing.Point(31, 8)
         Me.LabelMuestras.Name = "LabelMuestras"
         Me.LabelMuestras.Size = New System.Drawing.Size(77, 19)
-        Me.LabelMuestras.TabIndex = 36
+        Me.LabelMuestras.TabIndex = 0
         Me.LabelMuestras.Text = "Muestras"
         '
         'DGVMuestras
         '
-        DataGridViewCellStyle21.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DGVMuestras.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle21
+        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.DGVMuestras.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle3
         Me.DGVMuestras.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -352,14 +360,14 @@ Partial Class MainForm
         Me.DGVMuestras.BackgroundColor = System.Drawing.Color.Azure
         Me.DGVMuestras.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DGVMuestras.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle22.BackColor = System.Drawing.SystemColors.ActiveBorder
-        DataGridViewCellStyle22.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        DataGridViewCellStyle22.ForeColor = System.Drawing.Color.Coral
-        DataGridViewCellStyle22.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle22.SelectionForeColor = System.Drawing.SystemColors.ControlDark
-        DataGridViewCellStyle22.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVMuestras.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle22
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        DataGridViewCellStyle4.ForeColor = System.Drawing.Color.Coral
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlDark
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVMuestras.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle4
         Me.DGVMuestras.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVMuestras.Cursor = System.Windows.Forms.Cursors.Hand
         Me.DGVMuestras.GridColor = System.Drawing.Color.DarkRed
@@ -367,7 +375,8 @@ Partial Class MainForm
         Me.DGVMuestras.Location = New System.Drawing.Point(16, 30)
         Me.DGVMuestras.Name = "DGVMuestras"
         Me.DGVMuestras.Size = New System.Drawing.Size(1011, 309)
-        Me.DGVMuestras.TabIndex = 4
+        Me.DGVMuestras.TabIndex = 0
+        Me.DGVMuestras.TabStop = False
         '
         'TabPageBandejas
         '
@@ -403,7 +412,7 @@ Partial Class MainForm
         Me.LabelComentario1Bandeja.Location = New System.Drawing.Point(17, 27)
         Me.LabelComentario1Bandeja.Name = "LabelComentario1Bandeja"
         Me.LabelComentario1Bandeja.Size = New System.Drawing.Size(107, 13)
-        Me.LabelComentario1Bandeja.TabIndex = 34
+        Me.LabelComentario1Bandeja.TabIndex = 0
         Me.LabelComentario1Bandeja.Text = "Comentario_Revisión"
         Me.LabelComentario1Bandeja.Visible = False
         '
@@ -414,7 +423,7 @@ Partial Class MainForm
         Me.LabelComentario2Bandeja.Location = New System.Drawing.Point(162, 27)
         Me.LabelComentario2Bandeja.Name = "LabelComentario2Bandeja"
         Me.LabelComentario2Bandeja.Size = New System.Drawing.Size(72, 13)
-        Me.LabelComentario2Bandeja.TabIndex = 33
+        Me.LabelComentario2Bandeja.TabIndex = 0
         Me.LabelComentario2Bandeja.Text = "Comentario_2"
         Me.LabelComentario2Bandeja.Visible = False
         '
@@ -424,7 +433,7 @@ Partial Class MainForm
         Me.TxBxComentario1Bandeja.Location = New System.Drawing.Point(20, 52)
         Me.TxBxComentario1Bandeja.Name = "TxBxComentario1Bandeja"
         Me.TxBxComentario1Bandeja.Size = New System.Drawing.Size(110, 20)
-        Me.TxBxComentario1Bandeja.TabIndex = 19
+        Me.TxBxComentario1Bandeja.TabIndex = 1
         '
         'BtnAsignarBandejas
         '
@@ -433,7 +442,7 @@ Partial Class MainForm
         Me.BtnAsignarBandejas.Location = New System.Drawing.Point(323, 27)
         Me.BtnAsignarBandejas.Name = "BtnAsignarBandejas"
         Me.BtnAsignarBandejas.Size = New System.Drawing.Size(110, 45)
-        Me.BtnAsignarBandejas.TabIndex = 21
+        Me.BtnAsignarBandejas.TabIndex = 3
         Me.BtnAsignarBandejas.Text = "Asignar e ingresar datos"
         Me.BtnAsignarBandejas.UseVisualStyleBackColor = True
         '
@@ -443,7 +452,7 @@ Partial Class MainForm
         Me.TxBxComentario2Bandeja.Location = New System.Drawing.Point(165, 52)
         Me.TxBxComentario2Bandeja.Name = "TxBxComentario2Bandeja"
         Me.TxBxComentario2Bandeja.Size = New System.Drawing.Size(110, 20)
-        Me.TxBxComentario2Bandeja.TabIndex = 20
+        Me.TxBxComentario2Bandeja.TabIndex = 2
         '
         'LabelBandejas
         '
@@ -453,13 +462,13 @@ Partial Class MainForm
         Me.LabelBandejas.Location = New System.Drawing.Point(35, 9)
         Me.LabelBandejas.Name = "LabelBandejas"
         Me.LabelBandejas.Size = New System.Drawing.Size(77, 19)
-        Me.LabelBandejas.TabIndex = 35
+        Me.LabelBandejas.TabIndex = 0
         Me.LabelBandejas.Text = "Bandejas"
         '
         'DGVBandejas
         '
-        DataGridViewCellStyle23.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DGVBandejas.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle23
+        DataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.DGVBandejas.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle5
         Me.DGVBandejas.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -468,14 +477,14 @@ Partial Class MainForm
         Me.DGVBandejas.BackgroundColor = System.Drawing.Color.Azure
         Me.DGVBandejas.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DGVBandejas.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle24.BackColor = System.Drawing.SystemColors.ActiveBorder
-        DataGridViewCellStyle24.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        DataGridViewCellStyle24.ForeColor = System.Drawing.Color.Coral
-        DataGridViewCellStyle24.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle24.SelectionForeColor = System.Drawing.SystemColors.ControlDark
-        DataGridViewCellStyle24.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVBandejas.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle24
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        DataGridViewCellStyle6.ForeColor = System.Drawing.Color.Coral
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlDark
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVBandejas.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle6
         Me.DGVBandejas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVBandejas.Cursor = System.Windows.Forms.Cursors.Hand
         Me.DGVBandejas.GridColor = System.Drawing.Color.DarkRed
@@ -483,7 +492,8 @@ Partial Class MainForm
         Me.DGVBandejas.Location = New System.Drawing.Point(13, 31)
         Me.DGVBandejas.Name = "DGVBandejas"
         Me.DGVBandejas.Size = New System.Drawing.Size(1018, 316)
-        Me.DGVBandejas.TabIndex = 4
+        Me.DGVBandejas.TabIndex = 0
+        Me.DGVBandejas.TabStop = False
         '
         'TabPageAdmin
         '
@@ -521,9 +531,29 @@ Partial Class MainForm
         Me.GroupBoxAdmin.Location = New System.Drawing.Point(542, 326)
         Me.GroupBoxAdmin.Name = "GroupBoxAdmin"
         Me.GroupBoxAdmin.Size = New System.Drawing.Size(487, 115)
-        Me.GroupBoxAdmin.TabIndex = 37
+        Me.GroupBoxAdmin.TabIndex = 0
         Me.GroupBoxAdmin.TabStop = False
         Me.GroupBoxAdmin.Visible = False
+        '
+        'BtnSi
+        '
+        Me.BtnSi.Location = New System.Drawing.Point(396, 25)
+        Me.BtnSi.Name = "BtnSi"
+        Me.BtnSi.Size = New System.Drawing.Size(85, 39)
+        Me.BtnSi.TabIndex = 2
+        Me.BtnSi.Text = "Si"
+        Me.BtnSi.UseVisualStyleBackColor = True
+        Me.BtnSi.Visible = False
+        '
+        'BtnNo
+        '
+        Me.BtnNo.Location = New System.Drawing.Point(396, 70)
+        Me.BtnNo.Name = "BtnNo"
+        Me.BtnNo.Size = New System.Drawing.Size(85, 39)
+        Me.BtnNo.TabIndex = 3
+        Me.BtnNo.Text = "No"
+        Me.BtnNo.UseVisualStyleBackColor = True
+        Me.BtnNo.Visible = False
         '
         'PanelAdmin
         '
@@ -534,7 +564,7 @@ Partial Class MainForm
         Me.PanelAdmin.Location = New System.Drawing.Point(149, 11)
         Me.PanelAdmin.Name = "PanelAdmin"
         Me.PanelAdmin.Size = New System.Drawing.Size(200, 98)
-        Me.PanelAdmin.TabIndex = 14
+        Me.PanelAdmin.TabIndex = 0
         '
         'ComboBox5
         '
@@ -543,7 +573,7 @@ Partial Class MainForm
         Me.ComboBox5.Location = New System.Drawing.Point(28, 26)
         Me.ComboBox5.Name = "ComboBox5"
         Me.ComboBox5.Size = New System.Drawing.Size(121, 21)
-        Me.ComboBox5.TabIndex = 13
+        Me.ComboBox5.TabIndex = 7
         '
         'Label6
         '
@@ -561,7 +591,7 @@ Partial Class MainForm
         Me.ComboBox4.Location = New System.Drawing.Point(28, 76)
         Me.ComboBox4.Name = "ComboBox4"
         Me.ComboBox4.Size = New System.Drawing.Size(121, 21)
-        Me.ComboBox4.TabIndex = 11
+        Me.ComboBox4.TabIndex = 8
         '
         'Label3
         '
@@ -576,10 +606,10 @@ Partial Class MainForm
         '
         Me.ComboBox9.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox9.FormattingEnabled = True
-        Me.ComboBox9.Location = New System.Drawing.Point(9, 86)
+        Me.ComboBox9.Location = New System.Drawing.Point(9, 87)
         Me.ComboBox9.Name = "ComboBox9"
         Me.ComboBox9.Size = New System.Drawing.Size(121, 21)
-        Me.ComboBox9.TabIndex = 16
+        Me.ComboBox9.TabIndex = 6
         '
         'ComboBox8
         '
@@ -588,16 +618,16 @@ Partial Class MainForm
         Me.ComboBox8.Location = New System.Drawing.Point(9, 37)
         Me.ComboBox8.Name = "ComboBox8"
         Me.ComboBox8.Size = New System.Drawing.Size(121, 21)
-        Me.ComboBox8.TabIndex = 15
+        Me.ComboBox8.TabIndex = 5
         '
         'ComboBox3
         '
         Me.ComboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox3.FormattingEnabled = True
-        Me.ComboBox3.Location = New System.Drawing.Point(9, 86)
+        Me.ComboBox3.Location = New System.Drawing.Point(9, 87)
         Me.ComboBox3.Name = "ComboBox3"
         Me.ComboBox3.Size = New System.Drawing.Size(121, 21)
-        Me.ComboBox3.TabIndex = 9
+        Me.ComboBox3.TabIndex = 6
         '
         'ComboBox2
         '
@@ -606,28 +636,28 @@ Partial Class MainForm
         Me.ComboBox2.Location = New System.Drawing.Point(9, 37)
         Me.ComboBox2.Name = "ComboBox2"
         Me.ComboBox2.Size = New System.Drawing.Size(121, 21)
-        Me.ComboBox2.TabIndex = 8
+        Me.ComboBox2.TabIndex = 5
         '
         'TextBox6
         '
         Me.TextBox6.Location = New System.Drawing.Point(9, 87)
         Me.TextBox6.Name = "TextBox6"
         Me.TextBox6.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox6.TabIndex = 7
+        Me.TextBox6.TabIndex = 6
         '
         'TextBox3
         '
         Me.TextBox3.Location = New System.Drawing.Point(9, 37)
         Me.TextBox3.Name = "TextBox3"
         Me.TextBox3.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox3.TabIndex = 6
+        Me.TextBox3.TabIndex = 5
         '
         'BtnModificar
         '
         Me.BtnModificar.Location = New System.Drawing.Point(396, 70)
         Me.BtnModificar.Name = "BtnModificar"
         Me.BtnModificar.Size = New System.Drawing.Size(85, 39)
-        Me.BtnModificar.TabIndex = 5
+        Me.BtnModificar.TabIndex = 9
         Me.BtnModificar.Text = "Modificar"
         Me.BtnModificar.UseVisualStyleBackColor = True
         '
@@ -636,7 +666,7 @@ Partial Class MainForm
         Me.ButtonAgregar.Location = New System.Drawing.Point(396, 70)
         Me.ButtonAgregar.Name = "ButtonAgregar"
         Me.ButtonAgregar.Size = New System.Drawing.Size(85, 39)
-        Me.ButtonAgregar.TabIndex = 4
+        Me.ButtonAgregar.TabIndex = 9
         Me.ButtonAgregar.Text = "Agregar"
         Me.ButtonAgregar.UseVisualStyleBackColor = True
         '
@@ -646,7 +676,7 @@ Partial Class MainForm
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.TextBox2.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox2.TabIndex = 3
+        Me.TextBox2.TabIndex = 6
         '
         'Label2
         '
@@ -662,7 +692,7 @@ Partial Class MainForm
         Me.TextBox1.Location = New System.Drawing.Point(9, 37)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(100, 20)
-        Me.TextBox1.TabIndex = 1
+        Me.TextBox1.TabIndex = 5
         '
         'Label1
         '
@@ -692,7 +722,8 @@ Partial Class MainForm
         Me.CmbBxAnalistas.Location = New System.Drawing.Point(1121, 310)
         Me.CmbBxAnalistas.Name = "CmbBxAnalistas"
         Me.CmbBxAnalistas.Size = New System.Drawing.Size(132, 21)
-        Me.CmbBxAnalistas.TabIndex = 35
+        Me.CmbBxAnalistas.TabIndex = 10
+        Me.CmbBxAnalistas.TabStop = False
         '
         'Label5
         '
@@ -702,7 +733,7 @@ Partial Class MainForm
         Me.Label5.Location = New System.Drawing.Point(1118, 273)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(67, 18)
-        Me.Label5.TabIndex = 22
+        Me.Label5.TabIndex = 0
         Me.Label5.Text = "Analista"
         Me.Label5.Visible = False
         '
@@ -715,7 +746,7 @@ Partial Class MainForm
         Me.LabelTimerVerificacion.Location = New System.Drawing.Point(392, 520)
         Me.LabelTimerVerificacion.Name = "LabelTimerVerificacion"
         Me.LabelTimerVerificacion.Size = New System.Drawing.Size(17, 18)
-        Me.LabelTimerVerificacion.TabIndex = 28
+        Me.LabelTimerVerificacion.TabIndex = 0
         Me.LabelTimerVerificacion.Text = "2"
         Me.LabelTimerVerificacion.Visible = False
         '
@@ -728,7 +759,7 @@ Partial Class MainForm
         Me.LabelTimerAsignacion.Location = New System.Drawing.Point(48, 520)
         Me.LabelTimerAsignacion.Name = "LabelTimerAsignacion"
         Me.LabelTimerAsignacion.Size = New System.Drawing.Size(17, 18)
-        Me.LabelTimerAsignacion.TabIndex = 35
+        Me.LabelTimerAsignacion.TabIndex = 0
         Me.LabelTimerAsignacion.Text = "1"
         Me.LabelTimerAsignacion.Visible = False
         '
@@ -739,7 +770,8 @@ Partial Class MainForm
         Me.BtnConectarAdmin.Location = New System.Drawing.Point(1121, 391)
         Me.BtnConectarAdmin.Name = "BtnConectarAdmin"
         Me.BtnConectarAdmin.Size = New System.Drawing.Size(132, 33)
-        Me.BtnConectarAdmin.TabIndex = 24
+        Me.BtnConectarAdmin.TabIndex = 12
+        Me.BtnConectarAdmin.TabStop = False
         Me.BtnConectarAdmin.Text = "Administrador"
         Me.BtnConectarAdmin.UseVisualStyleBackColor = True
         '
@@ -752,7 +784,8 @@ Partial Class MainForm
         Me.BtnDesconectar.Location = New System.Drawing.Point(1191, 45)
         Me.BtnDesconectar.Name = "BtnDesconectar"
         Me.BtnDesconectar.Size = New System.Drawing.Size(62, 48)
-        Me.BtnDesconectar.TabIndex = 21
+        Me.BtnDesconectar.TabIndex = 6
+        Me.BtnDesconectar.TabStop = False
         Me.BtnDesconectar.UseVisualStyleBackColor = True
         '
         'LabelTimerTotal
@@ -764,7 +797,7 @@ Partial Class MainForm
         Me.LabelTimerTotal.Location = New System.Drawing.Point(731, 520)
         Me.LabelTimerTotal.Name = "LabelTimerTotal"
         Me.LabelTimerTotal.Size = New System.Drawing.Size(17, 18)
-        Me.LabelTimerTotal.TabIndex = 22
+        Me.LabelTimerTotal.TabIndex = 0
         Me.LabelTimerTotal.Text = "3"
         Me.LabelTimerTotal.Visible = False
         '
@@ -775,7 +808,8 @@ Partial Class MainForm
         Me.BtnConectar.Location = New System.Drawing.Point(1121, 337)
         Me.BtnConectar.Name = "BtnConectar"
         Me.BtnConectar.Size = New System.Drawing.Size(132, 28)
-        Me.BtnConectar.TabIndex = 36
+        Me.BtnConectar.TabIndex = 11
+        Me.BtnConectar.TabStop = False
         Me.BtnConectar.Text = "Conectar"
         Me.BtnConectar.UseVisualStyleBackColor = True
         '
@@ -786,7 +820,8 @@ Partial Class MainForm
         Me.BtnFiltroPrueba.Location = New System.Drawing.Point(1121, 144)
         Me.BtnFiltroPrueba.Name = "BtnFiltroPrueba"
         Me.BtnFiltroPrueba.Size = New System.Drawing.Size(132, 30)
-        Me.BtnFiltroPrueba.TabIndex = 37
+        Me.BtnFiltroPrueba.TabIndex = 8
+        Me.BtnFiltroPrueba.TabStop = False
         Me.BtnFiltroPrueba.Text = "Filtrar por Prueba"
         Me.BtnFiltroPrueba.UseVisualStyleBackColor = True
         Me.BtnFiltroPrueba.Visible = False
@@ -798,7 +833,8 @@ Partial Class MainForm
         Me.CmbBxFiltroPrueba.Location = New System.Drawing.Point(1121, 113)
         Me.CmbBxFiltroPrueba.Name = "CmbBxFiltroPrueba"
         Me.CmbBxFiltroPrueba.Size = New System.Drawing.Size(132, 21)
-        Me.CmbBxFiltroPrueba.TabIndex = 38
+        Me.CmbBxFiltroPrueba.TabIndex = 7
+        Me.CmbBxFiltroPrueba.TabStop = False
         Me.CmbBxFiltroPrueba.Visible = False
         '
         'PrintDocument1
@@ -812,7 +848,7 @@ Partial Class MainForm
         Me.LabelRevisionesPrueba.Location = New System.Drawing.Point(62, 1)
         Me.LabelRevisionesPrueba.Name = "LabelRevisionesPrueba"
         Me.LabelRevisionesPrueba.Size = New System.Drawing.Size(308, 22)
-        Me.LabelRevisionesPrueba.TabIndex = 39
+        Me.LabelRevisionesPrueba.TabIndex = 0
         Me.LabelRevisionesPrueba.Text = "Cantidad de revisiones por prueba"
         '
         'TextBoxContraseña
@@ -821,7 +857,8 @@ Partial Class MainForm
         Me.TextBoxContraseña.Name = "TextBoxContraseña"
         Me.TextBoxContraseña.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.TextBoxContraseña.Size = New System.Drawing.Size(100, 20)
-        Me.TextBoxContraseña.TabIndex = 40
+        Me.TextBoxContraseña.TabIndex = 0
+        Me.TextBoxContraseña.TabStop = False
         Me.TextBoxContraseña.Visible = False
         '
         'TextBoxRespuestaForm2
@@ -830,7 +867,8 @@ Partial Class MainForm
         Me.TextBoxRespuestaForm2.Name = "TextBoxRespuestaForm2"
         Me.TextBoxRespuestaForm2.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
         Me.TextBoxRespuestaForm2.Size = New System.Drawing.Size(23, 20)
-        Me.TextBoxRespuestaForm2.TabIndex = 41
+        Me.TextBoxRespuestaForm2.TabIndex = 0
+        Me.TextBoxRespuestaForm2.TabStop = False
         Me.TextBoxRespuestaForm2.Visible = False
         '
         'Timer2
@@ -845,7 +883,8 @@ Partial Class MainForm
         Me.BtnRecargar.Location = New System.Drawing.Point(1121, 45)
         Me.BtnRecargar.Name = "BtnRecargar"
         Me.BtnRecargar.Size = New System.Drawing.Size(62, 48)
-        Me.BtnRecargar.TabIndex = 42
+        Me.BtnRecargar.TabIndex = 5
+        Me.BtnRecargar.TabStop = False
         Me.BtnRecargar.UseVisualStyleBackColor = True
         '
         'btnPreviewPrint
@@ -855,28 +894,46 @@ Partial Class MainForm
         Me.btnPreviewPrint.Location = New System.Drawing.Point(1152, 180)
         Me.btnPreviewPrint.Name = "btnPreviewPrint"
         Me.btnPreviewPrint.Size = New System.Drawing.Size(75, 55)
-        Me.btnPreviewPrint.TabIndex = 43
+        Me.btnPreviewPrint.TabIndex = 9
+        Me.btnPreviewPrint.TabStop = False
         Me.btnPreviewPrint.UseVisualStyleBackColor = True
         '
-        'BtnSi
+        'LabelCambiarContraseña
         '
-        Me.BtnSi.Location = New System.Drawing.Point(396, 25)
-        Me.BtnSi.Name = "BtnSi"
-        Me.BtnSi.Size = New System.Drawing.Size(85, 39)
-        Me.BtnSi.TabIndex = 17
-        Me.BtnSi.Text = "Si"
-        Me.BtnSi.UseVisualStyleBackColor = True
-        Me.BtnSi.Visible = False
+        Me.LabelCambiarContraseña.AutoSize = True
+        Me.LabelCambiarContraseña.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.LabelCambiarContraseña.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Underline), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelCambiarContraseña.ForeColor = System.Drawing.Color.MediumBlue
+        Me.LabelCambiarContraseña.Location = New System.Drawing.Point(1118, 29)
+        Me.LabelCambiarContraseña.Name = "LabelCambiarContraseña"
+        Me.LabelCambiarContraseña.Size = New System.Drawing.Size(120, 13)
+        Me.LabelCambiarContraseña.TabIndex = 0
+        Me.LabelCambiarContraseña.Text = "Cambiar Contraseña"
+        Me.LabelCambiarContraseña.Visible = False
         '
-        'BtnNo
+        'TxBxContraseñaNueva
         '
-        Me.BtnNo.Location = New System.Drawing.Point(396, 70)
-        Me.BtnNo.Name = "BtnNo"
-        Me.BtnNo.Size = New System.Drawing.Size(85, 39)
-        Me.BtnNo.TabIndex = 18
-        Me.BtnNo.Text = "No"
-        Me.BtnNo.UseVisualStyleBackColor = True
-        Me.BtnNo.Visible = False
+        Me.TxBxContraseñaNueva.Location = New System.Drawing.Point(1008, 5)
+        Me.TxBxContraseñaNueva.Name = "TxBxContraseñaNueva"
+        Me.TxBxContraseñaNueva.Size = New System.Drawing.Size(100, 20)
+        Me.TxBxContraseñaNueva.TabIndex = 14
+        Me.TxBxContraseñaNueva.Visible = False
+        '
+        'TxBxContraseñaAnterior
+        '
+        Me.TxBxContraseñaAnterior.Location = New System.Drawing.Point(902, 5)
+        Me.TxBxContraseñaAnterior.Name = "TxBxContraseñaAnterior"
+        Me.TxBxContraseñaAnterior.Size = New System.Drawing.Size(100, 20)
+        Me.TxBxContraseñaAnterior.TabIndex = 15
+        Me.TxBxContraseñaAnterior.Visible = False
+        '
+        'TxBxRespuestaForm3
+        '
+        Me.TxBxRespuestaForm3.Location = New System.Drawing.Point(872, 5)
+        Me.TxBxRespuestaForm3.Name = "TxBxRespuestaForm3"
+        Me.TxBxRespuestaForm3.Size = New System.Drawing.Size(24, 20)
+        Me.TxBxRespuestaForm3.TabIndex = 16
+        Me.TxBxRespuestaForm3.Visible = False
         '
         'MainForm
         '
@@ -885,6 +942,10 @@ Partial Class MainForm
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.Color.Azure
         Me.ClientSize = New System.Drawing.Size(1287, 573)
+        Me.Controls.Add(Me.TxBxRespuestaForm3)
+        Me.Controls.Add(Me.TxBxContraseñaAnterior)
+        Me.Controls.Add(Me.TxBxContraseñaNueva)
+        Me.Controls.Add(Me.LabelCambiarContraseña)
         Me.Controls.Add(Me.btnPreviewPrint)
         Me.Controls.Add(Me.BtnRecargar)
         Me.Controls.Add(Me.TextBoxRespuestaForm2)
@@ -998,4 +1059,8 @@ Partial Class MainForm
     Friend WithEvents btnPreviewPrint As Button
     Friend WithEvents BtnSi As Button
     Friend WithEvents BtnNo As Button
+    Friend WithEvents LabelCambiarContraseña As Label
+    Friend WithEvents TxBxContraseñaNueva As TextBox
+    Friend WithEvents TxBxContraseñaAnterior As TextBox
+    Friend WithEvents TxBxRespuestaForm3 As TextBox
 End Class

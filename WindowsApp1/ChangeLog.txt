@@ -23,6 +23,9 @@ Cambios:
 * Se modificó el texto de algunos botones para que estos sean más claros respecto a la función que cumplen.
 * En el listado de tablas del administrador se dividieron las muestras y bandejas en 3 listados: "Muestras/Bandejas no Asignadas", "Muestras/Bandejas Asignadas", "Historial de Muestras/Bandejas" esto con el fin de facilitar al administrador la tarea de encontrar rápidamente lo que busca.
 * Si pasan los 5 minutos de inactividad, pero no hay ninguna sesión activa no aparecerá el mensaje de notificación que cierra la sesión.
+* Se agrego un boton de cambiar contraseña para que los analistas puedan cambiar su contraseña por su cuenta.
+* Se cambio el label de pasa para muestras y bandejas asignadas por dos botones, BtnSi y BtnNo
+* Se realizaron cambios en el orden de los indices de tabulación.
 
 Correcciones:
 

@@ -13,3 +13,4 @@ C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\Revisiones 1.1.x
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\Revisiones 1.1.pdb
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.MainForm.resources
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.FormContraseña.resources
+C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.FormCambiarContraseña.resources

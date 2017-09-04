@@ -1143,6 +1143,7 @@ Public Class MainForm
                 Cargar_muestras(usuario)
                 Cargar_bandejas(usuario)
                 conectado = 1
+                LabelCambiarContraseña.Visible = True
                 CmbBxAnalistas.Enabled = False
                 BtnConectar.Enabled = False
                 BtnConectarAdmin.Enabled = False
@@ -1767,6 +1768,7 @@ Public Class MainForm
             CmbBxAnalistas.Text = " "
             MsgBox("Desconectado", False, "Log-Out")
             conectado = 0
+            LabelCambiarContraseña.Visible = False
             DGVMuestras.Visible = False
             DGVBandejas.Visible = False
             DGVMuestras.DataSource = Nothing
@@ -1810,6 +1812,7 @@ Public Class MainForm
             If password = bd_password Then
                 MsgBox("Conectado, ahora cuenta con permisos de administrador", False, "Log-In")
                 conectado = 1
+                LabelCambiarContraseña.Visible = True
                 TabControl1.TabPages.Insert(3, TabPageAdmin)
                 Cargar_MuestrasBandejas_Admin()
                 CmbBxAnalistas.Text = " "
@@ -4073,16 +4076,16 @@ Public Class MainForm
             Dim muestra_id As String = TextBox6.Text
 
             t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                Try
-                    conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_T ='" & t_terminado & "', Estado ='Finalizado', Pasa ='Si' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
-                    cmd.ExecuteNonQuery()
-                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-                Catch ex As MySqlException
-                    MsgBox(ex.Message, False, "Error")
-                    conn.Close()
-                End Try
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_T ='" & t_terminado & "', Estado ='Finalizado', Pasa ='Si' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
+                cmd.ExecuteNonQuery()
+                MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+            Catch ex As MySqlException
+                MsgBox(ex.Message, False, "Error")
                 conn.Close()
+            End Try
+            conn.Close()
             Cargar_MuestrasBandejas_Admin()
 
         ElseIf Tabla_Actual = "Bandejas Asignadas" Then
@@ -4090,18 +4093,20 @@ Public Class MainForm
             Dim bandeja_id As String = TextBox6.Text
 
             t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                Try
-                    conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T = '" & t_terminado & "', Estado = 'Finalizado', Pasa = 'Si' WHERE Bandeja_ID='" & bandeja_id & "';"), conn)
-                    cmd.ExecuteNonQuery()
-                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-                Catch ex As MySqlException
-                    MsgBox(ex.Message, False, "Error")
-                    conn.Close()
-                End Try
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T = '" & t_terminado & "', Estado = 'Finalizado', Pasa = 'Si' WHERE Bandeja_ID='" & bandeja_id & "';"), conn)
+                cmd.ExecuteNonQuery()
+                MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+            Catch ex As MySqlException
+                MsgBox(ex.Message, False, "Error")
                 conn.Close()
+            End Try
+            conn.Close()
             Cargar_MuestrasBandejas_Admin()
+
         End If
+        Cargar()
     End Sub
 
     Private Sub BtnNo_Click(sender As Object, e As EventArgs) Handles BtnNo.Click
@@ -4191,6 +4196,107 @@ Public Class MainForm
             Cargar_MuestrasBandejas_Admin()
         End If
         Cargar()
+        End If
+    End Sub
+
+    Private Sub LabelCambiarContraseña_Click(sender As Object, e As EventArgs) Handles LabelCambiarContraseña.Click
+
+        If CmbBxAnalistas.Text = " " Then
+            Dim usuario As Integer = 1
+            Dim reader As MySqlDataReader
+            TxBxRespuestaForm3.Text = ""
+            TxBxContraseñaAnterior.Text = ""
+            TxBxContraseñaNueva.Text = ""
+            TextBoxContraseña.Text = ""
+            FormCambiarContraseña.ShowDialog()
+            Dim respuestaform3 As String = TxBxRespuestaForm3.Text
+            If respuestaform3 = "1" Then
+                Dim contraseña_anterior As String = TxBxContraseñaAnterior.Text
+                Dim bd_password As String
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("Select contraseña FROM analistas
+                                                       Where AnalistNo = " & usuario & ";"), conn)
+                    bd_password = Convert.ToString(cmd.ExecuteScalar())
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                    Exit Sub
+                End Try
+                If contraseña_anterior = bd_password Then
+                    Dim contraseña_nueva As String = TxBxContraseñaNueva.Text
+                    Dim contraseña_nueva2 As String = TextBoxContraseña.Text
+                    If contraseña_nueva = contraseña_nueva2 Then
+                        Try
+                            conn.Open()
+                            Dim query As String = "UPDATE analistas set Contraseña = '" & contraseña_nueva & "' where AnalistNo = " & usuario
+                            Dim cmd As New MySqlCommand(query, conn)
+                            reader = cmd.ExecuteReader
+                            MsgBox("Contraseña Actualizada", False, "Contraseña Actualizada")
+                            conn.Close()
+                        Catch ex As MySqlException
+                            MsgBox(ex.Message)
+                            conn.Close()
+                        End Try
+                    Else
+                        MsgBox("Ingreso dos contraseñas diferentes en los campos de contraseña nueva", False, "Error")
+                    End If
+                Else
+                    MsgBox("La contraseña ingresada es erronea", False, "Error")
+                End If
+            Else
+                Exit Sub
+            End If
+
+        Else
+            Dim usuario As Integer = CmbBxAnalistas.SelectedValue
+            Dim reader As MySqlDataReader
+            TxBxRespuestaForm3.Text = ""
+            TxBxContraseñaAnterior.Text = ""
+            TxBxContraseñaNueva.Text = ""
+            TextBoxContraseña.Text = ""
+            FormCambiarContraseña.ShowDialog()
+            Dim respuestaform3 As String = TxBxRespuestaForm3.Text
+
+            If respuestaform3 = "1" Then
+                Dim contraseña_anterior As String = TxBxContraseñaAnterior.Text
+                Dim bd_password As String
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("Select contraseña FROM analistas
+                                                       Where AnalistNo = " & usuario & ";"), conn)
+                    bd_password = Convert.ToString(cmd.ExecuteScalar())
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                    Exit Sub
+                End Try
+                If contraseña_anterior = bd_password Then
+                    Dim contraseña_nueva As String = TxBxContraseñaNueva.Text
+                    Dim contraseña_nueva2 As String = TextBoxContraseña.Text
+                    If contraseña_nueva = contraseña_nueva2 Then
+                        Try
+                            conn.Open()
+                            Dim query As String = "UPDATE analistas set Contraseña = '" & contraseña_nueva & "' where AnalistNo = " & usuario
+                            Dim cmd As New MySqlCommand(query, conn)
+                            reader = cmd.ExecuteReader
+                            MsgBox("Contraseña Actualizada", False, "Contraseña Actualizada")
+                            conn.Close()
+                        Catch ex As MySqlException
+                            MsgBox(ex.Message)
+                            conn.Close()
+                        End Try
+                    Else
+                        MsgBox("Ingreso dos contraseñas diferentes en los campos de contraseña nueva", False, "Error")
+                    End If
+                Else
+                    MsgBox("La contraseña ingresada es erronea", False, "Error")
+                End If
+            Else
+                Exit Sub
+            End If
         End If
     End Sub
 End Class
