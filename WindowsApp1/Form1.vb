@@ -402,6 +402,9 @@ Public Class MainForm
             BtnNuevoRegistro.Visible = True
             BtnModificarRegistro.Visible = True
             BtnEliminarRegistro.Visible = True
+            BtnSi.Visible = False
+            BtnNo.Visible = False
+            GroupBoxAdmin.Text = Nothing
 
 
         ElseIf Nombre_Tabla = "Relacion Analistas Pruebas" Then
@@ -413,6 +416,9 @@ Public Class MainForm
             BtnNuevoRegistro.Visible = True
             BtnModificarRegistro.Visible = True
             BtnEliminarRegistro.Visible = True
+            BtnSi.Visible = False
+            BtnNo.Visible = False
+            GroupBoxAdmin.Text = Nothing
             LlenarComboBox2()
             LlenarComboBox3()
 
@@ -444,15 +450,12 @@ Public Class MainForm
             Label3.Visible = False
             ComboBox4.Visible = False
             GroupBoxControlesTablas.Visible = False
-            ButtonAgregar.Text = "Aceptar"
-            ButtonAgregar.Visible = True
-            Label6.Text = "Pasa"
-            Label6.Visible = True
-            ComboBox5.DataSource = Nothing
-            ComboBox5.Items.Clear()
-            ComboBox5.Items.Add("Si")
-            ComboBox5.Items.Add("No")
-            ComboBox5.Visible = True
+            ButtonAgregar.Visible = False
+            GroupBoxAdmin.Text = "Pasa"
+            ComboBox5.Visible = False
+            BtnSi.Visible = True
+            BtnNo.Visible = True
+            Label6.Visible = False
 
         ElseIf Nombre_Tabla = "Muestras no Asignadas" Or Nombre_Tabla = "Bandejas no Asignadas" Then
 
@@ -463,6 +466,9 @@ Public Class MainForm
             DGVAdmin.Columns(11).Visible = False
             DGVAdmin.Columns(12).Visible = False
             DGVAdmin.Columns(13).Visible = False
+            BtnSi.Visible = False
+            BtnNo.Visible = False
+            GroupBoxAdmin.Text = Nothing
             GroupBoxControlesTablas.Visible = True
             BtnNuevoRegistro.Visible = True
             BtnModificarRegistro.Visible = False
@@ -476,7 +482,9 @@ Public Class MainForm
 
         ElseIf Nombre_Tabla = "Historial de Muestras" Or Nombre_Tabla = "Historial de Bandejas" Then
 
-
+            BtnSi.Visible = False
+            BtnNo.Visible = False
+            GroupBoxAdmin.Text = Nothing
             GroupBoxControlesTablas.Visible = False
             DGVAdmin.Columns(0).Visible = False
             DGVAdmin.Columns(9).Visible = False
@@ -872,116 +880,6 @@ Public Class MainForm
                 conn.Close()
             End Try
 
-        ElseIf Tabla_Actual = "Muestras Asignadas" Then
-            Dim t_terminado As String
-            Dim t_asignacion_2 As String
-            Dim pasa As String = ComboBox5.Text
-            Dim valor_c2_existe As Boolean
-            If TextBox3.Text = Nothing Then
-                valor_c2_existe = False
-            Else
-                valor_c2_existe = True
-            End If
-            Dim muestra_id As String = TextBox6.Text
-            If pasa = Nothing Then
-                MsgBox("No ha seleccionado ningun valor en el campo 'Pasa'", False, "Error")
-            ElseIf pasa = "Si" Then
-                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                Try
-                    conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_T ='" & t_terminado & "', Estado ='Finalizado', Pasa ='Si' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
-                    cmd.ExecuteNonQuery()
-                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-                Catch ex As MySqlException
-                    MsgBox(ex.Message, False, "Error")
-                    conn.Close()
-                End Try
-                conn.Close()
-                Cargar_MuestrasBandejas_Admin()
-            ElseIf pasa = "No" And Not (valor_c2_existe) Then
-                t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                Try
-                    conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_A2 ='" & t_asignacion_2 & "', Estado = 'Pendiente', Pasa ='No' WHERE `Muestra_ID`='" & muestra_id & "';"), conn)
-                    cmd.ExecuteNonQuery()
-                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-                Catch ex As MySqlException
-                    MsgBox(ex.Message, False, "Error")
-                    conn.Close()
-                End Try
-                conn.Close()
-                Cargar_MuestrasBandejas_Admin()
-            ElseIf pasa = "No" And valor_c2_existe Then
-                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                Try
-                    conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET `Tiempo_T`='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
-                    cmd.ExecuteNonQuery()
-                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-                Catch ex As MySqlException
-                    MsgBox(ex.Message, False, "Error")
-                    conn.Close()
-                End Try
-                conn.Close()
-                Cargar_MuestrasBandejas_Admin()
-            End If
-            Cargar()
-
-        ElseIf Tabla_Actual = "Bandejas Asignadas" Then
-            Dim t_terminado As String
-            Dim t_asignacion_2 As String
-            Dim pasa As String = ComboBox5.Text
-            Dim valor_c2_existe As Boolean
-            If TextBox3.Text = Nothing Then
-                valor_c2_existe = False
-            Else
-                valor_c2_existe = True
-            End If
-            Dim bandeja_id As String = TextBox6.Text
-            If pasa = Nothing Then
-                MsgBox("No ha seleccionado ningun valor en el campo 'Pasa'", False, "Error")
-            ElseIf pasa = "Si" Then
-                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                Try
-                    conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T = '" & t_terminado & "', Estado = 'Finalizado', Pasa = 'Si' WHERE Bandeja_ID='" & bandeja_id & "';"), conn)
-                    cmd.ExecuteNonQuery()
-                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-                Catch ex As MySqlException
-                    MsgBox(ex.Message, False, "Error")
-                    conn.Close()
-                End Try
-                conn.Close()
-                Cargar_MuestrasBandejas_Admin()
-            ElseIf pasa = "No" And Not (valor_c2_existe) Then
-                t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                Try
-                    conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_A2='" & t_asignacion_2 & "', Estado ='Pendiente', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
-                    cmd.ExecuteNonQuery()
-                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-                Catch ex As MySqlException
-                    MsgBox(ex.Message, False, "Error")
-                    conn.Close()
-                End Try
-                conn.Close()
-                Cargar_MuestrasBandejas_Admin()
-            ElseIf pasa = "No" And valor_c2_existe Then
-                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-                Try
-                    conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T ='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
-                    cmd.ExecuteNonQuery()
-                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-                Catch ex As MySqlException
-                    MsgBox(ex.Message, False, "Error")
-                    conn.Close()
-                End Try
-                conn.Close()
-                Cargar_MuestrasBandejas_Admin()
-            End If
-            Cargar()
-
         ElseIf Tabla_Actual = "Muestras no Asignadas" Then
             Dim llave As String
             Dim Muestra_No As String = TextBox1.Text.ToString
@@ -1193,15 +1091,15 @@ Public Class MainForm
                 ComboBox4.Text = ComboBox3.Text
             ElseIf nom_tabla = "Muestras Asignadas" Or nom_tabla = "Bandejas Asignadas" Then
                 If DGVAdmin(5, fila_actual).Value.ToString() = "Revisado" Then
-                    ComboBox5.Enabled = True
-                    ButtonAgregar.Enabled = True
+                    BtnSi.Enabled = True
+                    BtnNo.Enabled = True
                     TextBox3.Text = DGVAdmin(6, fila_actual).Value.ToString()
                     TextBox6.Text = DGVAdmin(0, fila_actual).Value.ToString()
                     TextBox3.Visible = False
                     TextBox6.Visible = False
                 Else
-                    ComboBox5.Enabled = False
-                    ButtonAgregar.Enabled = False
+                    BtnSi.Enabled = False
+                    BtnNo.Enabled = False
                     TextBox6.Text = DGVAdmin(0, fila_actual).Value.ToString()
                     TextBox6.Visible = False
                 End If
@@ -4167,5 +4065,132 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub BtnSi_Click(sender As Object, e As EventArgs) Handles BtnSi.Click
+        Dim Tabla_Actual As String = LabelAdmin.Text
 
+        If Tabla_Actual = "Muestras Asignadas" Then
+            Dim t_terminado As String
+            Dim muestra_id As String = TextBox6.Text
+
+            t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_T ='" & t_terminado & "', Estado ='Finalizado', Pasa ='Si' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+            Cargar_MuestrasBandejas_Admin()
+
+        ElseIf Tabla_Actual = "Bandejas Asignadas" Then
+            Dim t_terminado As String
+            Dim bandeja_id As String = TextBox6.Text
+
+            t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T = '" & t_terminado & "', Estado = 'Finalizado', Pasa = 'Si' WHERE Bandeja_ID='" & bandeja_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+            Cargar_MuestrasBandejas_Admin()
+        End If
+    End Sub
+
+    Private Sub BtnNo_Click(sender As Object, e As EventArgs) Handles BtnNo.Click
+        Dim Tabla_Actual As String = LabelAdmin.Text
+
+        If Tabla_Actual = "Muestras Asignadas" Then
+
+            Dim t_terminado As String
+            Dim t_asignacion_2 As String
+            Dim valor_c2_existe As Boolean
+            If TextBox3.Text = Nothing Then
+                valor_c2_existe = False
+            Else
+                valor_c2_existe = True
+            End If
+            Dim muestra_id As String = TextBox6.Text
+
+            t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+
+            If Not (valor_c2_existe) Then
+                t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_A2 ='" & t_asignacion_2 & "', Estado = 'Pendiente', Pasa ='No' WHERE `Muestra_ID`='" & muestra_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+                Cargar_MuestrasBandejas_Admin()
+            ElseIf valor_c2_existe Then
+                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET `Tiempo_T`='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+                Cargar_MuestrasBandejas_Admin()
+            End If
+            Cargar()
+        ElseIf Tabla_Actual = "Bandejas Asignadas" Then
+
+            Dim t_terminado As String
+            Dim t_asignacion_2 As String
+            Dim valor_c2_existe As Boolean
+            If TextBox3.Text = Nothing Then
+                valor_c2_existe = False
+            Else
+                valor_c2_existe = True
+            End If
+            Dim bandeja_id As String = TextBox6.Text
+
+            t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+
+            If Not (valor_c2_existe) Then
+                t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_A2='" & t_asignacion_2 & "', Estado ='Pendiente', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
+                conn.Close()
+                Cargar_MuestrasBandejas_Admin()
+            ElseIf valor_c2_existe Then
+                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T ='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
+                cmd.ExecuteNonQuery()
+                MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+            Catch ex As MySqlException
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+            End Try
+            conn.Close()
+            Cargar_MuestrasBandejas_Admin()
+        End If
+        Cargar()
+        End If
+    End Sub
 End Class
