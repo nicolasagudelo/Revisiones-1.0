@@ -1,6 +1,7 @@
 ﻿'Programador: Nicolas Alberto Agudelo Herrera
 
 Imports MySql.Data.MySqlClient
+Imports System.Configuration
 Public Class MainForm
     Implements IMessageFilter
     Dim conn As New MySqlConnection
@@ -18,12 +19,8 @@ Public Class MainForm
 
     'Conexion a la base de datos
     Public Sub Connect()
-        Dim DatabaseName As String = "bd_revision"
-        Dim server As String = "localhost"
-        Dim userName As String = "root"
-        Dim password As String = "dm900494665"
-        If Not conn Is Nothing Then conn.Close()
-        conn.ConnectionString = String.Format("server={0}; user id={1}; password={2}; database={3}; pooling=false; Charset = utf8;", server, userName, password, DatabaseName)
+
+        conn.ConnectionString = ConfigurationManager.ConnectionStrings("cs").ConnectionString
         Try
             conn.Open()
             Console.WriteLine("conectandose a la base de datos")
