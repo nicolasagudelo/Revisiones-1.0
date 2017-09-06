@@ -20,6 +20,13 @@ Public Class MainForm
     'Conexion a la base de datos
     Public Sub Connect()
 
+        'Dim DatabaseName As String = "bd_revision"
+        'Dim server As String = "localhost"
+        'Dim userName As String = "root"
+        'Dim password As String = "dm900494665"
+        'If Not conn Is Nothing Then conn.Close()
+        'conn.ConnectionString = String.Format("server={0}; user id={1}; password={2}; database={3}; pooling=false; Charset = utf8;", server, userName, password, DatabaseName)
+
         conn.ConnectionString = ConfigurationManager.ConnectionStrings("cs").ConnectionString
         Try
             conn.Open()
@@ -896,6 +903,10 @@ Public Class MainForm
 
             Dim t_creacion As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
 
+            If llave = Nothing Then
+                llave = "1"
+            End If
+
             Try
                 conn.Open()
                 Dim cmd As New MySqlCommand(String.Format("INSERT INTO rev_muestras (`Muestra_ID`, `Muestra_No`, `PrueNo`, `Valor_In`, `Tiempo_C`, `Estado`) VALUES ('" & llave & "', '" & Muestra_No & "', '" & prueba & "', '" & Valor_In & "', '" & t_creacion & "', 'Pendiente');"), conn)
@@ -928,6 +939,10 @@ Public Class MainForm
             End Try
 
             Dim t_creacion As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+
+            If llave = Nothing Then
+                llave = "1"
+            End If
 
             Try
                 conn.Open()

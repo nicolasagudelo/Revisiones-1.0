@@ -1,6 +1,6 @@
-Versión 1.1
+Versión 1.0.1
 ===================
-Publicada: 
+Publicada: 05/09/2017
 
 Cambios:
 
@@ -37,3 +37,14 @@ Correcciones:
 * Cuando se presiona el botón de cancelar mientras se ingresa la contraseña ya no aparecerá un mensaje de error de contraseña incorrecta, simplemente se volverá a la ventana principal.
 * La lista de tablas en la pestaña de administrador ya no presenta problemas cuando se quiere elegir otra tabla.
 * Se eliminó el problema que causaba que apareciese una nueva tabla tanto en la base de datos como en el listado de tablas.
+
+Versión 1.0.2
+===================
+Publicada: 
+
+Cambios:
+
+
+Correcciones
+
+* Corregido un error que no permitia crear nuevas muestras o bandejas si no existia por lo menos un registro dentro de la base de datos.
