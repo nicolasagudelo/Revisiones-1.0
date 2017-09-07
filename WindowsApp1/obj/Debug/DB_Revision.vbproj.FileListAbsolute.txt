@@ -6,10 +6,6 @@ C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\DB_Revision.vbpr
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.MainForm.resources
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.FormContraseña.resources
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\WindowsApp1.FormCambiarContraseña.resources
-E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones 1.1.exe.config
-E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones 1.1.exe
-E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones 1.1.pdb
-E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones 1.1.xml
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\MySql.Data.dll
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\MySql.Data.xml
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\WindowsApp1.MainForm.resources
@@ -17,9 +13,6 @@ E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\WindowsApp1.FormCont
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\WindowsApp1.FormCambiarContraseña.resources
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\WindowsApp1.Resources.resources
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\DB_Revision.vbproj.GenerateResource.Cache
-E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones 1.1.exe
-E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones 1.1.xml
-E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones 1.1.pdb
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\DB_Revision.vbprojResolveAssemblyReference.cache
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\bin\Debug\Revisiones.exe.config
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\bin\Debug\Revisiones.exe
@@ -28,3 +21,10 @@ C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\bin\Debug\Revisiones.xml
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\Revisiones.exe
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\Revisiones.xml
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\Revisiones.pdb
+E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones.exe.config
+E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones.exe
+E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones.pdb
+E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones.xml
+E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.exe
+E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.xml
+E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.pdb

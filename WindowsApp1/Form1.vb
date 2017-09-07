@@ -901,7 +901,19 @@ Public Class MainForm
                 Exit Sub
             End Try
 
-            Dim t_creacion As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+            Dim t_creacion As String
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_servidor As DateTime = cmd.ExecuteScalar()
+                t_creacion = fecha_servidor.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                msgbox(ex.message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
 
             If llave = Nothing Then
                 llave = "1"
@@ -938,7 +950,19 @@ Public Class MainForm
                 Exit Sub
             End Try
 
-            Dim t_creacion As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+            Dim t_creacion As String
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_servidor As DateTime = cmd.ExecuteScalar()
+                t_creacion = fecha_servidor.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
 
             If llave = Nothing Then
                 llave = "1"
@@ -1659,7 +1683,19 @@ Public Class MainForm
 
         Dim analista As Integer = CmbBxAnalistas.SelectedValue
         If IsDBNull(DGVMuestras(8, fila_actual).Value) Then
-            t_asignacion = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_asignacion = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
+
             Dim reader As MySqlDataReader
             Try
                 conn.Open()
@@ -1673,7 +1709,17 @@ Public Class MainForm
             End Try
             Cargar_muestras(analista)
         ElseIf IsDBNull(DGVMuestras(4, fila_actual).Value) And TxBxValorC1Muestra.Text <> "" Then
-            t_revision = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_revision = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
             Dim reader As MySqlDataReader
             Try
                 conn.Open()
@@ -1687,7 +1733,20 @@ Public Class MainForm
             End Try
             Cargar_muestras(analista)
         ElseIf Not (IsDBNull(DGVMuestras(4, fila_actual).Value) And TxBxValorC2Muestra.Text <> "") Then
-            Dim t_revision_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim t_revision_2 As String
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_revision_2 = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
+
             Dim reader As MySqlDataReader
             Try
                 conn.Open()
@@ -1721,8 +1780,21 @@ Public Class MainForm
         Dim fila_actual As Integer = (DGVBandejas.CurrentRow.Index)
         Dim analista As Integer = CmbBxAnalistas.SelectedValue
         If IsDBNull(DGVBandejas(8, fila_actual).Value) Then
-            t_asignacion = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_asignacion = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
+
             Dim reader As MySqlDataReader
+
             Try
                 conn.Open()
                 Dim query As String = "UPDATE rev_bandejas SET Tiempo_A='" & t_asignacion & "', AnalistNo ='" & analista & "' WHERE Bandeja_ID = '" & DGVBandejas(0, fila_actual).Value.ToString() & "';"
@@ -1735,7 +1807,17 @@ Public Class MainForm
             End Try
             Cargar_bandejas(analista)
         ElseIf IsDBNull(DGVBandejas(4, fila_actual).Value) And TxBxComentario1Bandeja.Text <> "" Then
-            t_revision = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_revision = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
             Dim reader As MySqlDataReader
             Try
                 conn.Open()
@@ -1749,7 +1831,20 @@ Public Class MainForm
             End Try
             Cargar_bandejas(analista)
         ElseIf Not (IsDBNull(DGVMuestras(4, fila_actual).Value) And TxBxComentario2Bandeja.Text <> "") Then
-            Dim t_revision_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim t_revision_2 As String
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_revision_2 = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
+
             Dim reader As MySqlDataReader
             Try
                 conn.Open()
@@ -2323,8 +2418,22 @@ Public Class MainForm
     'Controles para los timers de Asignacion, Verificacion y Total
 
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
-        Dim fecha_actual As String = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+        Dim fecha_actual As String
+
+        Try
+            conn.Open()
+            Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+            Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+            fecha_actual = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+            conn.Close()
+        Catch ex As Exception
+            MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+            conn.Close()
+            Exit Sub
+        End Try
+
         Dim fecha_actual_datetime As DateTime = DateTime.ParseExact(fecha_actual, "yyyy-MM-dd HH:mm:ss", Nothing)
+
         Select Case Pest_actual
             Case 0
                 LabelTimerAsignacion.Visible = False
@@ -4087,7 +4196,17 @@ Public Class MainForm
             Dim t_terminado As String
             Dim muestra_id As String = TextBox6.Text
 
-            t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_terminado = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
             Try
                 conn.Open()
                 Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_T ='" & t_terminado & "', Estado ='Finalizado', Pasa ='Si' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
@@ -4104,7 +4223,17 @@ Public Class MainForm
             Dim t_terminado As String
             Dim bandeja_id As String = TextBox6.Text
 
-            t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_terminado = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
             Try
                 conn.Open()
                 Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T = '" & t_terminado & "', Estado = 'Finalizado', Pasa = 'Si' WHERE Bandeja_ID='" & bandeja_id & "';"), conn)
@@ -4136,10 +4265,30 @@ Public Class MainForm
             End If
             Dim muestra_id As String = TextBox6.Text
 
-            t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_terminado = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
 
             If Not (valor_c2_existe) Then
-                t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                    Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                    t_asignacion_2 = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                    conn.Close()
+                    Exit Sub
+                End Try
                 Try
                     conn.Open()
                     Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET Tiempo_A2 ='" & t_asignacion_2 & "', Estado = 'Pendiente', Pasa ='No' WHERE `Muestra_ID`='" & muestra_id & "';"), conn)
@@ -4152,7 +4301,19 @@ Public Class MainForm
                 conn.Close()
                 Cargar_MuestrasBandejas_Admin()
             ElseIf valor_c2_existe Then
-                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                    Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                    t_terminado = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                    conn.Close()
+                    Exit Sub
+                End Try
+
                 Try
                     conn.Open()
                     Dim cmd As New MySqlCommand(String.Format("UPDATE rev_muestras SET `Tiempo_T`='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Muestra_ID ='" & muestra_id & "';"), conn)
@@ -4178,10 +4339,30 @@ Public Class MainForm
             End If
             Dim bandeja_id As String = TextBox6.Text
 
-            t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                t_terminado = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
 
             If Not (valor_c2_existe) Then
-                t_asignacion_2 = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                    Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                    t_asignacion_2 = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                    conn.Close()
+                    Exit Sub
+                End Try
                 Try
                     conn.Open()
                     Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_A2='" & t_asignacion_2 & "', Estado ='Pendiente', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
@@ -4194,17 +4375,28 @@ Public Class MainForm
                 conn.Close()
                 Cargar_MuestrasBandejas_Admin()
             ElseIf valor_c2_existe Then
-                t_terminado = String.Format(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-            Try
-                conn.Open()
-                Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T ='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
-                cmd.ExecuteNonQuery()
-                MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
-            Catch ex As MySqlException
-                MsgBox(ex.Message, False, "Error")
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                    Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                    t_terminado = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                    conn.Close()
+                    Exit Sub
+                End Try
+
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("UPDATE rev_bandejas SET Tiempo_T ='" & t_terminado & "', Estado= 'Finalizado', Pasa = 'No' WHERE Bandeja_ID ='" & bandeja_id & "';"), conn)
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Registro modificado satisfactoriamente", False, "Registro modificado")
+                Catch ex As MySqlException
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                End Try
                 conn.Close()
-            End Try
-            conn.Close()
             Cargar_MuestrasBandejas_Admin()
         End If
         Cargar()
