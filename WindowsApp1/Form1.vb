@@ -2418,20 +2418,7 @@ Public Class MainForm
     'Controles para los timers de Asignacion, Verificacion y Total
 
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
-        Dim fecha_actual As String
-
-        Try
-            conn.Open()
-            Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
-            Dim fecha_DB As DateTime = cmd.ExecuteScalar()
-            fecha_actual = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
-            conn.Close()
-        Catch ex As Exception
-            MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
-            conn.Close()
-            Exit Sub
-        End Try
-
+        Dim fecha_actual As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
         Dim fecha_actual_datetime As DateTime = DateTime.ParseExact(fecha_actual, "yyyy-MM-dd HH:mm:ss", Nothing)
 
         Select Case Pest_actual
@@ -4502,5 +4489,88 @@ Public Class MainForm
                 Exit Sub
             End If
         End If
+    End Sub
+
+    Private Sub AgregarMuestrasTXT_Click(sender As Object, e As EventArgs) Handles AgregarMuestrasTXT.Click
+        Dim AbrirMuestraTXT As New OpenFileDialog
+        AbrirMuestraTXT.InitialDirectory = "C:\"
+        AbrirMuestraTXT.RestoreDirectory = True
+        AbrirMuestraTXT.ShowDialog()
+        Dim filepath As String
+
+        Try
+            filepath = IO.Path.GetFullPath(AbrirMuestraTXT.FileName)
+        Catch ex As Exception
+            MsgBox(ex.Message, False, "Error")
+            Exit Sub
+        End Try
+
+        Dim numero_de_lineas = IO.File.ReadAllLines(filepath).Length
+
+        Dim sData() As String
+        Dim numeromuestras, prueba, valor_in As New List(Of String)()
+
+        Using sr As New IO.StreamReader(filepath)
+            While Not sr.EndOfStream
+                sData = sr.ReadLine().Split(";"c)
+
+                numeromuestras.Add(sData(0).Trim())
+                prueba.Add(sData(1).Trim())
+                valor_in.Add(sData(2).Trim())
+            End While
+        End Using
+
+        Dim prueNo As String
+        Dim llave As String
+        Dim t_creacion As String
+
+        For i As Integer = 0 To numero_de_lineas - 1
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("Select PrueNo FROM pruebas WHERE Nombre ='" & prueba(i) & "';"), conn)
+                prueNo = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT MAX(Muestra_ID)+1 FROM rev_muestras;"), conn)
+                llave = Convert.ToString(cmd.ExecuteScalar())
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_servidor As DateTime = cmd.ExecuteScalar()
+                t_creacion = fecha_servidor.ToString("yyyy-MM-dd HH:mm:ss")
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                conn.Close()
+                Exit Sub
+            End Try
+
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("INSERT INTO rev_muestras (Muestra_ID, Muestra_No, PrueNo, Valor_In, Tiempo_C, Estado) VALUES ('" & llave & "', '" & numeromuestras(i) & "', '" & prueNo & "', '" & valor_in(i) & "', '" & t_creacion & "', 'Pendiente');"),conn)
+                cmd.ExecuteNonQuery()
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "Error")
+                conn.Close()
+                Exit Sub
+            End Try
+        Next
+
     End Sub
 End Class
