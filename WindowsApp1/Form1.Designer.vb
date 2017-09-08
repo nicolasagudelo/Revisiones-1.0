@@ -947,6 +947,7 @@ Partial Class MainForm
         Me.ToolStrip1.Size = New System.Drawing.Size(1287, 25)
         Me.ToolStrip1.TabIndex = 17
         Me.ToolStrip1.Text = "ToolStrip1"
+        Me.ToolStrip1.Visible = False
         '
         'Menu_Archivo
         '
@@ -960,8 +961,8 @@ Partial Class MainForm
         'AgregarMuestrasTXT
         '
         Me.AgregarMuestrasTXT.Name = "AgregarMuestrasTXT"
-        Me.AgregarMuestrasTXT.Size = New System.Drawing.Size(237, 22)
-        Me.AgregarMuestrasTXT.Text = "Agregar Muestras desde un .txt"
+        Me.AgregarMuestrasTXT.Size = New System.Drawing.Size(262, 22)
+        Me.AgregarMuestrasTXT.Text = "Agregar Muestras desde un Archivo"
         '
         'MainForm
         '

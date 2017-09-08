@@ -1875,6 +1875,7 @@ Public Class MainForm
             CmbBxAnalistas.Text = " "
             MsgBox("Desconectado", False, "Log-Out")
             conectado = 0
+            ToolStrip1.Visible = False
             LabelCambiarContraseña.Visible = False
             DGVMuestras.Visible = False
             DGVBandejas.Visible = False
@@ -1919,6 +1920,7 @@ Public Class MainForm
             If password = bd_password Then
                 MsgBox("Conectado, ahora cuenta con permisos de administrador", False, "Log-In")
                 conectado = 1
+                ToolStrip1.Visible = True
                 LabelCambiarContraseña.Visible = True
                 TabControl1.TabPages.Insert(3, TabPageAdmin)
                 Cargar_MuestrasBandejas_Admin()
@@ -4562,8 +4564,11 @@ Public Class MainForm
 
             Try
                 conn.Open()
-                Dim cmd As New MySqlCommand(String.Format("INSERT INTO rev_muestras (Muestra_ID, Muestra_No, PrueNo, Valor_In, Tiempo_C, Estado) VALUES ('" & llave & "', '" & numeromuestras(i) & "', '" & prueNo & "', '" & valor_in(i) & "', '" & t_creacion & "', 'Pendiente');"),conn)
+                Dim cmd As New MySqlCommand(String.Format("INSERT INTO rev_muestras (Muestra_ID, Muestra_No, PrueNo, Valor_In, Tiempo_C, Estado) VALUES ('" & llave & "', '" & numeromuestras(i) & "', '" & prueNo & "', '" & valor_in(i) & "', '" & t_creacion & "', 'Pendiente');"), conn)
                 cmd.ExecuteNonQuery()
+                If i = numero_de_lineas - 1 Then
+                    MsgBox("Se ingresaron las muestras satisfactoriamente")
+                End If
                 conn.Close()
             Catch ex As Exception
                 MsgBox(ex.Message, False, "Error")
