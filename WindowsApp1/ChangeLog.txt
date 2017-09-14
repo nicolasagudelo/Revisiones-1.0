@@ -40,7 +40,7 @@ Correcciones:
 
 Versión 1.0.2
 ===================
-Publicada: 
+Publicada: 06/09/2017
 
 Cambios:
 
@@ -48,3 +48,17 @@ Cambios:
 Correcciones
 
 * Corregido un error que no permitia crear nuevas muestras o bandejas si no existia por lo menos un registro dentro de la base de datos.
+
+
+Versión 1.0.3
+===================
+Publicada: 08/09/2017
+
+Cambios:
+
+* Los calculos de tiempo ahora se realizan haciendo uso de la hora de la maquina donde se encuentra la base de datos y no de la maquina en donde se ejecuta la aplicacion
+
+* Se agrego la opcion de ingresar muestras nuevas desde un archivo csv o txt.
+
+Correcciones:
+

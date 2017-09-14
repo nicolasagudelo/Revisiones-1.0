@@ -1,5 +1,5 @@
 ﻿Public Class FormContraseña
-    Dim respuesta As Global.System.Int32
+
     Private Sub FormContraseña_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         TxBxContraseña.Text = ""
     End Sub

@@ -23,13 +23,24 @@ Partial Class MainForm
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Me.BtnNuevoRegistro = New System.Windows.Forms.Button()
         Me.BtnModificarRegistro = New System.Windows.Forms.Button()
         Me.DGVAdmin = New System.Windows.Forms.DataGridView()
@@ -105,6 +116,20 @@ Partial Class MainForm
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.Menu_Archivo = New System.Windows.Forms.ToolStripDropDownButton()
         Me.AgregarMuestrasTXT = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TabPageReportes = New System.Windows.Forms.TabPage()
+        Me.FechaInicio = New System.Windows.Forms.DateTimePicker()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.LblFechaInicio = New System.Windows.Forms.Label()
+        Me.LblFechaFin = New System.Windows.Forms.Label()
+        Me.FechaFin = New System.Windows.Forms.DateTimePicker()
+        Me.CmbBxReportes = New System.Windows.Forms.ComboBox()
+        Me.BtnGenerarReporte = New System.Windows.Forms.Button()
+        Me.DGVReportes = New System.Windows.Forms.DataGridView()
+        Me.LblNumeroMuestras = New System.Windows.Forms.Label()
+        Me.LblNMuestras = New System.Windows.Forms.Label()
+        Me.ChartTPAsignacion = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.ChartTPRevision = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.ChartTPFinalizacion = New System.Windows.Forms.DataVisualization.Charting.Chart()
         CType(Me.DGVAdmin, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBoxControlesTablas.SuspendLayout()
         Me.TabControl1.SuspendLayout()
@@ -118,6 +143,11 @@ Partial Class MainForm
         Me.GroupBoxAdmin.SuspendLayout()
         Me.PanelAdmin.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
+        Me.TabPageReportes.SuspendLayout()
+        CType(Me.DGVReportes, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ChartTPAsignacion, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ChartTPRevision, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ChartTPFinalizacion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'BtnNuevoRegistro
@@ -142,8 +172,8 @@ Partial Class MainForm
         '
         'DGVAdmin
         '
-        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DGVAdmin.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.DGVAdmin.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.DGVAdmin.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DGVAdmin.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
@@ -151,14 +181,14 @@ Partial Class MainForm
         Me.DGVAdmin.BackgroundColor = System.Drawing.Color.Azure
         Me.DGVAdmin.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DGVAdmin.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.ActiveBorder
-        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        DataGridViewCellStyle8.ForeColor = System.Drawing.Color.Coral
-        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlDark
-        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVAdmin.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.Coral
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlDark
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVAdmin.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.DGVAdmin.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVAdmin.Cursor = System.Windows.Forms.Cursors.Hand
         Me.DGVAdmin.GridColor = System.Drawing.Color.DarkRed
@@ -196,7 +226,7 @@ Partial Class MainForm
         Me.CbBxTablas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.CbBxTablas.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.CbBxTablas.FormattingEnabled = True
-        Me.CbBxTablas.Location = New System.Drawing.Point(16, 384)
+        Me.CbBxTablas.Location = New System.Drawing.Point(16, 409)
         Me.CbBxTablas.Name = "CbBxTablas"
         Me.CbBxTablas.Size = New System.Drawing.Size(184, 21)
         Me.CbBxTablas.TabIndex = 1
@@ -219,7 +249,7 @@ Partial Class MainForm
         Me.GroupBoxControlesTablas.Controls.Add(Me.BtnEliminarRegistro)
         Me.GroupBoxControlesTablas.Controls.Add(Me.BtnModificarRegistro)
         Me.GroupBoxControlesTablas.Controls.Add(Me.BtnNuevoRegistro)
-        Me.GroupBoxControlesTablas.Location = New System.Drawing.Point(225, 373)
+        Me.GroupBoxControlesTablas.Location = New System.Drawing.Point(225, 398)
         Me.GroupBoxControlesTablas.Name = "GroupBoxControlesTablas"
         Me.GroupBoxControlesTablas.Size = New System.Drawing.Size(285, 68)
         Me.GroupBoxControlesTablas.TabIndex = 0
@@ -241,13 +271,14 @@ Partial Class MainForm
         Me.TabControl1.Controls.Add(Me.TabPageMuestras)
         Me.TabControl1.Controls.Add(Me.TabPageBandejas)
         Me.TabControl1.Controls.Add(Me.TabPageAdmin)
+        Me.TabControl1.Controls.Add(Me.TabPageReportes)
         Me.TabControl1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
         Me.TabControl1.Location = New System.Drawing.Point(16, 30)
         Me.TabControl1.Margin = New System.Windows.Forms.Padding(1)
         Me.TabControl1.Multiline = True
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(1077, 464)
+        Me.TabControl1.Size = New System.Drawing.Size(1077, 489)
         Me.TabControl1.TabIndex = 0
         Me.TabControl1.TabStop = False
         '
@@ -257,7 +288,7 @@ Partial Class MainForm
         Me.TabPageRevisionesXPrueba.Location = New System.Drawing.Point(25, 4)
         Me.TabPageRevisionesXPrueba.Name = "TabPageRevisionesXPrueba"
         Me.TabPageRevisionesXPrueba.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPageRevisionesXPrueba.Size = New System.Drawing.Size(1048, 456)
+        Me.TabPageRevisionesXPrueba.Size = New System.Drawing.Size(1048, 481)
         Me.TabPageRevisionesXPrueba.TabIndex = 3
         Me.TabPageRevisionesXPrueba.Text = "Revisiones X prueba"
         '
@@ -270,7 +301,7 @@ Partial Class MainForm
         Me.TabPageMuestras.Location = New System.Drawing.Point(25, 4)
         Me.TabPageMuestras.Name = "TabPageMuestras"
         Me.TabPageMuestras.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPageMuestras.Size = New System.Drawing.Size(1048, 456)
+        Me.TabPageMuestras.Size = New System.Drawing.Size(1048, 481)
         Me.TabPageMuestras.TabIndex = 1
         Me.TabPageMuestras.Text = "Revisión Muestras"
         '
@@ -282,7 +313,7 @@ Partial Class MainForm
         Me.GroupBoxMuestras.Controls.Add(Me.TxBxValorC2Muestra)
         Me.GroupBoxMuestras.Controls.Add(Me.BtnAsignarMuestras)
         Me.GroupBoxMuestras.Controls.Add(Me.TxBxValorC1Muestra)
-        Me.GroupBoxMuestras.Location = New System.Drawing.Point(383, 345)
+        Me.GroupBoxMuestras.Location = New System.Drawing.Point(383, 370)
         Me.GroupBoxMuestras.Name = "GroupBoxMuestras"
         Me.GroupBoxMuestras.Size = New System.Drawing.Size(461, 96)
         Me.GroupBoxMuestras.TabIndex = 37
@@ -354,8 +385,8 @@ Partial Class MainForm
         '
         'DGVMuestras
         '
-        DataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DGVMuestras.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.DGVMuestras.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle3
         Me.DGVMuestras.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -364,21 +395,21 @@ Partial Class MainForm
         Me.DGVMuestras.BackgroundColor = System.Drawing.Color.Azure
         Me.DGVMuestras.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DGVMuestras.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.ActiveBorder
-        DataGridViewCellStyle10.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        DataGridViewCellStyle10.ForeColor = System.Drawing.Color.Coral
-        DataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.ControlDark
-        DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVMuestras.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle10
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        DataGridViewCellStyle4.ForeColor = System.Drawing.Color.Coral
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlDark
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVMuestras.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle4
         Me.DGVMuestras.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVMuestras.Cursor = System.Windows.Forms.Cursors.Hand
         Me.DGVMuestras.GridColor = System.Drawing.Color.DarkRed
         Me.DGVMuestras.ImeMode = System.Windows.Forms.ImeMode.[On]
         Me.DGVMuestras.Location = New System.Drawing.Point(16, 30)
         Me.DGVMuestras.Name = "DGVMuestras"
-        Me.DGVMuestras.Size = New System.Drawing.Size(1011, 309)
+        Me.DGVMuestras.Size = New System.Drawing.Size(1011, 334)
         Me.DGVMuestras.TabIndex = 0
         Me.DGVMuestras.TabStop = False
         '
@@ -390,7 +421,7 @@ Partial Class MainForm
         Me.TabPageBandejas.Controls.Add(Me.DGVBandejas)
         Me.TabPageBandejas.Location = New System.Drawing.Point(25, 4)
         Me.TabPageBandejas.Name = "TabPageBandejas"
-        Me.TabPageBandejas.Size = New System.Drawing.Size(1048, 456)
+        Me.TabPageBandejas.Size = New System.Drawing.Size(1048, 481)
         Me.TabPageBandejas.TabIndex = 2
         Me.TabPageBandejas.Text = "Revisión Bandejas"
         '
@@ -402,7 +433,7 @@ Partial Class MainForm
         Me.GroupBoxBandejas.Controls.Add(Me.TxBxComentario1Bandeja)
         Me.GroupBoxBandejas.Controls.Add(Me.BtnAsignarBandejas)
         Me.GroupBoxBandejas.Controls.Add(Me.TxBxComentario2Bandeja)
-        Me.GroupBoxBandejas.Location = New System.Drawing.Point(383, 345)
+        Me.GroupBoxBandejas.Location = New System.Drawing.Point(383, 370)
         Me.GroupBoxBandejas.Name = "GroupBoxBandejas"
         Me.GroupBoxBandejas.Size = New System.Drawing.Size(461, 96)
         Me.GroupBoxBandejas.TabIndex = 36
@@ -471,8 +502,8 @@ Partial Class MainForm
         '
         'DGVBandejas
         '
-        DataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DGVBandejas.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle11
+        DataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.DGVBandejas.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle5
         Me.DGVBandejas.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -481,21 +512,21 @@ Partial Class MainForm
         Me.DGVBandejas.BackgroundColor = System.Drawing.Color.Azure
         Me.DGVBandejas.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.DGVBandejas.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.ActiveBorder
-        DataGridViewCellStyle12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        DataGridViewCellStyle12.ForeColor = System.Drawing.Color.Coral
-        DataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.ControlDark
-        DataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVBandejas.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle12
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        DataGridViewCellStyle6.ForeColor = System.Drawing.Color.Coral
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlDark
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVBandejas.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle6
         Me.DGVBandejas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DGVBandejas.Cursor = System.Windows.Forms.Cursors.Hand
         Me.DGVBandejas.GridColor = System.Drawing.Color.DarkRed
         Me.DGVBandejas.ImeMode = System.Windows.Forms.ImeMode.[On]
         Me.DGVBandejas.Location = New System.Drawing.Point(13, 31)
         Me.DGVBandejas.Name = "DGVBandejas"
-        Me.DGVBandejas.Size = New System.Drawing.Size(1018, 316)
+        Me.DGVBandejas.Size = New System.Drawing.Size(1018, 341)
         Me.DGVBandejas.TabIndex = 0
         Me.DGVBandejas.TabStop = False
         '
@@ -511,7 +542,7 @@ Partial Class MainForm
         Me.TabPageAdmin.Location = New System.Drawing.Point(25, 4)
         Me.TabPageAdmin.Name = "TabPageAdmin"
         Me.TabPageAdmin.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPageAdmin.Size = New System.Drawing.Size(1048, 456)
+        Me.TabPageAdmin.Size = New System.Drawing.Size(1048, 481)
         Me.TabPageAdmin.TabIndex = 0
         Me.TabPageAdmin.Text = "Administrador"
         '
@@ -904,6 +935,7 @@ Partial Class MainForm
         '
         'LabelCambiarContraseña
         '
+        Me.LabelCambiarContraseña.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LabelCambiarContraseña.AutoSize = True
         Me.LabelCambiarContraseña.Cursor = System.Windows.Forms.Cursors.Hand
         Me.LabelCambiarContraseña.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Underline), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -964,6 +996,202 @@ Partial Class MainForm
         Me.AgregarMuestrasTXT.Size = New System.Drawing.Size(262, 22)
         Me.AgregarMuestrasTXT.Text = "Agregar Muestras desde un Archivo"
         '
+        'TabPageReportes
+        '
+        Me.TabPageReportes.BackColor = System.Drawing.Color.Azure
+        Me.TabPageReportes.Controls.Add(Me.ChartTPFinalizacion)
+        Me.TabPageReportes.Controls.Add(Me.ChartTPRevision)
+        Me.TabPageReportes.Controls.Add(Me.ChartTPAsignacion)
+        Me.TabPageReportes.Controls.Add(Me.LblNMuestras)
+        Me.TabPageReportes.Controls.Add(Me.LblNumeroMuestras)
+        Me.TabPageReportes.Controls.Add(Me.DGVReportes)
+        Me.TabPageReportes.Controls.Add(Me.BtnGenerarReporte)
+        Me.TabPageReportes.Controls.Add(Me.CmbBxReportes)
+        Me.TabPageReportes.Controls.Add(Me.LblFechaFin)
+        Me.TabPageReportes.Controls.Add(Me.FechaFin)
+        Me.TabPageReportes.Controls.Add(Me.LblFechaInicio)
+        Me.TabPageReportes.Controls.Add(Me.Label4)
+        Me.TabPageReportes.Controls.Add(Me.FechaInicio)
+        Me.TabPageReportes.Location = New System.Drawing.Point(25, 4)
+        Me.TabPageReportes.Name = "TabPageReportes"
+        Me.TabPageReportes.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPageReportes.Size = New System.Drawing.Size(1048, 481)
+        Me.TabPageReportes.TabIndex = 4
+        Me.TabPageReportes.Text = "Reportes"
+        '
+        'FechaInicio
+        '
+        Me.FechaInicio.Location = New System.Drawing.Point(39, 62)
+        Me.FechaInicio.MinDate = New Date(2017, 1, 1, 0, 0, 0, 0)
+        Me.FechaInicio.Name = "FechaInicio"
+        Me.FechaInicio.Size = New System.Drawing.Size(146, 20)
+        Me.FechaInicio.TabIndex = 0
+        Me.FechaInicio.Value = New Date(2017, 9, 14, 10, 3, 34, 0)
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Font = New System.Drawing.Font("Cambria", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label4.ForeColor = System.Drawing.SystemColors.MenuHighlight
+        Me.Label4.Location = New System.Drawing.Point(35, 9)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(75, 19)
+        Me.Label4.TabIndex = 18
+        Me.Label4.Text = "Reportes"
+        '
+        'LblFechaInicio
+        '
+        Me.LblFechaInicio.AutoSize = True
+        Me.LblFechaInicio.Location = New System.Drawing.Point(36, 46)
+        Me.LblFechaInicio.Name = "LblFechaInicio"
+        Me.LblFechaInicio.Size = New System.Drawing.Size(68, 13)
+        Me.LblFechaInicio.TabIndex = 19
+        Me.LblFechaInicio.Text = "Fecha Inicio:"
+        '
+        'LblFechaFin
+        '
+        Me.LblFechaFin.AutoSize = True
+        Me.LblFechaFin.Location = New System.Drawing.Point(201, 46)
+        Me.LblFechaFin.Name = "LblFechaFin"
+        Me.LblFechaFin.Size = New System.Drawing.Size(57, 13)
+        Me.LblFechaFin.TabIndex = 21
+        Me.LblFechaFin.Text = "Fecha Fin:"
+        '
+        'FechaFin
+        '
+        Me.FechaFin.Location = New System.Drawing.Point(204, 62)
+        Me.FechaFin.Name = "FechaFin"
+        Me.FechaFin.Size = New System.Drawing.Size(146, 20)
+        Me.FechaFin.TabIndex = 20
+        Me.FechaFin.Value = New Date(2017, 9, 14, 10, 3, 34, 0)
+        '
+        'CmbBxReportes
+        '
+        Me.CmbBxReportes.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.CmbBxReportes.BackColor = System.Drawing.SystemColors.InactiveCaption
+        Me.CmbBxReportes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbBxReportes.FlatStyle = System.Windows.Forms.FlatStyle.Popup
+        Me.CmbBxReportes.FormattingEnabled = True
+        Me.CmbBxReportes.Location = New System.Drawing.Point(16, 423)
+        Me.CmbBxReportes.Name = "CmbBxReportes"
+        Me.CmbBxReportes.Size = New System.Drawing.Size(184, 21)
+        Me.CmbBxReportes.TabIndex = 22
+        Me.CmbBxReportes.TabStop = False
+        '
+        'BtnGenerarReporte
+        '
+        Me.BtnGenerarReporte.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnGenerarReporte.Location = New System.Drawing.Point(206, 423)
+        Me.BtnGenerarReporte.Name = "BtnGenerarReporte"
+        Me.BtnGenerarReporte.Size = New System.Drawing.Size(78, 39)
+        Me.BtnGenerarReporte.TabIndex = 23
+        Me.BtnGenerarReporte.Text = "Generar Reporte"
+        Me.BtnGenerarReporte.UseVisualStyleBackColor = True
+        '
+        'DGVReportes
+        '
+        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.DGVReportes.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle7
+        Me.DGVReportes.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DGVReportes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.DGVReportes.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
+        Me.DGVReportes.BackgroundColor = System.Drawing.Color.Azure
+        Me.DGVReportes.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.DGVReportes.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        DataGridViewCellStyle8.ForeColor = System.Drawing.Color.Coral
+        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlDark
+        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVReportes.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle8
+        Me.DGVReportes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DGVReportes.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.DGVReportes.GridColor = System.Drawing.Color.DarkRed
+        Me.DGVReportes.ImeMode = System.Windows.Forms.ImeMode.[On]
+        Me.DGVReportes.Location = New System.Drawing.Point(39, 88)
+        Me.DGVReportes.Name = "DGVReportes"
+        Me.DGVReportes.Size = New System.Drawing.Size(981, 323)
+        Me.DGVReportes.TabIndex = 24
+        Me.DGVReportes.TabStop = False
+        '
+        'LblNumeroMuestras
+        '
+        Me.LblNumeroMuestras.AutoSize = True
+        Me.LblNumeroMuestras.Location = New System.Drawing.Point(398, 46)
+        Me.LblNumeroMuestras.Name = "LblNumeroMuestras"
+        Me.LblNumeroMuestras.Size = New System.Drawing.Size(251, 13)
+        Me.LblNumeroMuestras.TabIndex = 25
+        Me.LblNumeroMuestras.Text = "Numero de muestras registradas entre estas fechas:"
+        Me.LblNumeroMuestras.Visible = False
+        '
+        'LblNMuestras
+        '
+        Me.LblNMuestras.AutoSize = True
+        Me.LblNMuestras.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        Me.LblNMuestras.ForeColor = System.Drawing.Color.Red
+        Me.LblNMuestras.Location = New System.Drawing.Point(398, 62)
+        Me.LblNMuestras.Name = "LblNMuestras"
+        Me.LblNMuestras.Size = New System.Drawing.Size(21, 20)
+        Me.LblNMuestras.TabIndex = 26
+        Me.LblNMuestras.Text = "N"
+        Me.LblNMuestras.Visible = False
+        '
+        'ChartTPAsignacion
+        '
+        ChartArea3.Name = "ChartArea1"
+        Me.ChartTPAsignacion.ChartAreas.Add(ChartArea3)
+        Legend3.Name = "Legend1"
+        Me.ChartTPAsignacion.Legends.Add(Legend3)
+        Me.ChartTPAsignacion.Location = New System.Drawing.Point(39, 90)
+        Me.ChartTPAsignacion.Name = "ChartTPAsignacion"
+        Series3.ChartArea = "ChartArea1"
+        Series3.Legend = "Legend1"
+        Series3.Name = "Series1"
+        Me.ChartTPAsignacion.Series.Add(Series3)
+        Me.ChartTPAsignacion.Size = New System.Drawing.Size(981, 300)
+        Me.ChartTPAsignacion.TabIndex = 27
+        Me.ChartTPAsignacion.Text = "Chart1"
+        Me.ChartTPAsignacion.Visible = False
+        '
+        'ChartTPRevision
+        '
+        ChartArea2.Name = "ChartArea1"
+        Me.ChartTPRevision.ChartAreas.Add(ChartArea2)
+        Legend2.Name = "Legend1"
+        Me.ChartTPRevision.Legends.Add(Legend2)
+        Me.ChartTPRevision.Location = New System.Drawing.Point(39, 90)
+        Me.ChartTPRevision.Name = "ChartTPRevision"
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        Me.ChartTPRevision.Series.Add(Series2)
+        Me.ChartTPRevision.Size = New System.Drawing.Size(981, 300)
+        Me.ChartTPRevision.TabIndex = 28
+        Me.ChartTPRevision.Text = "Chart1"
+        Me.ChartTPRevision.Visible = False
+        '
+        'ChartTPFinalizacion
+        '
+        ChartArea1.BorderWidth = 10
+        ChartArea1.Name = "ChartArea1"
+        Me.ChartTPFinalizacion.ChartAreas.Add(ChartArea1)
+        Legend1.Name = "Legend1"
+        Me.ChartTPFinalizacion.Legends.Add(Legend1)
+        Me.ChartTPFinalizacion.Location = New System.Drawing.Point(39, 90)
+        Me.ChartTPFinalizacion.Name = "ChartTPFinalizacion"
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        Me.ChartTPFinalizacion.Series.Add(Series1)
+        Me.ChartTPFinalizacion.Size = New System.Drawing.Size(981, 300)
+        Me.ChartTPFinalizacion.TabIndex = 29
+        Me.ChartTPFinalizacion.Text = "Chart1"
+        Me.ChartTPFinalizacion.Visible = False
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1019,6 +1247,12 @@ Partial Class MainForm
         Me.PanelAdmin.PerformLayout()
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
+        Me.TabPageReportes.ResumeLayout(False)
+        Me.TabPageReportes.PerformLayout()
+        CType(Me.DGVReportes, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ChartTPAsignacion, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ChartTPRevision, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ChartTPFinalizacion, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1098,4 +1332,18 @@ Partial Class MainForm
     Friend WithEvents ToolStrip1 As ToolStrip
     Friend WithEvents Menu_Archivo As ToolStripDropDownButton
     Friend WithEvents AgregarMuestrasTXT As ToolStripMenuItem
+    Friend WithEvents TabPageReportes As TabPage
+    Friend WithEvents LblFechaFin As Label
+    Friend WithEvents FechaFin As DateTimePicker
+    Friend WithEvents LblFechaInicio As Label
+    Friend WithEvents Label4 As Label
+    Friend WithEvents FechaInicio As DateTimePicker
+    Friend WithEvents BtnGenerarReporte As Button
+    Friend WithEvents CmbBxReportes As ComboBox
+    Friend WithEvents DGVReportes As DataGridView
+    Friend WithEvents LblNumeroMuestras As Label
+    Friend WithEvents LblNMuestras As Label
+    Friend WithEvents ChartTPAsignacion As DataVisualization.Charting.Chart
+    Friend WithEvents ChartTPFinalizacion As DataVisualization.Charting.Chart
+    Friend WithEvents ChartTPRevision As DataVisualization.Charting.Chart
 End Class

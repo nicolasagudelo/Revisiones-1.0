@@ -2,6 +2,8 @@
 
 Imports MySql.Data.MySqlClient
 Imports System.Configuration
+Imports System.Windows.Forms.DataVisualization.Charting
+
 Public Class MainForm
     Implements IMessageFilter
     Dim conn As New MySqlConnection
@@ -14,6 +16,7 @@ Public Class MainForm
         LlenarComboBox7()
         CmbBxFiltroPrueba.Text = Nothing
         TabControl1.TabPages.Remove(TabPageAdmin)
+        TabControl1.TabPages.Remove(TabPageReportes)
 
     End Sub
 
@@ -51,6 +54,13 @@ Public Class MainForm
         CbBxTablas.Items.Add("Historial de Bandejas")
 
         CbBxTablas.SelectedItem = "Analistas"
+
+        CmbBxReportes.Items.Add("N° de Muestras")
+        CmbBxReportes.Items.Add("Muestras C1 vs C2 > 10%")
+        CmbBxReportes.Items.Add("Diagrama Tiempos de Asignacion")
+        CmbBxReportes.Items.Add("Diagrama Tiempos de Revision")
+        CmbBxReportes.Items.Add("Diagrama Tiempos de Finalizacion")
+        CmbBxReportes.SelectedIndex = 0
 
         Conteo_muestras()
     End Sub
@@ -529,6 +539,29 @@ Public Class MainForm
         ElseIf TabControl1.SelectedTab Is TabPageRevisionesXPrueba Then
             Pest_actual = 0
             LabelRevisionesPrueba.Visible = True
+        ElseIf TabControl1.SelectedTab Is TabPageReportes Then
+            Pest_actual = 4
+            FechaInicio.Format = DateTimePickerFormat.Custom
+            FechaInicio.CustomFormat = "yyyy-MM-dd HH:mm:ss"
+            FechaInicio.Value = FechaInicio.MinDate
+            FechaFin.Format = DateTimePickerFormat.Custom
+            FechaFin.CustomFormat = "yyyy-MM-dd HH:mm:ss"
+            Try
+                conn.Open()
+                Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                Dim fecha_servidor As DateTime = cmd.ExecuteScalar()
+                FechaFin.MaxDate = fecha_servidor.ToString("yyyy-MM-dd HH:mm:ss")
+                FechaInicio.MaxDate = FechaFin.MaxDate
+                FechaFin.Value = FechaFin.MaxDate
+                conn.Close()
+            Catch ex As Exception
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos se tomara la hora local")
+                conn.Close()
+                FechaFin.MaxDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                FechaInicio.MaxDate = FechaFin.MaxDate
+                FechaFin.Value = FechaFin.MaxDate
+                Exit Sub
+            End Try
         End If
     End Sub
 
@@ -910,7 +943,7 @@ Public Class MainForm
                 t_creacion = fecha_servidor.ToString("yyyy-MM-dd HH:mm:ss")
                 conn.Close()
             Catch ex As Exception
-                msgbox(ex.message, False, "No se puede obtener la fecha de la base de datos")
+                MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
                 conn.Close()
                 Exit Sub
             End Try
@@ -1872,6 +1905,7 @@ Public Class MainForm
             BtnConectar.Enabled = True
             BtnConectarAdmin.Enabled = True
             TabControl1.TabPages.Remove(TabPageAdmin)
+            TabControl1.TabPages.Remove(TabPageReportes)
             CmbBxAnalistas.Text = " "
             MsgBox("Desconectado", False, "Log-Out")
             conectado = 0
@@ -1923,6 +1957,7 @@ Public Class MainForm
                 ToolStrip1.Visible = True
                 LabelCambiarContraseña.Visible = True
                 TabControl1.TabPages.Insert(3, TabPageAdmin)
+                TabControl1.TabPages.Insert(4, TabPageReportes)
                 Cargar_MuestrasBandejas_Admin()
                 CmbBxAnalistas.Text = " "
                 CmbBxAnalistas.Enabled = False
@@ -4386,9 +4421,9 @@ Public Class MainForm
                     conn.Close()
                 End Try
                 conn.Close()
-            Cargar_MuestrasBandejas_Admin()
-        End If
-        Cargar()
+                Cargar_MuestrasBandejas_Admin()
+            End If
+            Cargar()
         End If
     End Sub
 
@@ -4578,4 +4613,152 @@ Public Class MainForm
         Next
 
     End Sub
+
+    Private Sub BtnGenerarReporte_Click(sender As Object, e As EventArgs) Handles BtnGenerarReporte.Click
+        If FechaInicio.Value > FechaFin.Value Then
+            MsgBox("La fecha inicial no puede estar despues que la fecha final", False, "Error")
+            Exit Sub
+        End If
+        Dim ReporteSeleccionado As Integer = CmbBxReportes.SelectedIndex
+        Select Case ReporteSeleccionado
+            Case 0
+                DGVReportes.Visible = False
+                Dim numero_pruebas As String
+                ChartTPAsignacion.Visible = False
+                ChartTPRevision.Visible = False
+                ChartTPFinalizacion.Visible = False
+                Dim fecha_inicial As String = FechaInicio.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                Dim fecha_final As String = FechaFin.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("select count(*) as c
+                                                               from rev_muestras 
+                                                               where Tiempo_C between '" & fecha_inicial & "' and '" & fecha_final & "';"), conn)
+                    numero_pruebas = Convert.ToString(cmd.ExecuteScalar())
+                    LblNMuestras.Text = numero_pruebas
+                    LblNumeroMuestras.Visible = True
+                    LblNMuestras.Visible = True
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox(ex.Message, False, "Error")
+                    conn.Close()
+                    Exit Sub
+                End Try
+                Exit Sub
+            Case 1
+                DGVReportes.Visible = True
+                LblNumeroMuestras.Visible = False
+                LblNMuestras.Visible = False
+                ChartTPAsignacion.Visible = False
+                ChartTPRevision.Visible = False
+                ChartTPFinalizacion.Visible = False
+
+                Dim fecha_inicial As String = FechaInicio.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                Dim fecha_final As String = FechaFin.Value.ToString("yyyy-MM-dd HH:mm:ss")
+
+                Dim cmd As New MySqlCommand("select Muestra_No,pruebas.nombre,Valor_C1,Valor_C2 
+                                             from rev_muestras inner join pruebas on rev_muestras.PrueNo = pruebas.PrueNo
+                                             where (tiempo_c between '" & fecha_inicial & "' and '" & fecha_final & "') and (Valor_C1 - Valor_C1 * 0.1 > Valor_C2) or (Valor_C2 > Valor_C1 + Valor_C1 * 0.1)", conn)
+                Dim reader As MySqlDataReader
+
+                Try
+
+                    conn.Open()
+                    Console.WriteLine("C1 vs C2")
+
+                    reader = cmd.ExecuteReader()
+
+                    Dim table As New DataTable
+                    table.Load(reader)
+                    DGVReportes.DataSource = table
+                    DGVReportes.ReadOnly = True
+                    DGVReportes.AllowUserToResizeColumns = True
+                    DGVReportes.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+
+                    reader.Close()
+                    conn.Close()
+                Catch ex As MySqlException
+                    MsgBox(ex.Message)
+                    conn.Close()
+                End Try
+
+                Exit Sub
+            Case 2
+                DGVReportes.Visible = False
+                ChartTPAsignacion.Visible = True
+                ChartTPRevision.Visible = False
+                ChartTPFinalizacion.Visible = False
+                Dim numero_pruebas
+
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("select max(PrueNo)from pruebas;"), conn)
+                    numero_pruebas = Convert.ToString(cmd.ExecuteScalar())
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox("No se pudo obtener la canditad de pruebas de la base de datos", False, "Error")
+                    conn.Close()
+                    Exit Sub
+                End Try
+                ChartTPAsignacion.Series.Clear()
+
+                For i As Integer = 1 To numero_pruebas
+
+
+                    Dim fecha_inicial As String = FechaInicio.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                    Dim fecha_final As String = FechaFin.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                    Dim promedio As Double
+                    Dim promediostring As String
+                    Try
+                        conn.Open()
+                        Dim cmd As New MySqlCommand(String.Format("select avg((tiempo_asignacion)/60/60)
+                                                                   from(
+                                                                   select timestampdiff(second, tiempo_c,Tiempo_a) as tiempo_asignacion
+                                                                   from rev_muestras
+                                                                   where prueNo = " & i & "  and (tiempo_c between '" & fecha_inicial & "' and '" & fecha_final & "')
+                                                                   )a;"), conn)
+                        promediostring = Convert.ToString(cmd.ExecuteScalar())
+                        If promediostring = "" Then
+                            promedio = 0
+                        Else
+                            promedio = Convert.ToString(cmd.ExecuteScalar)
+                        End If
+                        conn.Close()
+                    Catch ex As Exception
+                        MsgBox("error", False, "Error")
+                        conn.Close()
+                        Exit Sub
+                    End Try
+
+                    If promedio <> 0 Then
+                        Try
+                            conn.Open()
+                            Dim cmd As New MySqlCommand(String.Format("select nombre from pruebas where prueno = " & i & ";"), conn)
+
+                            ChartTPAsignacion.Series.Add(Convert.ToString(cmd.ExecuteScalar()))
+                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).ChartType = SeriesChartType.RangeColumn
+                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Font = New Font("Arial", 8, FontStyle.Bold)
+                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Points.Add()
+                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Points.AddY(promedio)
+                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Points(i - 1).AxisLabel = Convert.ToString(cmd.ExecuteScalar())
+                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).ChartArea = "ChartArea1"
+
+                            'ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Label = Convert.ToString(cmd.ExecuteScalar()) & vbCrLf & promedio.ToString.Substring(0, 5)
+                            conn.Close()
+                        Catch ex As Exception
+                            MsgBox("No se pudo obtener la canditad de pruebas de la base de datos", False, "Error")
+                            conn.Close()
+                            Exit Sub
+                        End Try
+
+                    End If
+
+
+                Next
+
+                Exit Sub
+        End Select
+    End Sub
+
+
 End Class
