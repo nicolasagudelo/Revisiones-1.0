@@ -29,3 +29,18 @@ E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.exe
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.xml
 E:\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.pdb
 C:\Users\IDETECO\source\repos\WindowsApp1\WindowsApp1\obj\Debug\DB_Revision.vbprojResolveAssemblyReference.cache
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones.exe.config
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones.exe
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones.pdb
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\Revisiones.xml
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\MySql.Data.dll
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\bin\Debug\MySql.Data.xml
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\DB_Revision.vbprojResolveAssemblyReference.cache
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\WindowsApp1.MainForm.resources
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\WindowsApp1.FormContraseña.resources
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\WindowsApp1.FormCambiarContraseña.resources
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\WindowsApp1.Resources.resources
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\DB_Revision.vbproj.GenerateResource.Cache
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.exe
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.xml
+E:\Desarrollo ExxonMobil\Programa Revisiones\Revisiones-1.0\WindowsApp1\obj\Debug\Revisiones.pdb

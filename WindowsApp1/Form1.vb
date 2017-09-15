@@ -4684,6 +4684,10 @@ Public Class MainForm
 
                 Exit Sub
             Case 2
+                ChartTPAsignacion.Series.Clear()
+                ChartTPAsignacion.Series.Add("Pruebas")
+                ChartTPAsignacion.Titles.Clear()
+                ChartTPAsignacion.Titles.Add("Tiempos de Asignacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
                 DGVReportes.Visible = False
                 ChartTPAsignacion.Visible = True
                 ChartTPRevision.Visible = False
@@ -4700,7 +4704,8 @@ Public Class MainForm
                     conn.Close()
                     Exit Sub
                 End Try
-                ChartTPAsignacion.Series.Clear()
+
+                Dim j As Integer = 0
 
                 For i As Integer = 1 To numero_pruebas
 
@@ -4729,24 +4734,187 @@ Public Class MainForm
                         conn.Close()
                         Exit Sub
                     End Try
-
+                    Dim nombre_prueba As String
                     If promedio <> 0 Then
                         Try
                             conn.Open()
                             Dim cmd As New MySqlCommand(String.Format("select nombre from pruebas where prueno = " & i & ";"), conn)
+                            nombre_prueba = Convert.ToString(cmd.ExecuteScalar())
+                            ChartTPAsignacion.Series("Pruebas").ChartType = SeriesChartType.Column
+                            ChartTPAsignacion.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
+                            ChartTPAsignacion.Series("Pruebas").Points.Add(promedio, j)
+                            ChartTPAsignacion.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
+                            'ChartTPAsignacion.Series("Pruebas").Color = Color.Red
+                            j += 1
 
-                            ChartTPAsignacion.Series.Add(Convert.ToString(cmd.ExecuteScalar()))
-                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).ChartType = SeriesChartType.RangeColumn
-                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Font = New Font("Arial", 8, FontStyle.Bold)
-                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Points.Add()
-                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Points.AddY(promedio)
-                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Points(i - 1).AxisLabel = Convert.ToString(cmd.ExecuteScalar())
-                            ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).ChartArea = "ChartArea1"
+                            ChartTPAsignacion.Series("Pruebas").ChartArea = "ChartArea1"
+                            ChartTPAsignacion.ChartAreas(0).AxisX.Interval = 1
 
-                            'ChartTPAsignacion.Series(Convert.ToString(cmd.ExecuteScalar())).Label = Convert.ToString(cmd.ExecuteScalar()) & vbCrLf & promedio.ToString.Substring(0, 5)
                             conn.Close()
                         Catch ex As Exception
-                            MsgBox("No se pudo obtener la canditad de pruebas de la base de datos", False, "Error")
+                            MsgBox(ex.Message, False, "Error")
+                            conn.Close()
+                            Exit Sub
+                        End Try
+
+                    End If
+
+
+                Next
+
+                Exit Sub
+            Case 3
+                ChartTPRevision.Series.Clear()
+                ChartTPRevision.Series.Add("Pruebas")
+                ChartTPRevision.Titles.Clear()
+                ChartTPRevision.Titles.Add("Tiempos de Verificacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
+                DGVReportes.Visible = False
+                ChartTPRevision.Visible = True
+                ChartTPAsignacion.Visible = False
+                ChartTPFinalizacion.Visible = False
+                Dim numero_pruebas
+
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("select max(PrueNo)from pruebas;"), conn)
+                    numero_pruebas = Convert.ToString(cmd.ExecuteScalar())
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox("No se pudo obtener la canditad de pruebas de la base de datos", False, "Error")
+                    conn.Close()
+                    Exit Sub
+                End Try
+
+                Dim j As Integer = 0
+
+                For i As Integer = 1 To numero_pruebas
+
+
+                    Dim fecha_inicial As String = FechaInicio.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                    Dim fecha_final As String = FechaFin.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                    Dim promedio As Double
+                    Dim promediostring As String
+                    Try
+                        conn.Open()
+                        Dim cmd As New MySqlCommand(String.Format("select if(averagev2 is null, averagev1, ((averagev1 + averagev2)/2))
+                                                                   from(
+                                                                   select avg((tiempo_verificacion1)/60/60)as averagev1,avg((tiempo_verificacion2)/60/60) as averagev2
+                                                                   from(
+                                                                   select timestampdiff(second, tiempo_a,Tiempo_v) as tiempo_verificacion1, timestampdiff(second,Tiempo_A2,Tiempo_V2) as tiempo_verificacion2
+                                                                   from rev_muestras
+                                                                   where prueNo = " & i & " and (tiempo_c between '" & fecha_inicial & "' and '" & fecha_final & "')
+                                                                   )a)b;"), conn)
+                        promediostring = Convert.ToString(cmd.ExecuteScalar())
+                        If promediostring = "" Then
+                            promedio = 0
+                        Else
+                            promedio = Convert.ToString(cmd.ExecuteScalar)
+                        End If
+                        conn.Close()
+                    Catch ex As Exception
+                        MsgBox("error", False, "Error")
+                        conn.Close()
+                        Exit Sub
+                    End Try
+                    Dim nombre_prueba As String
+                    If promedio <> 0 Then
+                        Try
+                            conn.Open()
+                            Dim cmd As New MySqlCommand(String.Format("select nombre from pruebas where prueno = " & i & ";"), conn)
+                            nombre_prueba = Convert.ToString(cmd.ExecuteScalar())
+                            ChartTPRevision.Series("Pruebas").ChartType = SeriesChartType.Column
+                            ChartTPRevision.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
+                            ChartTPRevision.Series("Pruebas").Points.Add(promedio, j)
+                            ChartTPRevision.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
+                            ChartTPRevision.Series("Pruebas").Color = Color.Goldenrod
+                            j += 1
+
+                            ChartTPRevision.Series("Pruebas").ChartArea = "ChartArea1"
+                            ChartTPRevision.ChartAreas(0).AxisX.Interval = 1
+
+                            conn.Close()
+                        Catch ex As Exception
+                            MsgBox(ex.Message, False, "Error")
+                            conn.Close()
+                            Exit Sub
+                        End Try
+
+                    End If
+
+
+                Next
+
+                Exit Sub
+            Case 4
+                ChartTPFinalizacion.Series.Clear()
+                ChartTPFinalizacion.Series.Add("Pruebas")
+                ChartTPFinalizacion.Titles.Clear()
+                ChartTPFinalizacion.Titles.Add("Tiempos de Finalizacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
+                DGVReportes.Visible = False
+                ChartTPFinalizacion.Visible = True
+                ChartTPAsignacion.Visible = False
+                ChartTPRevision.Visible = False
+                Dim numero_pruebas
+
+                Try
+                    conn.Open()
+                    Dim cmd As New MySqlCommand(String.Format("select max(PrueNo)from pruebas;"), conn)
+                    numero_pruebas = Convert.ToString(cmd.ExecuteScalar())
+                    conn.Close()
+                Catch ex As Exception
+                    MsgBox("No se pudo obtener la canditad de pruebas de la base de datos", False, "Error")
+                    conn.Close()
+                    Exit Sub
+                End Try
+
+                Dim j As Integer = 0
+
+                For i As Integer = 1 To numero_pruebas
+
+
+                    Dim fecha_inicial As String = FechaInicio.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                    Dim fecha_final As String = FechaFin.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                    Dim promedio As Double
+                    Dim promediostring As String
+                    Try
+                        conn.Open()
+                        Dim cmd As New MySqlCommand(String.Format("select avg((tiempo_finalizacion)/60/60) as averageT
+                                                                   from(
+                                                                   select timestampdiff(second, tiempo_c,Tiempo_T) as tiempo_finalizacion
+                                                                   from rev_muestras
+                                                                   where prueNo = " & i & " and (tiempo_c between '" & fecha_inicial & "' and '" & fecha_final & "')
+                                                                   )a;"), conn)
+                        promediostring = Convert.ToString(cmd.ExecuteScalar())
+                        If promediostring = "" Then
+                            promedio = 0
+                        Else
+                            promedio = Convert.ToString(cmd.ExecuteScalar)
+                        End If
+                        conn.Close()
+                    Catch ex As Exception
+                        MsgBox("error", False, "Error")
+                        conn.Close()
+                        Exit Sub
+                    End Try
+                    Dim nombre_prueba As String
+                    If promedio <> 0 Then
+                        Try
+                            conn.Open()
+                            Dim cmd As New MySqlCommand(String.Format("select nombre from pruebas where prueno = " & i & ";"), conn)
+                            nombre_prueba = Convert.ToString(cmd.ExecuteScalar())
+                            ChartTPFinalizacion.Series("Pruebas").ChartType = SeriesChartType.Column
+                            ChartTPFinalizacion.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
+                            ChartTPFinalizacion.Series("Pruebas").Points.Add(promedio, j)
+                            ChartTPFinalizacion.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
+                            ChartTPFinalizacion.Series("Pruebas").Color = Color.Green
+                            j += 1
+
+                            ChartTPFinalizacion.Series("Pruebas").ChartArea = "ChartArea1"
+                            ChartTPFinalizacion.ChartAreas(0).AxisX.Interval = 1
+
+                            conn.Close()
+                        Catch ex As Exception
+                            MsgBox(ex.Message, False, "Error")
                             conn.Close()
                             Exit Sub
                         End Try

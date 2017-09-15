@@ -29,18 +29,18 @@ Partial Class MainForm
         Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
-        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
         Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
         Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.BtnNuevoRegistro = New System.Windows.Forms.Button()
         Me.BtnModificarRegistro = New System.Windows.Forms.Button()
         Me.DGVAdmin = New System.Windows.Forms.DataGridView()
@@ -92,6 +92,20 @@ Partial Class MainForm
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.LabelAdmin = New System.Windows.Forms.Label()
+        Me.TabPageReportes = New System.Windows.Forms.TabPage()
+        Me.ChartTPFinalizacion = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.ChartTPRevision = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.ChartTPAsignacion = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.LblNMuestras = New System.Windows.Forms.Label()
+        Me.LblNumeroMuestras = New System.Windows.Forms.Label()
+        Me.DGVReportes = New System.Windows.Forms.DataGridView()
+        Me.BtnGenerarReporte = New System.Windows.Forms.Button()
+        Me.CmbBxReportes = New System.Windows.Forms.ComboBox()
+        Me.LblFechaFin = New System.Windows.Forms.Label()
+        Me.FechaFin = New System.Windows.Forms.DateTimePicker()
+        Me.LblFechaInicio = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.FechaInicio = New System.Windows.Forms.DateTimePicker()
         Me.CmbBxAnalistas = New System.Windows.Forms.ComboBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.LabelTimerVerificacion = New System.Windows.Forms.Label()
@@ -116,20 +130,6 @@ Partial Class MainForm
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.Menu_Archivo = New System.Windows.Forms.ToolStripDropDownButton()
         Me.AgregarMuestrasTXT = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TabPageReportes = New System.Windows.Forms.TabPage()
-        Me.FechaInicio = New System.Windows.Forms.DateTimePicker()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.LblFechaInicio = New System.Windows.Forms.Label()
-        Me.LblFechaFin = New System.Windows.Forms.Label()
-        Me.FechaFin = New System.Windows.Forms.DateTimePicker()
-        Me.CmbBxReportes = New System.Windows.Forms.ComboBox()
-        Me.BtnGenerarReporte = New System.Windows.Forms.Button()
-        Me.DGVReportes = New System.Windows.Forms.DataGridView()
-        Me.LblNumeroMuestras = New System.Windows.Forms.Label()
-        Me.LblNMuestras = New System.Windows.Forms.Label()
-        Me.ChartTPAsignacion = New System.Windows.Forms.DataVisualization.Charting.Chart()
-        Me.ChartTPRevision = New System.Windows.Forms.DataVisualization.Charting.Chart()
-        Me.ChartTPFinalizacion = New System.Windows.Forms.DataVisualization.Charting.Chart()
         CType(Me.DGVAdmin, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBoxControlesTablas.SuspendLayout()
         Me.TabControl1.SuspendLayout()
@@ -142,12 +142,12 @@ Partial Class MainForm
         Me.TabPageAdmin.SuspendLayout()
         Me.GroupBoxAdmin.SuspendLayout()
         Me.PanelAdmin.SuspendLayout()
-        Me.ToolStrip1.SuspendLayout()
         Me.TabPageReportes.SuspendLayout()
-        CType(Me.DGVReportes, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ChartTPAsignacion, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ChartTPRevision, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ChartTPFinalizacion, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ChartTPRevision, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ChartTPAsignacion, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.DGVReportes, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'BtnNuevoRegistro
@@ -749,6 +749,209 @@ Partial Class MainForm
         Me.LabelAdmin.TabIndex = 36
         Me.LabelAdmin.Text = "Administrador"
         '
+        'TabPageReportes
+        '
+        Me.TabPageReportes.BackColor = System.Drawing.Color.Azure
+        Me.TabPageReportes.Controls.Add(Me.ChartTPRevision)
+        Me.TabPageReportes.Controls.Add(Me.ChartTPFinalizacion)
+        Me.TabPageReportes.Controls.Add(Me.ChartTPAsignacion)
+        Me.TabPageReportes.Controls.Add(Me.LblNMuestras)
+        Me.TabPageReportes.Controls.Add(Me.LblNumeroMuestras)
+        Me.TabPageReportes.Controls.Add(Me.DGVReportes)
+        Me.TabPageReportes.Controls.Add(Me.BtnGenerarReporte)
+        Me.TabPageReportes.Controls.Add(Me.CmbBxReportes)
+        Me.TabPageReportes.Controls.Add(Me.LblFechaFin)
+        Me.TabPageReportes.Controls.Add(Me.FechaFin)
+        Me.TabPageReportes.Controls.Add(Me.LblFechaInicio)
+        Me.TabPageReportes.Controls.Add(Me.Label4)
+        Me.TabPageReportes.Controls.Add(Me.FechaInicio)
+        Me.TabPageReportes.Location = New System.Drawing.Point(25, 4)
+        Me.TabPageReportes.Name = "TabPageReportes"
+        Me.TabPageReportes.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPageReportes.Size = New System.Drawing.Size(1048, 481)
+        Me.TabPageReportes.TabIndex = 4
+        Me.TabPageReportes.Text = "Reportes"
+        '
+        'ChartTPFinalizacion
+        '
+        ChartArea2.BorderWidth = 10
+        ChartArea2.Name = "ChartArea1"
+        Me.ChartTPFinalizacion.ChartAreas.Add(ChartArea2)
+        Legend2.Name = "Legend1"
+        Me.ChartTPFinalizacion.Legends.Add(Legend2)
+        Me.ChartTPFinalizacion.Location = New System.Drawing.Point(40, 88)
+        Me.ChartTPFinalizacion.Name = "ChartTPFinalizacion"
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Pruebas"
+        Me.ChartTPFinalizacion.Series.Add(Series2)
+        Me.ChartTPFinalizacion.Size = New System.Drawing.Size(981, 328)
+        Me.ChartTPFinalizacion.TabIndex = 29
+        Me.ChartTPFinalizacion.Text = "Chart1"
+        Me.ChartTPFinalizacion.Visible = False
+        '
+        'ChartTPRevision
+        '
+        Me.ChartTPRevision.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        ChartArea1.Name = "ChartArea1"
+        Me.ChartTPRevision.ChartAreas.Add(ChartArea1)
+        Legend1.Name = "Legend1"
+        Me.ChartTPRevision.Legends.Add(Legend1)
+        Me.ChartTPRevision.Location = New System.Drawing.Point(40, 88)
+        Me.ChartTPRevision.Name = "ChartTPRevision"
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        Series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.[String]
+        Me.ChartTPRevision.Series.Add(Series1)
+        Me.ChartTPRevision.Size = New System.Drawing.Size(981, 328)
+        Me.ChartTPRevision.TabIndex = 28
+        Me.ChartTPRevision.Text = "Chart1"
+        Me.ChartTPRevision.Visible = False
+        '
+        'ChartTPAsignacion
+        '
+        Me.ChartTPAsignacion.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        ChartArea3.Name = "ChartArea1"
+        Me.ChartTPAsignacion.ChartAreas.Add(ChartArea3)
+        Legend3.Name = "Legend1"
+        Me.ChartTPAsignacion.Legends.Add(Legend3)
+        Me.ChartTPAsignacion.Location = New System.Drawing.Point(40, 88)
+        Me.ChartTPAsignacion.Name = "ChartTPAsignacion"
+        Series3.ChartArea = "ChartArea1"
+        Series3.Legend = "Legend1"
+        Series3.Name = "Pruebas"
+        Me.ChartTPAsignacion.Series.Add(Series3)
+        Me.ChartTPAsignacion.Size = New System.Drawing.Size(981, 328)
+        Me.ChartTPAsignacion.TabIndex = 27
+        Me.ChartTPAsignacion.Text = "Chart1"
+        Me.ChartTPAsignacion.Visible = False
+        '
+        'LblNMuestras
+        '
+        Me.LblNMuestras.AutoSize = True
+        Me.LblNMuestras.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        Me.LblNMuestras.ForeColor = System.Drawing.Color.Red
+        Me.LblNMuestras.Location = New System.Drawing.Point(398, 62)
+        Me.LblNMuestras.Name = "LblNMuestras"
+        Me.LblNMuestras.Size = New System.Drawing.Size(21, 20)
+        Me.LblNMuestras.TabIndex = 26
+        Me.LblNMuestras.Text = "N"
+        Me.LblNMuestras.Visible = False
+        '
+        'LblNumeroMuestras
+        '
+        Me.LblNumeroMuestras.AutoSize = True
+        Me.LblNumeroMuestras.Location = New System.Drawing.Point(398, 46)
+        Me.LblNumeroMuestras.Name = "LblNumeroMuestras"
+        Me.LblNumeroMuestras.Size = New System.Drawing.Size(251, 13)
+        Me.LblNumeroMuestras.TabIndex = 25
+        Me.LblNumeroMuestras.Text = "Numero de muestras registradas entre estas fechas:"
+        Me.LblNumeroMuestras.Visible = False
+        '
+        'DGVReportes
+        '
+        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.DGVReportes.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle7
+        Me.DGVReportes.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.DGVReportes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.DGVReportes.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
+        Me.DGVReportes.BackgroundColor = System.Drawing.Color.Azure
+        Me.DGVReportes.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.DGVReportes.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.ActiveBorder
+        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
+        DataGridViewCellStyle8.ForeColor = System.Drawing.Color.Coral
+        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlDark
+        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.DGVReportes.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle8
+        Me.DGVReportes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DGVReportes.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.DGVReportes.GridColor = System.Drawing.Color.DarkRed
+        Me.DGVReportes.ImeMode = System.Windows.Forms.ImeMode.[On]
+        Me.DGVReportes.Location = New System.Drawing.Point(39, 88)
+        Me.DGVReportes.Name = "DGVReportes"
+        Me.DGVReportes.Size = New System.Drawing.Size(981, 323)
+        Me.DGVReportes.TabIndex = 24
+        Me.DGVReportes.TabStop = False
+        '
+        'BtnGenerarReporte
+        '
+        Me.BtnGenerarReporte.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.BtnGenerarReporte.Location = New System.Drawing.Point(206, 423)
+        Me.BtnGenerarReporte.Name = "BtnGenerarReporte"
+        Me.BtnGenerarReporte.Size = New System.Drawing.Size(78, 39)
+        Me.BtnGenerarReporte.TabIndex = 23
+        Me.BtnGenerarReporte.Text = "Generar Reporte"
+        Me.BtnGenerarReporte.UseVisualStyleBackColor = True
+        '
+        'CmbBxReportes
+        '
+        Me.CmbBxReportes.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.CmbBxReportes.BackColor = System.Drawing.SystemColors.InactiveCaption
+        Me.CmbBxReportes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.CmbBxReportes.FlatStyle = System.Windows.Forms.FlatStyle.Popup
+        Me.CmbBxReportes.FormattingEnabled = True
+        Me.CmbBxReportes.Location = New System.Drawing.Point(16, 423)
+        Me.CmbBxReportes.Name = "CmbBxReportes"
+        Me.CmbBxReportes.Size = New System.Drawing.Size(184, 21)
+        Me.CmbBxReportes.TabIndex = 22
+        Me.CmbBxReportes.TabStop = False
+        '
+        'LblFechaFin
+        '
+        Me.LblFechaFin.AutoSize = True
+        Me.LblFechaFin.Location = New System.Drawing.Point(201, 46)
+        Me.LblFechaFin.Name = "LblFechaFin"
+        Me.LblFechaFin.Size = New System.Drawing.Size(57, 13)
+        Me.LblFechaFin.TabIndex = 21
+        Me.LblFechaFin.Text = "Fecha Fin:"
+        '
+        'FechaFin
+        '
+        Me.FechaFin.Location = New System.Drawing.Point(204, 62)
+        Me.FechaFin.Name = "FechaFin"
+        Me.FechaFin.Size = New System.Drawing.Size(146, 20)
+        Me.FechaFin.TabIndex = 20
+        Me.FechaFin.Value = New Date(2017, 9, 14, 10, 3, 34, 0)
+        '
+        'LblFechaInicio
+        '
+        Me.LblFechaInicio.AutoSize = True
+        Me.LblFechaInicio.Location = New System.Drawing.Point(36, 46)
+        Me.LblFechaInicio.Name = "LblFechaInicio"
+        Me.LblFechaInicio.Size = New System.Drawing.Size(68, 13)
+        Me.LblFechaInicio.TabIndex = 19
+        Me.LblFechaInicio.Text = "Fecha Inicio:"
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Font = New System.Drawing.Font("Cambria", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label4.ForeColor = System.Drawing.SystemColors.MenuHighlight
+        Me.Label4.Location = New System.Drawing.Point(35, 9)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(75, 19)
+        Me.Label4.TabIndex = 18
+        Me.Label4.Text = "Reportes"
+        '
+        'FechaInicio
+        '
+        Me.FechaInicio.Location = New System.Drawing.Point(39, 62)
+        Me.FechaInicio.MinDate = New Date(2017, 1, 1, 0, 0, 0, 0)
+        Me.FechaInicio.Name = "FechaInicio"
+        Me.FechaInicio.Size = New System.Drawing.Size(146, 20)
+        Me.FechaInicio.TabIndex = 0
+        Me.FechaInicio.Value = New Date(2017, 9, 14, 10, 3, 34, 0)
+        '
         'CmbBxAnalistas
         '
         Me.CmbBxAnalistas.Anchor = System.Windows.Forms.AnchorStyles.Right
@@ -996,202 +1199,6 @@ Partial Class MainForm
         Me.AgregarMuestrasTXT.Size = New System.Drawing.Size(262, 22)
         Me.AgregarMuestrasTXT.Text = "Agregar Muestras desde un Archivo"
         '
-        'TabPageReportes
-        '
-        Me.TabPageReportes.BackColor = System.Drawing.Color.Azure
-        Me.TabPageReportes.Controls.Add(Me.ChartTPFinalizacion)
-        Me.TabPageReportes.Controls.Add(Me.ChartTPRevision)
-        Me.TabPageReportes.Controls.Add(Me.ChartTPAsignacion)
-        Me.TabPageReportes.Controls.Add(Me.LblNMuestras)
-        Me.TabPageReportes.Controls.Add(Me.LblNumeroMuestras)
-        Me.TabPageReportes.Controls.Add(Me.DGVReportes)
-        Me.TabPageReportes.Controls.Add(Me.BtnGenerarReporte)
-        Me.TabPageReportes.Controls.Add(Me.CmbBxReportes)
-        Me.TabPageReportes.Controls.Add(Me.LblFechaFin)
-        Me.TabPageReportes.Controls.Add(Me.FechaFin)
-        Me.TabPageReportes.Controls.Add(Me.LblFechaInicio)
-        Me.TabPageReportes.Controls.Add(Me.Label4)
-        Me.TabPageReportes.Controls.Add(Me.FechaInicio)
-        Me.TabPageReportes.Location = New System.Drawing.Point(25, 4)
-        Me.TabPageReportes.Name = "TabPageReportes"
-        Me.TabPageReportes.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPageReportes.Size = New System.Drawing.Size(1048, 481)
-        Me.TabPageReportes.TabIndex = 4
-        Me.TabPageReportes.Text = "Reportes"
-        '
-        'FechaInicio
-        '
-        Me.FechaInicio.Location = New System.Drawing.Point(39, 62)
-        Me.FechaInicio.MinDate = New Date(2017, 1, 1, 0, 0, 0, 0)
-        Me.FechaInicio.Name = "FechaInicio"
-        Me.FechaInicio.Size = New System.Drawing.Size(146, 20)
-        Me.FechaInicio.TabIndex = 0
-        Me.FechaInicio.Value = New Date(2017, 9, 14, 10, 3, 34, 0)
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.Font = New System.Drawing.Font("Cambria", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.ForeColor = System.Drawing.SystemColors.MenuHighlight
-        Me.Label4.Location = New System.Drawing.Point(35, 9)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(75, 19)
-        Me.Label4.TabIndex = 18
-        Me.Label4.Text = "Reportes"
-        '
-        'LblFechaInicio
-        '
-        Me.LblFechaInicio.AutoSize = True
-        Me.LblFechaInicio.Location = New System.Drawing.Point(36, 46)
-        Me.LblFechaInicio.Name = "LblFechaInicio"
-        Me.LblFechaInicio.Size = New System.Drawing.Size(68, 13)
-        Me.LblFechaInicio.TabIndex = 19
-        Me.LblFechaInicio.Text = "Fecha Inicio:"
-        '
-        'LblFechaFin
-        '
-        Me.LblFechaFin.AutoSize = True
-        Me.LblFechaFin.Location = New System.Drawing.Point(201, 46)
-        Me.LblFechaFin.Name = "LblFechaFin"
-        Me.LblFechaFin.Size = New System.Drawing.Size(57, 13)
-        Me.LblFechaFin.TabIndex = 21
-        Me.LblFechaFin.Text = "Fecha Fin:"
-        '
-        'FechaFin
-        '
-        Me.FechaFin.Location = New System.Drawing.Point(204, 62)
-        Me.FechaFin.Name = "FechaFin"
-        Me.FechaFin.Size = New System.Drawing.Size(146, 20)
-        Me.FechaFin.TabIndex = 20
-        Me.FechaFin.Value = New Date(2017, 9, 14, 10, 3, 34, 0)
-        '
-        'CmbBxReportes
-        '
-        Me.CmbBxReportes.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.CmbBxReportes.BackColor = System.Drawing.SystemColors.InactiveCaption
-        Me.CmbBxReportes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.CmbBxReportes.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.CmbBxReportes.FormattingEnabled = True
-        Me.CmbBxReportes.Location = New System.Drawing.Point(16, 423)
-        Me.CmbBxReportes.Name = "CmbBxReportes"
-        Me.CmbBxReportes.Size = New System.Drawing.Size(184, 21)
-        Me.CmbBxReportes.TabIndex = 22
-        Me.CmbBxReportes.TabStop = False
-        '
-        'BtnGenerarReporte
-        '
-        Me.BtnGenerarReporte.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.BtnGenerarReporte.Location = New System.Drawing.Point(206, 423)
-        Me.BtnGenerarReporte.Name = "BtnGenerarReporte"
-        Me.BtnGenerarReporte.Size = New System.Drawing.Size(78, 39)
-        Me.BtnGenerarReporte.TabIndex = 23
-        Me.BtnGenerarReporte.Text = "Generar Reporte"
-        Me.BtnGenerarReporte.UseVisualStyleBackColor = True
-        '
-        'DGVReportes
-        '
-        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.DGVReportes.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle7
-        Me.DGVReportes.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.DGVReportes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
-        Me.DGVReportes.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-        Me.DGVReportes.BackgroundColor = System.Drawing.Color.Azure
-        Me.DGVReportes.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.DGVReportes.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.ActiveBorder
-        DataGridViewCellStyle8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        DataGridViewCellStyle8.ForeColor = System.Drawing.Color.Coral
-        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlDark
-        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.DGVReportes.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle8
-        Me.DGVReportes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DGVReportes.Cursor = System.Windows.Forms.Cursors.Hand
-        Me.DGVReportes.GridColor = System.Drawing.Color.DarkRed
-        Me.DGVReportes.ImeMode = System.Windows.Forms.ImeMode.[On]
-        Me.DGVReportes.Location = New System.Drawing.Point(39, 88)
-        Me.DGVReportes.Name = "DGVReportes"
-        Me.DGVReportes.Size = New System.Drawing.Size(981, 323)
-        Me.DGVReportes.TabIndex = 24
-        Me.DGVReportes.TabStop = False
-        '
-        'LblNumeroMuestras
-        '
-        Me.LblNumeroMuestras.AutoSize = True
-        Me.LblNumeroMuestras.Location = New System.Drawing.Point(398, 46)
-        Me.LblNumeroMuestras.Name = "LblNumeroMuestras"
-        Me.LblNumeroMuestras.Size = New System.Drawing.Size(251, 13)
-        Me.LblNumeroMuestras.TabIndex = 25
-        Me.LblNumeroMuestras.Text = "Numero de muestras registradas entre estas fechas:"
-        Me.LblNumeroMuestras.Visible = False
-        '
-        'LblNMuestras
-        '
-        Me.LblNMuestras.AutoSize = True
-        Me.LblNMuestras.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte), True)
-        Me.LblNMuestras.ForeColor = System.Drawing.Color.Red
-        Me.LblNMuestras.Location = New System.Drawing.Point(398, 62)
-        Me.LblNMuestras.Name = "LblNMuestras"
-        Me.LblNMuestras.Size = New System.Drawing.Size(21, 20)
-        Me.LblNMuestras.TabIndex = 26
-        Me.LblNMuestras.Text = "N"
-        Me.LblNMuestras.Visible = False
-        '
-        'ChartTPAsignacion
-        '
-        ChartArea3.Name = "ChartArea1"
-        Me.ChartTPAsignacion.ChartAreas.Add(ChartArea3)
-        Legend3.Name = "Legend1"
-        Me.ChartTPAsignacion.Legends.Add(Legend3)
-        Me.ChartTPAsignacion.Location = New System.Drawing.Point(39, 90)
-        Me.ChartTPAsignacion.Name = "ChartTPAsignacion"
-        Series3.ChartArea = "ChartArea1"
-        Series3.Legend = "Legend1"
-        Series3.Name = "Series1"
-        Me.ChartTPAsignacion.Series.Add(Series3)
-        Me.ChartTPAsignacion.Size = New System.Drawing.Size(981, 300)
-        Me.ChartTPAsignacion.TabIndex = 27
-        Me.ChartTPAsignacion.Text = "Chart1"
-        Me.ChartTPAsignacion.Visible = False
-        '
-        'ChartTPRevision
-        '
-        ChartArea2.Name = "ChartArea1"
-        Me.ChartTPRevision.ChartAreas.Add(ChartArea2)
-        Legend2.Name = "Legend1"
-        Me.ChartTPRevision.Legends.Add(Legend2)
-        Me.ChartTPRevision.Location = New System.Drawing.Point(39, 90)
-        Me.ChartTPRevision.Name = "ChartTPRevision"
-        Series2.ChartArea = "ChartArea1"
-        Series2.Legend = "Legend1"
-        Series2.Name = "Series1"
-        Me.ChartTPRevision.Series.Add(Series2)
-        Me.ChartTPRevision.Size = New System.Drawing.Size(981, 300)
-        Me.ChartTPRevision.TabIndex = 28
-        Me.ChartTPRevision.Text = "Chart1"
-        Me.ChartTPRevision.Visible = False
-        '
-        'ChartTPFinalizacion
-        '
-        ChartArea1.BorderWidth = 10
-        ChartArea1.Name = "ChartArea1"
-        Me.ChartTPFinalizacion.ChartAreas.Add(ChartArea1)
-        Legend1.Name = "Legend1"
-        Me.ChartTPFinalizacion.Legends.Add(Legend1)
-        Me.ChartTPFinalizacion.Location = New System.Drawing.Point(39, 90)
-        Me.ChartTPFinalizacion.Name = "ChartTPFinalizacion"
-        Series1.ChartArea = "ChartArea1"
-        Series1.Legend = "Legend1"
-        Series1.Name = "Series1"
-        Me.ChartTPFinalizacion.Series.Add(Series1)
-        Me.ChartTPFinalizacion.Size = New System.Drawing.Size(981, 300)
-        Me.ChartTPFinalizacion.TabIndex = 29
-        Me.ChartTPFinalizacion.Text = "Chart1"
-        Me.ChartTPFinalizacion.Visible = False
-        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1245,14 +1252,14 @@ Partial Class MainForm
         Me.GroupBoxAdmin.PerformLayout()
         Me.PanelAdmin.ResumeLayout(False)
         Me.PanelAdmin.PerformLayout()
-        Me.ToolStrip1.ResumeLayout(False)
-        Me.ToolStrip1.PerformLayout()
         Me.TabPageReportes.ResumeLayout(False)
         Me.TabPageReportes.PerformLayout()
-        CType(Me.DGVReportes, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ChartTPAsignacion, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ChartTPRevision, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ChartTPFinalizacion, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ChartTPRevision, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ChartTPAsignacion, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.DGVReportes, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
