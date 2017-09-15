@@ -4692,6 +4692,8 @@ Public Class MainForm
                 ChartTPAsignacion.Visible = True
                 ChartTPRevision.Visible = False
                 ChartTPFinalizacion.Visible = False
+                LblNumeroMuestras.Visible = False
+                LblNMuestras.Visible = False
                 Dim numero_pruebas
 
                 Try
@@ -4772,6 +4774,8 @@ Public Class MainForm
                 ChartTPRevision.Visible = True
                 ChartTPAsignacion.Visible = False
                 ChartTPFinalizacion.Visible = False
+                LblNumeroMuestras.Visible = False
+                LblNMuestras.Visible = False
                 Dim numero_pruebas
 
                 Try
@@ -4854,6 +4858,8 @@ Public Class MainForm
                 ChartTPFinalizacion.Visible = True
                 ChartTPAsignacion.Visible = False
                 ChartTPRevision.Visible = False
+                LblNumeroMuestras.Visible = False
+                LblNMuestras.Visible = False
                 Dim numero_pruebas
 
                 Try
