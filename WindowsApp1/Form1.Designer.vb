@@ -29,15 +29,9 @@ Partial Class MainForm
         Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
-        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
-        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
-        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
@@ -93,9 +87,7 @@ Partial Class MainForm
         Me.Label1 = New System.Windows.Forms.Label()
         Me.LabelAdmin = New System.Windows.Forms.Label()
         Me.TabPageReportes = New System.Windows.Forms.TabPage()
-        Me.ChartTPFinalizacion = New System.Windows.Forms.DataVisualization.Charting.Chart()
-        Me.ChartTPRevision = New System.Windows.Forms.DataVisualization.Charting.Chart()
-        Me.ChartTPAsignacion = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.ChartTP = New System.Windows.Forms.DataVisualization.Charting.Chart()
         Me.LblNMuestras = New System.Windows.Forms.Label()
         Me.LblNumeroMuestras = New System.Windows.Forms.Label()
         Me.DGVReportes = New System.Windows.Forms.DataGridView()
@@ -143,9 +135,7 @@ Partial Class MainForm
         Me.GroupBoxAdmin.SuspendLayout()
         Me.PanelAdmin.SuspendLayout()
         Me.TabPageReportes.SuspendLayout()
-        CType(Me.ChartTPFinalizacion, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ChartTPRevision, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ChartTPAsignacion, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ChartTP, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DGVReportes, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -752,9 +742,7 @@ Partial Class MainForm
         'TabPageReportes
         '
         Me.TabPageReportes.BackColor = System.Drawing.Color.Azure
-        Me.TabPageReportes.Controls.Add(Me.ChartTPRevision)
-        Me.TabPageReportes.Controls.Add(Me.ChartTPFinalizacion)
-        Me.TabPageReportes.Controls.Add(Me.ChartTPAsignacion)
+        Me.TabPageReportes.Controls.Add(Me.ChartTP)
         Me.TabPageReportes.Controls.Add(Me.LblNMuestras)
         Me.TabPageReportes.Controls.Add(Me.LblNumeroMuestras)
         Me.TabPageReportes.Controls.Add(Me.DGVReportes)
@@ -772,64 +760,26 @@ Partial Class MainForm
         Me.TabPageReportes.TabIndex = 4
         Me.TabPageReportes.Text = "Reportes"
         '
-        'ChartTPFinalizacion
+        'ChartTP
         '
-        ChartArea2.BorderWidth = 10
-        ChartArea2.Name = "ChartArea1"
-        Me.ChartTPFinalizacion.ChartAreas.Add(ChartArea2)
-        Legend2.Name = "Legend1"
-        Me.ChartTPFinalizacion.Legends.Add(Legend2)
-        Me.ChartTPFinalizacion.Location = New System.Drawing.Point(40, 88)
-        Me.ChartTPFinalizacion.Name = "ChartTPFinalizacion"
-        Series2.ChartArea = "ChartArea1"
-        Series2.Legend = "Legend1"
-        Series2.Name = "Pruebas"
-        Me.ChartTPFinalizacion.Series.Add(Series2)
-        Me.ChartTPFinalizacion.Size = New System.Drawing.Size(981, 328)
-        Me.ChartTPFinalizacion.TabIndex = 29
-        Me.ChartTPFinalizacion.Text = "Chart1"
-        Me.ChartTPFinalizacion.Visible = False
-        '
-        'ChartTPRevision
-        '
-        Me.ChartTPRevision.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.ChartTP.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         ChartArea1.Name = "ChartArea1"
-        Me.ChartTPRevision.ChartAreas.Add(ChartArea1)
+        Me.ChartTP.ChartAreas.Add(ChartArea1)
         Legend1.Name = "Legend1"
-        Me.ChartTPRevision.Legends.Add(Legend1)
-        Me.ChartTPRevision.Location = New System.Drawing.Point(40, 88)
-        Me.ChartTPRevision.Name = "ChartTPRevision"
+        Me.ChartTP.Legends.Add(Legend1)
+        Me.ChartTP.Location = New System.Drawing.Point(40, 88)
+        Me.ChartTP.Name = "ChartTP"
         Series1.ChartArea = "ChartArea1"
         Series1.Legend = "Legend1"
         Series1.Name = "Series1"
         Series1.XValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.[String]
-        Me.ChartTPRevision.Series.Add(Series1)
-        Me.ChartTPRevision.Size = New System.Drawing.Size(981, 328)
-        Me.ChartTPRevision.TabIndex = 28
-        Me.ChartTPRevision.Text = "Chart1"
-        Me.ChartTPRevision.Visible = False
-        '
-        'ChartTPAsignacion
-        '
-        Me.ChartTPAsignacion.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        ChartArea3.Name = "ChartArea1"
-        Me.ChartTPAsignacion.ChartAreas.Add(ChartArea3)
-        Legend3.Name = "Legend1"
-        Me.ChartTPAsignacion.Legends.Add(Legend3)
-        Me.ChartTPAsignacion.Location = New System.Drawing.Point(40, 88)
-        Me.ChartTPAsignacion.Name = "ChartTPAsignacion"
-        Series3.ChartArea = "ChartArea1"
-        Series3.Legend = "Legend1"
-        Series3.Name = "Pruebas"
-        Me.ChartTPAsignacion.Series.Add(Series3)
-        Me.ChartTPAsignacion.Size = New System.Drawing.Size(981, 328)
-        Me.ChartTPAsignacion.TabIndex = 27
-        Me.ChartTPAsignacion.Text = "Chart1"
-        Me.ChartTPAsignacion.Visible = False
+        Me.ChartTP.Series.Add(Series1)
+        Me.ChartTP.Size = New System.Drawing.Size(981, 328)
+        Me.ChartTP.TabIndex = 28
+        Me.ChartTP.Text = "Chart1"
+        Me.ChartTP.Visible = False
         '
         'LblNMuestras
         '
@@ -1254,9 +1204,7 @@ Partial Class MainForm
         Me.PanelAdmin.PerformLayout()
         Me.TabPageReportes.ResumeLayout(False)
         Me.TabPageReportes.PerformLayout()
-        CType(Me.ChartTPFinalizacion, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ChartTPRevision, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ChartTPAsignacion, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ChartTP, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DGVReportes, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
@@ -1350,7 +1298,5 @@ Partial Class MainForm
     Friend WithEvents DGVReportes As DataGridView
     Friend WithEvents LblNumeroMuestras As Label
     Friend WithEvents LblNMuestras As Label
-    Friend WithEvents ChartTPAsignacion As DataVisualization.Charting.Chart
-    Friend WithEvents ChartTPFinalizacion As DataVisualization.Charting.Chart
-    Friend WithEvents ChartTPRevision As DataVisualization.Charting.Chart
+    Friend WithEvents ChartTP As DataVisualization.Charting.Chart
 End Class

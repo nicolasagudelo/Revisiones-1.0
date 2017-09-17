@@ -4624,9 +4624,9 @@ Public Class MainForm
             Case 0
                 DGVReportes.Visible = False
                 Dim numero_pruebas As String
-                ChartTPAsignacion.Visible = False
-                ChartTPRevision.Visible = False
-                ChartTPFinalizacion.Visible = False
+                'ChartTPAsignacion.Visible = False
+                ChartTP.Visible = False
+                'ChartTPFinalizacion.Visible = False
                 Dim fecha_inicial As String = FechaInicio.Value.ToString("yyyy-MM-dd HH:mm:ss")
                 Dim fecha_final As String = FechaFin.Value.ToString("yyyy-MM-dd HH:mm:ss")
                 Try
@@ -4649,9 +4649,7 @@ Public Class MainForm
                 DGVReportes.Visible = True
                 LblNumeroMuestras.Visible = False
                 LblNMuestras.Visible = False
-                ChartTPAsignacion.Visible = False
-                ChartTPRevision.Visible = False
-                ChartTPFinalizacion.Visible = False
+                ChartTP.Visible = False
 
                 Dim fecha_inicial As String = FechaInicio.Value.ToString("yyyy-MM-dd HH:mm:ss")
                 Dim fecha_final As String = FechaFin.Value.ToString("yyyy-MM-dd HH:mm:ss")
@@ -4684,14 +4682,12 @@ Public Class MainForm
 
                 Exit Sub
             Case 2
-                ChartTPAsignacion.Series.Clear()
-                ChartTPAsignacion.Series.Add("Pruebas")
-                ChartTPAsignacion.Titles.Clear()
-                ChartTPAsignacion.Titles.Add("Tiempos de Asignacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
+                ChartTP.Series.Clear()
+                ChartTP.Series.Add("Pruebas")
+                ChartTP.Titles.Clear()
+                ChartTP.Titles.Add("Tiempos de Asignacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
                 DGVReportes.Visible = False
-                ChartTPAsignacion.Visible = True
-                ChartTPRevision.Visible = False
-                ChartTPFinalizacion.Visible = False
+                ChartTP.Visible = True
                 LblNumeroMuestras.Visible = False
                 LblNMuestras.Visible = False
                 Dim numero_pruebas
@@ -4742,15 +4738,15 @@ Public Class MainForm
                             conn.Open()
                             Dim cmd As New MySqlCommand(String.Format("select nombre from pruebas where prueno = " & i & ";"), conn)
                             nombre_prueba = Convert.ToString(cmd.ExecuteScalar())
-                            ChartTPAsignacion.Series("Pruebas").ChartType = SeriesChartType.Column
-                            ChartTPAsignacion.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
-                            ChartTPAsignacion.Series("Pruebas").Points.Add(promedio, j)
-                            ChartTPAsignacion.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
-                            'ChartTPAsignacion.Series("Pruebas").Color = Color.Red
+                            ChartTP.Series("Pruebas").ChartType = SeriesChartType.Column
+                            ChartTP.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
+                            ChartTP.Series("Pruebas").Points.Add(promedio, j)
+                            ChartTP.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
+                            'ChartTP.Series("Pruebas").Color = Color.Red
                             j += 1
 
-                            ChartTPAsignacion.Series("Pruebas").ChartArea = "ChartArea1"
-                            ChartTPAsignacion.ChartAreas(0).AxisX.Interval = 1
+                            ChartTP.Series("Pruebas").ChartArea = "ChartArea1"
+                            ChartTP.ChartAreas(0).AxisX.Interval = 1
 
                             conn.Close()
                         Catch ex As Exception
@@ -4766,14 +4762,12 @@ Public Class MainForm
 
                 Exit Sub
             Case 3
-                ChartTPRevision.Series.Clear()
-                ChartTPRevision.Series.Add("Pruebas")
-                ChartTPRevision.Titles.Clear()
-                ChartTPRevision.Titles.Add("Tiempos de Verificacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
+                ChartTP.Series.Clear()
+                ChartTP.Series.Add("Pruebas")
+                ChartTP.Titles.Clear()
+                ChartTP.Titles.Add("Tiempos de Verificacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
                 DGVReportes.Visible = False
-                ChartTPRevision.Visible = True
-                ChartTPAsignacion.Visible = False
-                ChartTPFinalizacion.Visible = False
+                ChartTP.Visible = True
                 LblNumeroMuestras.Visible = False
                 LblNMuestras.Visible = False
                 Dim numero_pruebas
@@ -4826,15 +4820,15 @@ Public Class MainForm
                             conn.Open()
                             Dim cmd As New MySqlCommand(String.Format("select nombre from pruebas where prueno = " & i & ";"), conn)
                             nombre_prueba = Convert.ToString(cmd.ExecuteScalar())
-                            ChartTPRevision.Series("Pruebas").ChartType = SeriesChartType.Column
-                            ChartTPRevision.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
-                            ChartTPRevision.Series("Pruebas").Points.Add(promedio, j)
-                            ChartTPRevision.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
-                            ChartTPRevision.Series("Pruebas").Color = Color.Goldenrod
+                            ChartTP.Series("Pruebas").ChartType = SeriesChartType.Column
+                            ChartTP.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
+                            ChartTP.Series("Pruebas").Points.Add(promedio, j)
+                            ChartTP.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
+                            ChartTP.Series("Pruebas").Color = Color.Goldenrod
                             j += 1
 
-                            ChartTPRevision.Series("Pruebas").ChartArea = "ChartArea1"
-                            ChartTPRevision.ChartAreas(0).AxisX.Interval = 1
+                            ChartTP.Series("Pruebas").ChartArea = "ChartArea1"
+                            ChartTP.ChartAreas(0).AxisX.Interval = 1
 
                             conn.Close()
                         Catch ex As Exception
@@ -4850,14 +4844,12 @@ Public Class MainForm
 
                 Exit Sub
             Case 4
-                ChartTPFinalizacion.Series.Clear()
-                ChartTPFinalizacion.Series.Add("Pruebas")
-                ChartTPFinalizacion.Titles.Clear()
-                ChartTPFinalizacion.Titles.Add("Tiempos de Finalizacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
+                ChartTP.Series.Clear()
+                ChartTP.Series.Add("Pruebas")
+                ChartTP.Titles.Clear()
+                ChartTP.Titles.Add("Tiempos de Finalizacion Promedio (en horas)").Font = New Font("Arial", 11, FontStyle.Bold Or FontStyle.Italic)
                 DGVReportes.Visible = False
-                ChartTPFinalizacion.Visible = True
-                ChartTPAsignacion.Visible = False
-                ChartTPRevision.Visible = False
+                ChartTP.Visible = True
                 LblNumeroMuestras.Visible = False
                 LblNMuestras.Visible = False
                 Dim numero_pruebas
@@ -4908,15 +4900,15 @@ Public Class MainForm
                             conn.Open()
                             Dim cmd As New MySqlCommand(String.Format("select nombre from pruebas where prueno = " & i & ";"), conn)
                             nombre_prueba = Convert.ToString(cmd.ExecuteScalar())
-                            ChartTPFinalizacion.Series("Pruebas").ChartType = SeriesChartType.Column
-                            ChartTPFinalizacion.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
-                            ChartTPFinalizacion.Series("Pruebas").Points.Add(promedio, j)
-                            ChartTPFinalizacion.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
-                            ChartTPFinalizacion.Series("Pruebas").Color = Color.Green
+                            ChartTP.Series("Pruebas").ChartType = SeriesChartType.Column
+                            ChartTP.Series("Pruebas").Font = New Font("Arial", 8, FontStyle.Bold)
+                            ChartTP.Series("Pruebas").Points.Add(promedio, j)
+                            ChartTP.Series("Pruebas").Points(j).AxisLabel = "P: " & nombre_prueba & vbCrLf & "T: " & promediostring.Substring(0, 5)
+                            ChartTP.Series("Pruebas").Color = Color.Green
                             j += 1
 
-                            ChartTPFinalizacion.Series("Pruebas").ChartArea = "ChartArea1"
-                            ChartTPFinalizacion.ChartAreas(0).AxisX.Interval = 1
+                            ChartTP.Series("Pruebas").ChartArea = "ChartArea1"
+                            ChartTP.ChartAreas(0).AxisX.Interval = 1
 
                             conn.Close()
                         Catch ex As Exception
@@ -4934,5 +4926,49 @@ Public Class MainForm
         End Select
     End Sub
 
+    Private Sub ChartTP_MouseUp(sender As Object, e As MouseEventArgs) Handles ChartTP.MouseUp
+        If e.Button <> Windows.Forms.MouseButtons.Right Then Return
+        Dim cms = New ContextMenuStrip
+        Dim item1 = cms.Items.Add("Guardar Imagen")
+        item1.Tag = 1
+        AddHandler item1.Click, AddressOf menuChoice
+        '-- etc
+        '..
+        cms.Show(MousePosition)
+    End Sub
+
+    Private Sub menuChoice(ByVal sender As Object, ByVal e As EventArgs)
+        Dim item = CType(sender, ToolStripMenuItem)
+        Dim selection = CInt(item.Tag)
+        Select Case selection
+            Case 1
+                Dim guardarimagen As New SaveFileDialog
+                guardarimagen.InitialDirectory = "C:\"
+                guardarimagen.RestoreDirectory = True
+                guardarimagen.DefaultExt = ".jpg"
+                guardarimagen.AddExtension = True
+                guardarimagen.Filter = "Imagen JPEG(*.jpg)|*.jpg|Imagen PNG(*.png)|*.png|Bitmap BMP(*.bmp)|*.bmp"
+                guardarimagen.ShowDialog()
+                Dim filepath As String
+
+                Try
+                    filepath = IO.Path.GetFullPath(guardarimagen.FileName)
+                Catch ex As Exception
+                    MsgBox(ex.Message, False, "Error")
+                    Exit Sub
+                End Try
+
+                If filepath.EndsWith("bmp") Then
+                    ChartTP.SaveImage(filepath, Imaging.ImageFormat.Bmp)
+                ElseIf filepath.EndsWith("jpg") Then
+                    ChartTP.SaveImage(filepath, Imaging.ImageFormat.Jpeg)
+                ElseIf filepath.EndsWith("png") Then
+                    ChartTP.SaveImage(filepath, Imaging.ImageFormat.Png)
+                End If
+
+                Exit Sub
+        End Select
+        '-- etc
+    End Sub
 
 End Class
