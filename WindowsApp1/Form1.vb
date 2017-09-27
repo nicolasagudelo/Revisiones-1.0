@@ -1712,9 +1712,47 @@ Public Class MainForm
         End Try
 
         Dim fila_actual As Integer = (DGVMuestras.CurrentRow.Index)
+        Dim total_filas As Integer = DGVMuestras.Rows.GetRowCount(DataGridViewElementStates.Selected)
+        Dim filas_seleccionadas(total_filas - 1) As Integer
+        For i = 0 To total_filas - 1
+            filas_seleccionadas(i) = DGVMuestras.SelectedRows(i).Index.ToString
+        Next
 
 
         Dim analista As Integer = CmbBxAnalistas.SelectedValue
+
+        If total_filas > 1 Then
+            For Each item As Integer In filas_seleccionadas
+                If IsDBNull(DGVMuestras(8, item).Value) Then
+
+                    Try
+                        conn.Open()
+                        Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                        Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                        t_asignacion = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                        conn.Close()
+                    Catch ex As Exception
+                        MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                        conn.Close()
+                        Exit Sub
+                    End Try
+
+                    Dim reader As MySqlDataReader
+                    Try
+                        conn.Open()
+                        Dim query As String = "UPDATE rev_muestras SET Tiempo_A = '" & t_asignacion & "', AnalistNo= '" & analista & "' WHERE Muestra_ID='" & DGVMuestras(0, item).Value.ToString() & "';"
+                        Dim cmd As New MySqlCommand(query, conn)
+                        reader = cmd.ExecuteReader
+                        conn.Close()
+                    Catch ex As Exception
+                        MsgBox(ex.Message)
+                        conn.Close()
+                    End Try
+                    Cargar_muestras(analista)
+                End If
+            Next
+            Exit Sub
+        End If
         If IsDBNull(DGVMuestras(8, fila_actual).Value) Then
 
             Try
@@ -1811,7 +1849,49 @@ Public Class MainForm
         End Try
 
         Dim fila_actual As Integer = (DGVBandejas.CurrentRow.Index)
+
+        Dim total_filas As Integer = DGVBandejas.Rows.GetRowCount(DataGridViewElementStates.Selected)
+        Dim filas_seleccionadas(total_filas - 1) As Integer
+        For i = 0 To total_filas - 1
+            filas_seleccionadas(i) = DGVBandejas.SelectedRows(i).Index.ToString
+        Next
+
         Dim analista As Integer = CmbBxAnalistas.SelectedValue
+
+        If total_filas > 1 Then
+            For Each item As Integer In filas_seleccionadas
+                If IsDBNull(DGVBandejas(8, item).Value) Then
+
+                    Try
+                        conn.Open()
+                        Dim cmd As New MySqlCommand(String.Format("SELECT NOW();"), conn)
+                        Dim fecha_DB As DateTime = cmd.ExecuteScalar()
+                        t_asignacion = fecha_DB.ToString("yyyy-MM-dd HH:mm:ss")
+                        conn.Close()
+                    Catch ex As Exception
+                        MsgBox(ex.Message, False, "No se puede obtener la fecha de la base de datos")
+                        conn.Close()
+                        Exit Sub
+                    End Try
+
+                    Dim reader As MySqlDataReader
+
+                    Try
+                        conn.Open()
+                        Dim query As String = "UPDATE rev_bandejas SET Tiempo_A='" & t_asignacion & "', AnalistNo ='" & analista & "' WHERE Bandeja_ID = '" & DGVBandejas(0, item).Value.ToString() & "';"
+                        Dim cmd As New MySqlCommand(query, conn)
+                        reader = cmd.ExecuteReader
+                        conn.Close()
+                    Catch ex As Exception
+                        MsgBox(ex.Message)
+                        conn.Close()
+                    End Try
+                    Cargar_bandejas(analista)
+                End If
+            Next
+            Exit Sub
+        End If
+
         If IsDBNull(DGVBandejas(8, fila_actual).Value) Then
 
             Try
@@ -4002,6 +4082,79 @@ Public Class MainForm
 
                 maxPagesTall = pages.Count \ maxPagesWide
                 Exit Sub
+
+            Case 4
+
+                PrintDocument1.OriginAtMargins = True
+                PrintDocument1.DefaultPageSettings.Margins = New Drawing.Printing.Margins(0, 0, 0, 0)
+
+                pages = New Dictionary(Of Integer, pageDetails)
+
+                Dim maxWidth As Integer = CInt(PrintDocument1.DefaultPageSettings.PrintableArea.Width) - 40
+                Dim maxHeight As Integer = CInt(PrintDocument1.DefaultPageSettings.PrintableArea.Height) - 40 + Label1.Height
+
+                Dim pageCounter As Integer = 0
+                pages.Add(pageCounter, New pageDetails)
+
+                Dim columnCounter As Integer = 0
+
+                Dim columnSum As Integer = DGVReportes.RowHeadersWidth
+
+                For c As Integer = 0 To 3
+                    If columnSum + DGVReportes.Columns(c).Width < maxWidth Then
+                        columnSum += DGVReportes.Columns(c).Width
+                        columnCounter += 1
+                    Else
+                        pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                        columnSum = DGVReportes.RowHeadersWidth + DGVReportes.Columns(c).Width
+                        columnCounter = 1
+                        pageCounter += 1
+                        pages.Add(pageCounter, New pageDetails With {.startCol = c})
+                    End If
+                    If c = 3 Then
+                        If pages(pageCounter).columns = 0 Then
+                            pages(pageCounter) = New pageDetails With {.columns = columnCounter, .rows = 0, .startCol = pages(pageCounter).startCol}
+                        End If
+                    End If
+                Next
+                maxPagesWide = pages.Keys.Max + 1
+
+                pageCounter = 0
+
+                Dim rowCounter As Integer = 0
+
+                Dim rowSum As Integer = DGVReportes.ColumnHeadersHeight
+
+                For r As Integer = 0 To DGVReportes.Rows.Count - 2
+                    If rowSum + DGVReportes.Rows(r).Height < maxHeight Then
+                        rowSum += DGVReportes.Rows(r).Height
+                        rowCounter += 1
+                    Else
+                        pages(pageCounter) = New pageDetails With {.columns = pages(pageCounter).columns, .rows = rowCounter, .startCol = pages(pageCounter).startCol, .startRow = pages(pageCounter).startRow}
+                        For x As Integer = 1 To maxPagesWide - 1
+                            pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter).startRow}
+                        Next
+
+                        pageCounter += maxPagesWide
+                        For x As Integer = 0 To maxPagesWide - 1
+                            pages.Add(pageCounter + x, New pageDetails With {.columns = pages(x).columns, .rows = 0, .startCol = pages(x).startCol, .startRow = r})
+                        Next
+
+                        rowSum = DGVReportes.ColumnHeadersHeight + DGVReportes.Rows(r).Height
+                        rowCounter = 1
+                    End If
+                    If r = DGVReportes.Rows.Count - 2 Then
+                        For x As Integer = 0 To maxPagesWide - 1
+                            If pages(pageCounter + x).rows = 0 Then
+                                pages(pageCounter + x) = New pageDetails With {.columns = pages(pageCounter + x).columns, .rows = rowCounter, .startCol = pages(pageCounter + x).startCol, .startRow = pages(pageCounter + x).startRow}
+                            End If
+                        Next
+                    End If
+                Next
+
+                maxPagesTall = pages.Count \ maxPagesWide
+                Exit Sub
+
             Case Else
                 Exit Sub
 
@@ -4206,6 +4359,73 @@ Public Class MainForm
 
                 Next
                 Exit Sub
+
+            Case 4
+                Dim rect As New Rectangle(20, 20, CInt(PrintDocument1.DefaultPageSettings.Bounds.Width), Label1.Height)
+                Dim sf As New StringFormat
+                sf.Alignment = StringAlignment.Center
+                sf.LineAlignment = StringAlignment.Center
+                Label1.Text = LabelAdmin.Text
+                e.Graphics.DrawString(Label1.Text, Label1.Font, Brushes.Black, rect, sf)
+
+                sf.Alignment = StringAlignment.Near
+
+                Dim startX As Integer = 50
+                Dim startY As Integer = rect.Bottom
+
+                Static startPage4 As Integer = 0
+
+                For p As Integer = startPage4 To pages.Count - 1
+                    PrintDocument1.DefaultPageSettings.Landscape = True
+                    Dim cell As New Rectangle(startX, startY, DGVReportes.RowHeadersWidth, DGVReportes.ColumnHeadersHeight)
+                    e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                    e.Graphics.DrawRectangle(Pens.Black, cell)
+
+                    startY += DGVReportes.ColumnHeadersHeight
+
+                    For r As Integer = pages(p).startRow To pages(p).startRow + pages(p).rows - 1
+                        cell = New Rectangle(startX, startY, DGVReportes.RowHeadersWidth, DGVReportes.Rows(r).Height)
+                        e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                        e.Graphics.DrawRectangle(Pens.Black, cell)
+                        'e.Graphics.DrawString(dgvreportes.Rows(r).HeaderCell.Value.ToString, dgvreportes.Font, Brushes.Black, cell, sf)
+                        startY += DGVReportes.Rows(r).Height
+                    Next
+
+                    startX += cell.Width
+                    startY = rect.Bottom
+
+                    For c As Integer = pages(p).startCol To pages(p).startCol + pages(p).columns - 1
+                        cell = New Rectangle(startX, startY, DGVReportes.Columns(c).Width, DGVReportes.ColumnHeadersHeight)
+                        e.Graphics.FillRectangle(New SolidBrush(SystemColors.ControlLight), cell)
+                        e.Graphics.DrawRectangle(Pens.Black, cell)
+                        e.Graphics.DrawString(DGVReportes.Columns(c).HeaderCell.Value.ToString, DGVReportes.Font, Brushes.Black, cell, sf)
+                        startX += DGVReportes.Columns(c).Width
+                    Next
+
+                    startY = rect.Bottom + DGVReportes.ColumnHeadersHeight
+
+                    For r As Integer = pages(p).startRow To pages(p).startRow + pages(p).rows - 1
+                        startX = 50 + DGVReportes.RowHeadersWidth
+                        For c As Integer = pages(p).startCol To pages(p).startCol + pages(p).columns - 1
+                            cell = New Rectangle(startX, startY, DGVReportes.Columns(c).Width, DGVReportes.Rows(r).Height)
+                            e.Graphics.DrawRectangle(Pens.Black, cell)
+                            e.Graphics.DrawString(DGVReportes(c, r).Value.ToString, DGVReportes.Font, Brushes.Black, cell, sf)
+                            startX += DGVReportes.Columns(c).Width
+                        Next
+                        startY += DGVReportes.Rows(r).Height
+                    Next
+
+                    If p <> pages.Count - 1 Then
+                        startPage4 = p + 1
+                        e.HasMorePages = True
+                        Return
+                    Else
+                        startPage4 = 0
+                    End If
+
+                Next
+                Exit Sub
+
             Case Else
                 Exit Sub
         End Select

@@ -21,12 +21,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_89AEAAFBCDF0632E1EAD0146407D56C0"
-        "OwnerKey" = "8:_A793FA11B1114931833C888927534753"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A793FA11B1114931833C888927534753"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -53,12 +47,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_C8C4B7C0D38EA06CD60E238C2E4FB8C1"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_89AEAAFBCDF0632E1EAD0146407D56C0"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -176,32 +164,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_89AEAAFBCDF0632E1EAD0146407D56C0"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:System.Net.Http.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_00BD63985DA847CE925A63EE42FA65AB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C67D051FE16947099889C193007FC0CF"
             {
             "SourcePath" = "8:..\\WindowsApp1\\Desktop_25993.ico"
@@ -229,6 +191,11 @@
             "AssemblyAsmDisplayName" = "8:MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_C8C4B7C0D38EA06CD60E238C2E4FB8C1"
+                    {
+                    "Name" = "8:MySql.Data.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:MySql.Data.dll"
             "TargetName" = "8:"
@@ -315,15 +282,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Revisiones"
-        "ProductCode" = "8:{E677834B-DEE5-4AAD-B1EB-5D90CD4966A1}"
-        "PackageCode" = "8:{F67244E8-6583-4AF0-B697-CC526FC04FBD}"
+        "ProductCode" = "8:{F7AD9249-0A2E-4708-93E3-F430093A55C1}"
+        "PackageCode" = "8:{41D8E9A0-82DE-46B0-993C-A720CD59FAEC}"
         "UpgradeCode" = "8:{562F2C3B-726A-4A9F-B6DF-51BFF0E64897}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.3"
+        "InstallAllUsers" = "11:TRUE"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:IDETECO"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
