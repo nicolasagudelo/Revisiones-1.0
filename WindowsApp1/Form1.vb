@@ -3,6 +3,8 @@
 Imports MySql.Data.MySqlClient
 Imports System.Configuration
 Imports System.Windows.Forms.DataVisualization.Charting
+Imports System.Security.Cryptography
+Imports System.Text
 
 Public Class MainForm
     Implements IMessageFilter
@@ -870,6 +872,7 @@ Public Class MainForm
             Dim Filas_total As Integer = DGVAdmin.RowCount
             Dim nombre As String = TextBox1.Text.ToString
             Dim Contraseña As String = TextBox2.Text.ToString
+            Dim new_salt As String = GenerateSalt()
             If Contraseña = "" Then
                 Contraseña = "123"
             End If
@@ -877,9 +880,13 @@ Public Class MainForm
                 MsgBox("El nombre no puede estar vacio", False, "Error")
                 Exit Sub
             End If
+
+            Contraseña = new_salt + Contraseña
+            Contraseña = ComputeHashOfString(Of SHA256CryptoServiceProvider)(Contraseña)
+
             Try
                 conn.Open()
-                Dim cmd As New MySqlCommand(String.Format("INSERT INTO analistas VALUES ('" & Filas_total & "','" & nombre & "','" & Contraseña & "')"), conn)
+                Dim cmd As New MySqlCommand(String.Format("INSERT INTO analistas VALUES ('" & Filas_total & "','" & nombre & "','" & new_salt & "','" & Contraseña & "')"), conn)
                 MsgBox("Registro agregado satisfactoriamente", False, "Registro agregado")
                 cmd.ExecuteNonQuery()
             Catch ex As MySqlException
@@ -1177,6 +1184,33 @@ Public Class MainForm
         End Try
     End Sub
 
+    Public Function ComputeHashOfString(Of T As HashAlgorithm)(ByVal str As String,
+                                                                             Optional ByVal enc As Encoding = Nothing) As String
+        If (enc Is Nothing) Then
+            enc = Encoding.Default
+        End If
+        Using algorithm As HashAlgorithm = DirectCast(Activator.CreateInstance(GetType(T)), HashAlgorithm)
+            Dim data As Byte() = enc.GetBytes(str)
+            Dim hash As Byte() = algorithm.ComputeHash(data)
+            Dim sb As New StringBuilder(capacity:=hash.Length * 2)
+            For Each b As Byte In hash
+                sb.Append(b.ToString("X2"))
+            Next
+            Return sb.ToString.ToLower()
+        End Using
+
+    End Function
+
+    Private Function GenerateSalt()
+        Dim saltsize As Integer = 47
+        Dim saltbytes() As Byte
+        saltbytes = New Byte(saltsize - 1) {}
+        Dim rng As RNGCryptoServiceProvider
+        rng = New RNGCryptoServiceProvider
+        rng.GetNonZeroBytes(saltbytes)
+        Return Convert.ToBase64String(saltbytes)
+    End Function
+
     Dim password As String
 
     Private Sub BtnConectar_Click(sender As Object, e As EventArgs) Handles BtnConectar.Click
@@ -1195,17 +1229,24 @@ Public Class MainForm
         If respuestaform2 = "1" Then
             Dim password As String = TextBoxContraseña.Text
             Dim bd_password As String
+            Dim bd_salt As String
             Try
                 conn.Open()
-                Dim cmd As New MySqlCommand(String.Format("Select contraseña FROM analistas
-                                                       Where AnalistNo = " & usuario & ";"), conn)
+                Dim cmd As New MySqlCommand(String.Format("Select hash FROM analistas
+                                                           Where AnalistNo = " & usuario & ";"), conn)
                 bd_password = Convert.ToString(cmd.ExecuteScalar())
+                Dim cmd2 As New MySqlCommand(String.Format("Select salt from analistas
+                                                            Where AnalistNo = " & usuario & ";"), conn)
+                bd_salt = Convert.ToString(cmd2.ExecuteScalar())
                 conn.Close()
             Catch ex As Exception
                 MsgBox(ex.Message, False, "Error")
                 conn.Close()
                 Exit Sub
             End Try
+
+            password = bd_salt + password
+            password = ComputeHashOfString(Of SHA256CryptoServiceProvider)(password)
 
             If password = bd_password Then
                 MsgBox("Bienvenido " & usuario_string & "", False, "Log-In")
@@ -2019,17 +2060,24 @@ Public Class MainForm
         If respuestaform2 = "1" Then
             Dim password As String = TextBoxContraseña.Text
             Dim bd_password As String
+            Dim bd_salt As String
             Try
                 conn.Open()
-                Dim cmd As New MySqlCommand(String.Format("Select contraseña FROM analistas
-                                                       Where AnalistNo = " & usuario & ";"), conn)
+                Dim cmd As New MySqlCommand(String.Format("Select hash FROM analistas
+                                                           Where AnalistNo = " & usuario & ";"), conn)
                 bd_password = Convert.ToString(cmd.ExecuteScalar())
+                Dim cmd2 As New MySqlCommand(String.Format("Select salt from analistas
+                                                            Where AnalistNo = " & usuario & ";"), conn)
+                bd_salt = Convert.ToString(cmd2.ExecuteScalar())
                 conn.Close()
             Catch ex As Exception
                 MsgBox(ex.Message, False, "Error")
                 conn.Close()
                 Exit Sub
             End Try
+
+            password = bd_salt + password
+            password = ComputeHashOfString(Of SHA256CryptoServiceProvider)(password)
 
             If password = bd_password Then
                 MsgBox("Conectado, ahora cuenta con permisos de administrador", False, "Log-In")
@@ -4661,24 +4709,38 @@ Public Class MainForm
             If respuestaform3 = "1" Then
                 Dim contraseña_anterior As String = TxBxContraseñaAnterior.Text
                 Dim bd_password As String
+                Dim bd_salt As String
                 Try
                     conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("Select contraseña FROM analistas
+                    Dim cmd As New MySqlCommand(String.Format("Select hash FROM analistas
                                                        Where AnalistNo = " & usuario & ";"), conn)
                     bd_password = Convert.ToString(cmd.ExecuteScalar())
+                    Dim cmd2 As New MySqlCommand(String.Format("Select salt from analistas
+                                                                where AnalistNo = " & usuario & ";"), conn)
+                    bd_salt = Convert.ToString(cmd2.ExecuteScalar())
                     conn.Close()
                 Catch ex As Exception
                     MsgBox(ex.Message, False, "Error")
                     conn.Close()
                     Exit Sub
                 End Try
+
+                contraseña_anterior = bd_salt + contraseña_anterior
+                contraseña_anterior = ComputeHashOfString(Of SHA256CryptoServiceProvider)(contraseña_anterior)
+
                 If contraseña_anterior = bd_password Then
                     Dim contraseña_nueva As String = TxBxContraseñaNueva.Text
                     Dim contraseña_nueva2 As String = TextBoxContraseña.Text
                     If contraseña_nueva = contraseña_nueva2 Then
+
+                        Dim new_salt As String = GenerateSalt()
+                        contraseña_nueva = new_salt + contraseña_nueva
+                        contraseña_nueva = ComputeHashOfString(Of SHA256CryptoServiceProvider)(contraseña_nueva)
+                        contraseña_nueva2 = contraseña_nueva
+
                         Try
                             conn.Open()
-                            Dim query As String = "UPDATE analistas set Contraseña = '" & contraseña_nueva & "' where AnalistNo = " & usuario
+                            Dim query As String = "UPDATE analistas set salt = '" & new_salt & "', hash = '" & contraseña_nueva & "' where AnalistNo = " & usuario
                             Dim cmd As New MySqlCommand(query, conn)
                             reader = cmd.ExecuteReader
                             MsgBox("Contraseña Actualizada", False, "Contraseña Actualizada")
@@ -4686,6 +4748,7 @@ Public Class MainForm
                         Catch ex As MySqlException
                             MsgBox(ex.Message)
                             conn.Close()
+                            Exit Sub
                         End Try
                     Else
                         MsgBox("Ingreso dos contraseñas diferentes en los campos de contraseña nueva", False, "Error")
@@ -4710,24 +4773,38 @@ Public Class MainForm
             If respuestaform3 = "1" Then
                 Dim contraseña_anterior As String = TxBxContraseñaAnterior.Text
                 Dim bd_password As String
+                Dim bd_salt As String
                 Try
                     conn.Open()
-                    Dim cmd As New MySqlCommand(String.Format("Select contraseña FROM analistas
+                    Dim cmd As New MySqlCommand(String.Format("Select hash FROM analistas
                                                        Where AnalistNo = " & usuario & ";"), conn)
                     bd_password = Convert.ToString(cmd.ExecuteScalar())
+                    Dim cmd2 As New MySqlCommand(String.Format("Select salt from analistas
+                                                                where AnalistNo = " & usuario & ";"), conn)
+                    bd_salt = Convert.ToString(cmd2.ExecuteScalar())
                     conn.Close()
                 Catch ex As Exception
                     MsgBox(ex.Message, False, "Error")
                     conn.Close()
                     Exit Sub
                 End Try
+
+                contraseña_anterior = bd_salt + contraseña_anterior
+                contraseña_anterior = ComputeHashOfString(Of SHA256CryptoServiceProvider)(contraseña_anterior)
+
                 If contraseña_anterior = bd_password Then
                     Dim contraseña_nueva As String = TxBxContraseñaNueva.Text
                     Dim contraseña_nueva2 As String = TextBoxContraseña.Text
                     If contraseña_nueva = contraseña_nueva2 Then
+
+                        Dim new_salt As String = GenerateSalt()
+                        contraseña_nueva = new_salt + contraseña_nueva
+                        contraseña_nueva = ComputeHashOfString(Of SHA256CryptoServiceProvider)(contraseña_nueva)
+                        contraseña_nueva2 = contraseña_nueva
+
                         Try
                             conn.Open()
-                            Dim query As String = "UPDATE analistas set Contraseña = '" & contraseña_nueva & "' where AnalistNo = " & usuario
+                            Dim query As String = "UPDATE analistas set salt = '" & new_salt & "', hash = '" & contraseña_nueva & "' where AnalistNo = " & usuario
                             Dim cmd As New MySqlCommand(query, conn)
                             reader = cmd.ExecuteReader
                             MsgBox("Contraseña Actualizada", False, "Contraseña Actualizada")
@@ -4735,6 +4812,7 @@ Public Class MainForm
                         Catch ex As MySqlException
                             MsgBox(ex.Message)
                             conn.Close()
+                            Exit Sub
                         End Try
                     Else
                         MsgBox("Ingreso dos contraseñas diferentes en los campos de contraseña nueva", False, "Error")
@@ -4836,7 +4914,7 @@ Public Class MainForm
 
     Private Sub BtnGenerarReporte_Click(sender As Object, e As EventArgs) Handles BtnGenerarReporte.Click
         If FechaInicio.Value > FechaFin.Value Then
-            MsgBox("La fecha inicial no puede estar despues que la fecha final", False, "Error")
+            MsgBox("La fecha inicial no puede estar despues de la fecha final", False, "Error")
             Exit Sub
         End If
         Dim ReporteSeleccionado As Integer = CmbBxReportes.SelectedIndex
@@ -4849,6 +4927,7 @@ Public Class MainForm
                 'ChartTPFinalizacion.Visible = False
                 Dim fecha_inicial As String = FechaInicio.Value.ToString("yyyy-MM-dd HH:mm:ss")
                 Dim fecha_final As String = FechaFin.Value.ToString("yyyy-MM-dd HH:mm:ss")
+
                 Try
                     conn.Open()
                     Dim cmd As New MySqlCommand(String.Format("select count(*) as c
@@ -5190,5 +5269,4 @@ Public Class MainForm
         End Select
         '-- etc
     End Sub
-
 End Class
